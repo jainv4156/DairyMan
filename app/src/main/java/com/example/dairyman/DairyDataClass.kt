@@ -12,9 +12,11 @@ data class DairyData(
     @ColumnInfo(name = "name")
     val name:String,
     @ColumnInfo(name = "rate")
-    val rate:String,
+    val rate:Int,
     @ColumnInfo(name="amount")
-    val amount:String,
+    val amount:Float,
     @ColumnInfo(name="pendingAmount")
-    val pendingAmount:String
+    val pendingAmount:Int,
+    @ColumnInfo(name="tempAmount")
+    val tempAmount:Float,
 )

@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-
 @Dao
 interface DatabaseDao {
 
@@ -18,4 +17,7 @@ interface DatabaseDao {
     @Update
     fun updateDairyData(dairyData: DairyData)
 
+    @Query("UPDATE DairyTable SET pendingAmount=pendingAmount+CAST((rate*tempAmount) AS INTEGER)")
+    suspend fun updateTodayAmount()
 }
+

@@ -1,6 +1,7 @@
 package com.example.dairyman
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,26 +29,31 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
         )
     }
     } ) {
-//        Button(onClick = { viewModel.updateTodayAmount() }) {
-//            Text(text = "UpdateTodayMoney")
-//        }
-//        Spacer(modifier = Modifier.height(10.dp))
+        Column {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val dairyList = viewModel.getAllDairyData.collectAsState(initial = listOf())
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .padding(it)){
-            items(dairyList.value) { item->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Text(text = item.name)
-                    Text(text = item.rate.toString())
-                    Text(text = item.amount.toString())
-                    Text(text = item.pendingAmount.toString())
+            Button(modifier = Modifier.padding(16.dp),onClick = { viewModel.updateTodayAmount() }) {
+                Text(text = "UpdateTodayMoney")
+            }
+            val dairyList = viewModel.getAllDairyData.collectAsState(initial = listOf())
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                items(dairyList.value) { item ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Text(text = item.name)
+                        Text(text = item.rate.toString())
+                        Text(text = item.amount.toString())
+                        Text(text = item.pendingAmount.toString())
+                    }
                 }
             }
+
         }
     }
 }

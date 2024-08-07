@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 
 
 @Composable
@@ -19,7 +20,8 @@ navController: NavHostController=rememberNavController()
             StartingView(navController, viewModel = DairyViewModel())
         }
         composable<ScreenB> {
-            AddNewRecordView(navController, viewModel = DairyViewModel())
+            val args=it.toRoute<ScreenB>()
+            AddNewRecordView(navController, viewModel = DairyViewModel(),args.id)
         }
     }
 

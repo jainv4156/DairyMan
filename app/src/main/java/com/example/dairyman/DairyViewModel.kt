@@ -1,13 +1,12 @@
 package com.example.dairyman
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class DairyViewModel:ViewModel(){
 
@@ -17,13 +16,16 @@ class DairyViewModel:ViewModel(){
     private var pendingAmount = mutableStateOf("")
 
     lateinit var getAllDairyData: Flow<List<DairyData>>
-//    private var updateDataList: List<DairyData> = emptyList()
+    fun getDairyDataById(id:Long):Flow<DairyData>{
+        return dairyDao.getDairyDataById(id)
+    }
 
     private val dairyDao=DairyApp.db.dairyDao()
 
     fun getName():String{
         return name.value
     }
+
 
     init {
             viewModelScope.launch (IO){
@@ -56,9 +58,9 @@ class DairyViewModel:ViewModel(){
     }
 
 
-    fun addDairyData(userData:DairyData){
+    fun addUpdateDairyData(userData:DairyData){
         viewModelScope.launch(IO){
-            dairyDao.insertDairyData(userData)
+            dairyDao.UpsertDairyData(userData)
         }
 
     }
@@ -68,5 +70,11 @@ class DairyViewModel:ViewModel(){
             dairyDao.updateTodayAmount()
         }
 
+    }
+
+    fun deleteDataById(dairyData:DairyData){
+        viewModelScope.launch ( IO ){
+            dairyDao.deleteDairyData(dairyData)
+        }
     }
 }

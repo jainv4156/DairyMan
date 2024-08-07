@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import kotlinx.serialization.Serializable
 
@@ -25,7 +26,7 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
 
     Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = { FloatingActionButton {
         navController.navigate(
-            ScreenB
+            ScreenB(id = 0L)
         )
     }
     } ) {
@@ -42,20 +43,42 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
                     .padding(it)
             ) {
                 items(dairyList.value) { item ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text(text = item.name)
-                        Text(text = item.rate.toString())
-                        Text(text = item.amount.toString())
-                        Text(text = item.pendingAmount.toString())
-                    }
+                    ShowDataView(item,navController,viewModel)
                 }
             }
 
         }
     }
+
+
+
 }
+
+@Composable
+fun ShowDataView(item:DairyData,navController: NavController,viewModel: DairyViewModel){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Text(text = item.name)
+        Text(text = item.rate.toString())
+        Text(text = item.amount.toString())
+        Text(text = item.pendingAmount.toString())
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(modifier = Modifier.padding(16.dp),onClick = { navController.navigate(ScreenB(item.id)) }) {
+            Text(text = "Update")
+        }
+        Button(modifier = Modifier.padding(16.dp),onClick = { viewModel.deleteDataById(item) }) {
+            Text(text = "Delete")
+        }
+    }
+}
+
+
+
 @Serializable
 object ScreenA

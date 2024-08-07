@@ -3,6 +3,7 @@ package com.example.dairyman
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,4 +14,8 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM DairyTable")
     fun loadAllDairyData():Flow<List<DairyData>>
+
+    @Update
+    fun updateDairyData(dairyData: DairyData)
+
 }

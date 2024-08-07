@@ -27,9 +27,9 @@ fun AddNewRecordView(
             OutlinedTextField(value =viewModel.getAmount() , onValueChange = { viewModel.setAmount(it) })
             OutlinedTextField(value =viewModel.getPendingAmount() , onValueChange = { viewModel.setPendingAmount(it) })
             Button(onClick = {
-                viewModel.addDairyData(DairyData(name = viewModel.getName(), rate = viewModel.getRate(), amount = viewModel.getAmount(), pendingAmount = viewModel.getPendingAmount()))
+                viewModel.addDairyData(DairyData(name = viewModel.getName(), rate = viewModel.getRate().toInt(), amount = viewModel.getAmount().toFloat(), pendingAmount = viewModel.getPendingAmount().toInt(), tempAmount = viewModel.getPendingAmount().toFloat()))
                 navController.navigate(ScreenA) }, modifier = Modifier.padding(it)) {
-               Text(text = "djfalsjfdlj")
+               Text(text = "Add data")
             }
 
         }

@@ -2,6 +2,7 @@ package com.example.dairyman
 
 import android.app.Application
 import androidx.room.Room
+import com.example.dairyman.Data.AppDatabase
 
 class DairyApp: Application() {
     companion object {

@@ -1,4 +1,4 @@
-package com.example.dairyman
+package com.example.dairyman.Data
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -11,7 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface DatabaseDao {
 
     @Upsert
-    suspend fun UpsertDairyData(dairyData:DairyData)
+    suspend fun upsertDairyData(dairyData:DairyData)
+
+    @Insert
+    suspend fun insertHistory(historyData: List<HistoryData>)
+
+    @Query("SELECT * FROM DairyTable WHERE amount!=tempAmount")
+    suspend fun getDataToRecord():List<DairyData>
 
     @Query("SELECT * FROM DairyTable WHERE id=:id")
     fun getDairyDataById(id:Long):Flow<DairyData>

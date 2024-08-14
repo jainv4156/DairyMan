@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dairyman.Data.DairyData
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -52,7 +53,7 @@ fun AddNewRecordView(
             else{
 
                 Button(onClick = {
-                    viewModel.addUpdateDairyData(DairyData(id=id,name = viewModel.getName(), rate = viewModel.getRate().toInt(), amount = viewModel.getAmount().toFloat(), pendingAmount = viewModel.getPendingAmount().toInt(), tempAmount = viewModel.getAmount().toFloat()))
+                    viewModel.addUpdateDairyData(DairyData(id=id,name = viewModel.getName(), rate = viewModel.getRate().toInt(), amount = viewModel.getAmount().toFloat(), pendingAmount = viewModel.getPendingAmount().toInt(), tempAmount = viewModel.getAmount().toFloat(), dateUpdated = System.currentTimeMillis()))
                     navController.navigate(ScreenA) }, modifier = Modifier.padding(it)) {
                    Text(text = "Update data")
                 }

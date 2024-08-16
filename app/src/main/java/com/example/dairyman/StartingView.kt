@@ -1,7 +1,7 @@
 package com.example.dairyman
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,8 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun StartingView(navController: NavController,viewModel: DairyViewModel) {
-    var isLongPressed = remember { mutableStateOf(false) }
+    val isLongPressed = remember { mutableStateOf(false) }
+
 
     Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
         FloatingActionButton {
@@ -44,12 +45,11 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
     }) {
 
         Column {
-
             Spacer(modifier = Modifier.height(it.calculateTopPadding()))
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 modifier = Modifier.padding(16.dp),
-                onClick = { viewModel.updateTodayAmountButton() }) {
+                onClick = {viewModel.checkTodayUpdate()}) {
                 Text(text = "UpdateTodayMoney")
             }
             val dairyList = viewModel.getAllDairyData.collectAsState(initial = listOf())
@@ -70,6 +70,10 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
         BlurredBackground()
         ChangeAmountScreen(isLongPressed,viewModel)
     }
+    if(viewModel.getIsAlertDialogBox().value){
+        BlurredBackground()
+        AlertDialogBoxView(viewModel)
+    }
 
 
 
@@ -78,7 +82,9 @@ fun StartingView(navController: NavController,viewModel: DairyViewModel) {
     @Composable
     fun ShowDataView(item: DairyData, navController: NavController, viewModel: DairyViewModel, isLongPressed: MutableState<Boolean>) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { navController.navigate(ScreenC(id = item.id)) },
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
 

@@ -10,7 +10,7 @@ class DairyApp: Application() {
     }
     override fun onCreate() {
         super.onCreate()
-        db= Room.databaseBuilder(
+        db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "DairyTable"
         ).build()

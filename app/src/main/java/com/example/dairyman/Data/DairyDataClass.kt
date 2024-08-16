@@ -1,29 +1,23 @@
 package com.example.dairyman.Data
 
 import androidx.room.ColumnInfo
-import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Query
-import androidx.room.Update
-import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "DairyTable")
 data class DairyData(
     @PrimaryKey(autoGenerate = true)
     val id:Long=0L,
     @ColumnInfo(name = "name")
-    val name:String,
+    val name:String="",
     @ColumnInfo(name = "rate")
-    val rate:Int,
+    val rate:Int=0,
     @ColumnInfo(name = "amount")
-    val amount:Float,
+    val amount:Float=0F,
     @ColumnInfo(name = "pendingAmount")
-    val pendingAmount:Int,
+    val pendingAmount:Int=0,
     @ColumnInfo(name = "tempAmount")
-    val tempAmount:Float,
+    val tempAmount:Float=0F,
     @ColumnInfo(name = "DateCreated")
     val dateCreated:Long=System.currentTimeMillis(),
     @ColumnInfo(name = "DateUpdated")

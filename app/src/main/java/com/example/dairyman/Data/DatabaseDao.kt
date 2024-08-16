@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface DatabaseDao {
 
     @Upsert
-    suspend fun upsertDairyData(dairyData:DairyData)
+    suspend fun upsertDairyData(dairyData: DairyData)
 
     @Insert
     suspend fun insertHistory(historyData: List<HistoryData>)
@@ -23,7 +23,10 @@ interface DatabaseDao {
     fun getDairyDataById(id:Long):Flow<DairyData>
 
     @Delete
-    fun deleteDairyData(data:DairyData)
+    fun deleteDairyData(data: DairyData)
+
+    @Query("DELETE FROM historyDataTable WHERE dataId=:dataId")
+    suspend fun deleteHistoryData(dataId: Long)
 
     @Query("SELECT * FROM DairyTable")
     fun loadAllDairyData():Flow<List<DairyData>>
@@ -33,5 +36,10 @@ interface DatabaseDao {
 
     @Query("UPDATE DairyTable SET pendingAmount=pendingAmount+CAST((rate*tempAmount) AS INTEGER)")
     suspend fun updateTodayAmount()
+
+    @Query("SELECT DairyTable.name,DairyTable.rate,historyDataTable.amount,historyDataTable.tempAmount,historyDataTable.date FROM DairyTable JOIN historyDataTable ON DairyTable.id= historyDataTable.dataId WHERE historyDataTable.dataId=:id")
+    fun getHistoryById(id:Long):Flow<List<JoinedResult>>
+    @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date=:date")
+    suspend fun getHistoryCount(date:String):Int
 }
 

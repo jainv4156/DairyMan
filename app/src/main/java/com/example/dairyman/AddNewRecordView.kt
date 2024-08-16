@@ -64,6 +64,6 @@ fun AddNewRecordView(
     }
 }
 @Serializable
-data class ScreenB(
+data class  ScreenB(
     val id:Long
 )

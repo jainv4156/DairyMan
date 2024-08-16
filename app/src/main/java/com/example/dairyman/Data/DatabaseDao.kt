@@ -16,9 +16,6 @@ interface DatabaseDao {
     @Insert
     suspend fun insertHistory(historyData: List<HistoryData>)
 
-    @Query("SELECT * FROM DairyTable WHERE amount!=tempAmount")
-    suspend fun getDataToRecord():List<DairyData>
-
     @Query("SELECT * FROM DairyTable WHERE id=:id")
     fun getDairyDataById(id:Long):Flow<DairyData>
 

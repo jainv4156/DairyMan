@@ -1,4 +1,4 @@
-package com.example.dairyman
+package com.example.dairyman.Ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add

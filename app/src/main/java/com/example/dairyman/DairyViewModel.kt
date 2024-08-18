@@ -19,7 +19,7 @@ class DairyViewModel:ViewModel(){
     private var  name = mutableStateOf("")
     private var rate = mutableStateOf("")
     private var amount = mutableStateOf("")
-    private var pendingAmount = mutableStateOf("")
+    private var pendingAmount = mutableStateOf("0")
     private var dairyDataFromAmountPressed: MutableState<DairyData> = mutableStateOf(DairyData(0,"",0,0F,0,0F))
     private var dayForTempAmount = mutableStateOf("1")
     private val isAlertDialogBox= mutableStateOf(false)

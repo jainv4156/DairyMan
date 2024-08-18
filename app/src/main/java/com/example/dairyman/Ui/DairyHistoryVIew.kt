@@ -1,4 +1,4 @@
-package com.example.dairyman
+package com.example.dairyman.Ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import com.example.dairyman.DairyViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale

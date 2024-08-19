@@ -1,6 +1,7 @@
-package com.example.dairyman.Ui
+package com.example.dairyman.uiComponent
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,20 +26,21 @@ import com.example.dairyman.DairyViewModel
 
 @Composable
 fun ChangeAmountScreen(isLongPressed:MutableState<Boolean>,viewModel: DairyViewModel){
-    Box (modifier = Modifier.fillMaxSize().padding(32.dp).pointerInput(Unit) {
-        // Consume pointer events here to prevent propagation
-    },
+    Box (modifier = Modifier
+        .fillMaxSize()
+        .padding(32.dp)
+        .pointerInput(Unit) {},
         contentAlignment = Alignment.Center){
         val shape = RoundedCornerShape(8.dp)
         Column (modifier = Modifier
             .align(Alignment.Center).clip(shape)
-            .background(Color.LightGray).padding(32.dp,16.dp),
+            .background(if(isSystemInDarkTheme()) Color.DarkGray else Color.LightGray).padding(32.dp,16.dp),
             horizontalAlignment = Alignment.CenterHorizontally){
 
             Spacer(modifier = Modifier.height(32.dp))
-            OutlinedTextField(value = viewModel.getAmount(), onValueChange = {viewModel.setAmount(it)})
+            OutlinedTextFieldStyle(value = viewModel.getAmount(), onValueChange = {viewModel.setAmount(it)}, title = "Update Amount")
             Spacer(modifier = Modifier.height(32.dp))
-            OutlinedTextField(value = viewModel.getDayForTempAmount(), onValueChange = {viewModel.setDayForTempAmount(it)})
+            OutlinedTextFieldStyle(value = viewModel.getDayForTempAmount(), onValueChange = {viewModel.setDayForTempAmount(it)}, title = "No Of Days")
             Spacer(modifier = Modifier.height(32.dp))
 
             Row(modifier = Modifier.fillMaxWidth(),

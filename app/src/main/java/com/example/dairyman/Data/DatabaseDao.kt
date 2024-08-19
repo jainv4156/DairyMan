@@ -34,7 +34,7 @@ interface DatabaseDao {
     @Query("UPDATE DairyTable SET pendingAmount=pendingAmount+CAST((rate*tempAmount) AS INTEGER)")
     suspend fun updateTodayAmount()
 
-    @Query("SELECT DairyTable.name,DairyTable.rate,historyDataTable.amount,historyDataTable.tempAmount,historyDataTable.date FROM DairyTable JOIN historyDataTable ON DairyTable.id= historyDataTable.dataId WHERE historyDataTable.dataId=:id")
+    @Query("SELECT DairyTable.name,DairyTable.rate,historyDataTable.amount,historyDataTable.tempAmount,historyDataTable.date FROM DairyTable JOIN historyDataTable ON DairyTable.id= historyDataTable.dataId WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
     fun getHistoryById(id:Long):Flow<List<JoinedResult>>
     @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date=:date")
     suspend fun getHistoryCount(date:String):Int

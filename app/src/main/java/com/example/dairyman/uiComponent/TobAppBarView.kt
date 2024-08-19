@@ -1,4 +1,4 @@
-package com.example.dairyman.Ui
+package com.example.dairyman.uiComponent
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.heightIn

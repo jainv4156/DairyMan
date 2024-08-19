@@ -1,7 +1,6 @@
-package com.example.dairyman.Ui
+package com.example.dairyman.uiComponent
 
 import android.widget.Toast
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,10 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,14 +16,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dairyman.DairyViewModel
 import com.example.dairyman.Data.DairyData
-import com.example.dairyman.R
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -61,7 +54,7 @@ fun AddNewRecordView(
                     onValueChange = { viewModel.setRate(it) },
                     title = "Rate"
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp).padding(padding))
                 OutlinedTextFieldStyle(
                     value = viewModel.getAmount(),
                     onValueChange = { viewModel.setAmount(it) },
@@ -118,31 +111,7 @@ fun AddNewRecordView(
     }
 }
 
-@Composable
-fun OutlinedTextFieldStyle(
-    value:String,
-    onValueChange:(String)-> Unit,
-    title:String){
-    val colorOnThemeBase=  if(isSystemInDarkTheme()) colorResource(R.color.white) else colorResource(
-        R.color.black)
 
-    OutlinedTextField(
-        label = { Text(text = title) },
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = if(title=="name") KeyboardType.Text else KeyboardType.Decimal),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorOnThemeBase,
-            unfocusedBorderColor = colorOnThemeBase,
-            focusedLabelColor = colorOnThemeBase,
-            unfocusedLabelColor = colorOnThemeBase,
-            cursorColor = colorOnThemeBase
-
-        )
-    )
-
-}
 @Serializable
 data class  ScreenB(
     val id:Long

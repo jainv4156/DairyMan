@@ -94,9 +94,6 @@ class DairyViewModel:ViewModel(){
 
     }
 
-
-
-
      fun checkTodayUpdate() {
         val todayDate= SimpleDateFormat("yyyy/mm/dd", Locale.getDefault()).format(System.currentTimeMillis())
 
@@ -140,5 +137,9 @@ class DairyViewModel:ViewModel(){
     }
     fun getHistoryById(id:Long):Flow<List<JoinedResult>>{
         return dairyDao.getHistoryById(id = id)
+    }
+
+    fun getProfileDataForHistory(id: Long):Flow<DairyData>{
+        return dairyDao.getDairyDataById(id=id)
     }
 }

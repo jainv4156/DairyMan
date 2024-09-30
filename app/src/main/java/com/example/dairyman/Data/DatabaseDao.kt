@@ -6,6 +6,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
+import com.example.dairyman.Data.Model.DairyData
+import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.Data.Model.JoinedResult
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface DatabaseDao {
@@ -25,11 +28,11 @@ interface DatabaseDao {
     @Query("DELETE FROM historyDataTable WHERE dataId=:dataId")
     suspend fun deleteHistoryData(dataId: Long)
 
+    @Query("SELECT * FROM historyDataTable")
+    suspend fun getAllHistory():List<HistoryData>
+
     @Query("SELECT * FROM DairyTable")
     fun loadAllDairyData():Flow<List<DairyData>>
-
-    @Update
-    suspend fun updateDairyData(dairyData: DairyData)
 
     @Query("UPDATE DairyTable SET pendingAmount=pendingAmount+CAST((rate*tempAmount) AS INTEGER)")
     suspend fun updateTodayAmount()

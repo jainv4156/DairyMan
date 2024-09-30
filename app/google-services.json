@@ -1,0 +1,48 @@
+{
+
+  "project_info": {
+    "project_number": "481471198515",
+    "project_id": "dairyman-3b8d4",
+    "storage_bucket": "dairyman-3b8d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481471198515:android:33cdbb7e567d5702c0fa46",
+        "android_client_info": {
+          "package_name": "com.example.dairyman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "481471198515-jftkvf83eh6di9ae2d6p33nvb7fv1lai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dairyman",
+            "certificate_hash": "9718140782cc28e590094736fc7af6e0ce90437b"
+          }
+        },
+        {
+          "client_id": "481471198515-q3lch4sdkte3oiho6gsc3arut4mmk5u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkFa-oVgguI_fYIzHKvdL2BdkSJhjF0nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "481471198515-q3lch4sdkte3oiho6gsc3arut4mmk5u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

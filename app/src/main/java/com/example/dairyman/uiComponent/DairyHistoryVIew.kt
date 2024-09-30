@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.dairyman.DairyViewModel
+import com.example.dairyman.viewmodel.DairyViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -42,71 +42,78 @@ fun DairyHistoryVIew(id: Long,navController: NavController) {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp)) {
-                if(profile.value!=null){
+                if (profile.value != null && history.value.isNotEmpty()) {
                     val shape = RoundedCornerShape(8.dp)
-                        Column (modifier = Modifier
+                    Column(
+                        modifier = Modifier
                             .shadow(
                                 5.dp,
                                 shape,
                                 spotColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                                ambientColor =if (isSystemInDarkTheme()) Color.White else Color.Black
+                                ambientColor = if (isSystemInDarkTheme()) Color.White else Color.Black
                             )
-                            .background(if (isSystemInDarkTheme()) DarkGray else LightGray))
-                        {
-                            Column(modifier = Modifier.padding(16.dp)){
-
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = (profile.value?.name?.substring(0, 1)
-                                    ?.uppercase()) + history.value[0].name.substring(1).lowercase(),
+                            .background(if (isSystemInDarkTheme()) DarkGray else LightGray)
+                    )
+                    {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = (profile.value?.name?.substring(0, 1)
+                                        ?.uppercase()) + history.value[0].name.substring(1)
+                                        .lowercase(),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold
                                 )
-                            Text(
-                                text = profile.value?.rate.toString() + "Rs",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Column {
-                            val simpleDateFormat=SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                            val dateCreated=simpleDateFormat.format(profile.value?.dateCreated)
-                            val dateUpdated=simpleDateFormat.format(profile.value?.dateUpdated)
-                            Text(text = "Created on : $dateCreated", color = subContentColor)
-                            Text(text = "Last updated on $dateUpdated", color = subContentColor)
-                        }
+                                Text(
+                                    text = profile.value?.rate.toString() + "Rs",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            Column {
+                                val simpleDateFormat =
+                                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                val dateCreated =
+                                    simpleDateFormat.format(profile.value?.dateCreated)
+                                val dateUpdated =
+                                    simpleDateFormat.format(profile.value?.dateUpdated)
+                                Text(text = "Created on : $dateCreated", color = subContentColor)
+                                Text(text = "Last updated on $dateUpdated", color = subContentColor)
+                            }
 
+                        }
                     }
-                }
-                }
-                Row (modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp), horizontalArrangement =Arrangement.SpaceBetween){
-                    Text(text ="Rate", fontSize = 20.sp)
-                    Text(text = "Date", fontSize = 20.sp)
-                }
-                LazyColumn (modifier = Modifier.fillMaxWidth()){
-                    items(history.value){item->
-
-                        val simpleDate=SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                        val date=simpleDate.format(item.Date)
-                        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement =Arrangement.SpaceBetween){
-                            Text(text = item.tempAmount.toString())
-                            Text(text = date)
-                        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Rate", fontSize = 20.sp)
+                        Text(text = "Date", fontSize = 20.sp)
                     }
                 }
 
-        }
+                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                        items(history.value) { item ->
 
-
+                            val simpleDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            val date = simpleDate.format(item.Date)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = item.tempAmount.toString())
+                                Text(text = date)
+                            }
+                        }
+                    }
+            }
         }
     }
-    }
+}
 @Serializable
 data class ScreenC(
     val id:Long

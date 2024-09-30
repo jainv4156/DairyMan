@@ -24,7 +24,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dairyman.DairyViewModel
+import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.R
 import com.example.dairyman.ui.theme.WarningDark
 import com.example.dairyman.ui.theme.WarningLight

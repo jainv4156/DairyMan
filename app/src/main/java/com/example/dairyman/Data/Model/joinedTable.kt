@@ -1,4 +1,4 @@
-package com.example.dairyman.Data
+package com.example.dairyman.Data.Model
 
 data class JoinedResult(
     val name: String,

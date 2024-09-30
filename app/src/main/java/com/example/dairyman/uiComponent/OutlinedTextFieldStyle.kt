@@ -16,7 +16,9 @@ import com.example.dairyman.R
 fun OutlinedTextFieldStyle(
     value:String,
     onValueChange:(String)-> Unit,
-    title:String){
+    title:String,
+    keyboardOptions:KeyboardType= KeyboardType.Decimal
+){
     val colorOnThemeBase=  if(isSystemInDarkTheme()) colorResource(R.color.white) else colorResource(
         R.color.black)
 
@@ -25,14 +27,13 @@ fun OutlinedTextFieldStyle(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = if(title=="name") KeyboardType.Text else KeyboardType.Decimal),
+        keyboardOptions = KeyboardOptions(keyboardType =keyboardOptions),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorOnThemeBase,
             unfocusedBorderColor = colorOnThemeBase,
             focusedLabelColor = colorOnThemeBase,
             unfocusedLabelColor = colorOnThemeBase,
             cursorColor = colorOnThemeBase
-
         )
     )
 

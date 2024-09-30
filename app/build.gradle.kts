@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -64,6 +65,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.com.google.firebase.firebase.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -77,5 +79,21 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt("androidx.room:room-compiler:$room")
+
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.android.compiler)
+    implementation (libs.androidx.hilt.lifecycle.viewmodel)
+    kapt (libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
+
+    // message otp auth
+    implementation (libs.firebase.auth.ktx)
+    implementation (libs.play.services.auth.v2041)
+    implementation(libs.firebase.firestore)
+
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.lifecycle.runtime.compose)
+    implementation (libs.androidx.navigation.compose.v253)
+    implementation (libs.coil.compose)
 
 }

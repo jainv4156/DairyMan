@@ -14,7 +14,9 @@ data class HistoryData(
     @ColumnInfo(name="tempAmount")
     val tempAmount:Float=0f,
     @ColumnInfo(name ="Date")
-    val date: String,
+    val date: Long=System.currentTimeMillis(),
     @ColumnInfo(name = "dataId")
     val dataId:Long=0L,
+    @ColumnInfo(name = "isSynced")
+    val isSynced:Boolean=false
 )

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.viewmodel.DairyViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -32,7 +33,9 @@ import java.util.Locale
 
 @Composable
 fun DairyHistoryVIew(id: Long,navController: NavController) {
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = { TopAppBarView(title = "History", onBackNavClicked = { navController.navigate(ScreenA) }) }) {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = { TopAppBarView(title = "History", onBackNavClicked = { navController.navigate(
+        ScreenA
+    ) }) }) {
         val history= DairyViewModel().getHistoryById(id).collectAsState(initial = listOf())
         val profile= DairyViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
         val subContentColor=if(isSystemInDarkTheme()) LightGray else DarkGray

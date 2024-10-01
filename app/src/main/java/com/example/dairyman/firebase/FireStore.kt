@@ -1,26 +1,24 @@
 package com.example.dairyman.firebase
 
-import android.util.Log
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class FireStoreClass {
     private val mFireStoreDb = FirebaseFirestore.getInstance()
 
     fun addCustomerDairyDataToFireStore(
 
-        customersInfo: MutableList<DairyData>
+        customersInfo: List<DairyData>
     ){
          val batch=mFireStoreDb.batch()
 
         for(i in customersInfo){
-            batch.set(mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i)
+            batch.set(mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i.copy(isSynced = true))
         }
-        batch.commit().addOnSuccessListener {
-            Log.d("User","Sucess")
-        }
+        batch.commit()
     }
 
     fun updateDiaryDataToFireStore(diaryDataList: List<DairyData>) {
@@ -36,29 +34,21 @@ class FireStoreClass {
             updates["dateUpdated"] = diaryData.dateUpdated
             batch.update(docRef, updates)
         }
-
         batch.commit()
-            .addOnSuccessListener {
-                Log.d("Firestore", "Diary data updated successfully")
-            }
-            .addOnFailureListener { e ->
-                Log.w("Firestore", "Error updating diary data", e)
-            }
     }
 
     private fun getCurrentUserMail(): String {
         return FirebaseAuth.getInstance().currentUser?.email.toString()
     }
 
-    fun getCustomerDairyDataFromFireStore():MutableList<DairyData> {
-        val data: MutableList<DairyData> = mutableListOf()
-         mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").get()
-        .addOnSuccessListener {
-            for(i in it.documents){
-                data.add(i.toObject(DairyData::class.java)!!)
-            }
+    suspend fun getCustomerDairyDataFromFireStore():MutableList<DairyData> {
+        val data = mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").get()
+             .await()
+        val list:MutableList<DairyData> = mutableListOf()
+        for(i in data.documents){
+            list.add(i.toObject(DairyData::class.java)!!)
         }
-        return data
+        return list
     }
 
 
@@ -69,23 +59,17 @@ class FireStoreClass {
         val batch=mFireStoreDb.batch()
 
         for(i in customersHistory){
-            batch.set(mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i)
+            batch.set(mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i.copy(isSynced = true))
         }
-        batch.commit().addOnSuccessListener {
-            Log.d("User","Sucess")
-        }
+        batch.commit()
     }
 
-
-
-    fun getCustomerHistoryDataFromFireStore():MutableList<HistoryData> {
-        val data: MutableList<HistoryData> = mutableListOf()
-        mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").get()
-            .addOnSuccessListener {
-                for(i in it.documents){
-                    data.add(i.toObject(HistoryData::class.java)!!)
-                }
-            }
-        return data
+     suspend fun getCustomerHistoryDataFromFireStore():MutableList<HistoryData> {
+        val data= mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").get().await()
+         val list:MutableList<HistoryData> = mutableListOf()
+         for(i in data.documents){
+             list.add(i.toObject(HistoryData::class.java)!!)
+         }
+        return list
     }
 }

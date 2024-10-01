@@ -1,4 +1,4 @@
-package com.example.dairyman.uiComponent
+package com.example.dairyman.uiComponent.HomeScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.dairyman.uiComponent.OutlinedTextFieldStyle
 import com.example.dairyman.viewmodel.DairyViewModel
 
 @Composable
@@ -31,8 +32,10 @@ fun ChangeAmountScreen(viewModel: DairyViewModel){
         contentAlignment = Alignment.Center){
 
         Column (modifier = Modifier
-            .align(Alignment.Center).clip(RoundedCornerShape(8.dp))
-            .background(if(isSystemInDarkTheme()) Color.DarkGray else Color.LightGray).padding(32.dp,16.dp),
+            .align(Alignment.Center)
+            .clip(RoundedCornerShape(8.dp))
+            .background(if(isSystemInDarkTheme()) Color.DarkGray else Color.LightGray)
+            .padding(32.dp,16.dp),
             horizontalAlignment = Alignment.CenterHorizontally){
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -43,7 +46,7 @@ fun ChangeAmountScreen(viewModel: DairyViewModel){
 
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround) {
-                Button(onClick = { viewModel.setIsSetTempAmountViewActive(false) }) {
+                Button(onClick = { viewModel.disableSetTempAmountView() }) {
                     Text(text = "Cancel")
                 }
                 Button(onClick = {

@@ -1,17 +1,13 @@
-package com.example.dairyman.uiComponent
+package com.example.dairyman.uiComponent.HomeScreen
 
-import android.service.autofill.UserData
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,24 +17,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -51,92 +41,101 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
+import com.example.dairyman.uiComponent.AlertDialogBoxView
+import com.example.dairyman.uiComponent.ScreenB
+import com.example.dairyman.uiComponent.ScreenC
+import com.example.dairyman.uiComponent.SignInAlert
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 @Composable
-fun StartingView(
+fun HomeView(
     navController: NavController, viewModel: DairyViewModel,
     userData: userDataModels?,
     onSignOut: () -> Unit) {
-
-    val isActionButtonExtended = remember {
-        mutableStateOf(false)
-    }
-
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(color = Background),
         floatingActionButton = {
-            if (viewModel.getIsEEditDeleteButtonEnabled() == -1L) FloatingActionButtonView(
-                isActionButtonExtended = isActionButtonExtended,
+            if (viewModel.getIsEEditDeleteButtonEnabled() == -1L && !viewModel.getIsSearchActive()) FloatingActionButtonView(
                 viewModel = viewModel,
-                toggleActinButton = {
-                    Log.d("fliotingactionbutton",isActionButtonExtended.value.toString())
-                    isActionButtonExtended.value = !isActionButtonExtended.value
-                },
                 navController = navController
             )
-        }, topBar = { TopAppBarView(title = "Dairyman") }
+        }, topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel) }
     ) {
-
-
+        if (viewModel.getIsEEditDeleteButtonEnabled()!=-1L) {
+            BlurredBackground(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable { viewModel.deselectMoreOption() }
+                .zIndex(0f)
+            )
+        }
         Box(
             modifier = Modifier
                 .padding(8.dp)
+                .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() != -1L) {
+                    viewModel.deselectMoreOption()
+                }
 
         ) {
-            val dairyList = viewModel.getAllDairyData.collectAsState(initial = listOf())
+            val customersList = viewModel.getCustomersList().collectAsState(initial = listOf()).value
+            LaunchedEffect(key1 = viewModel.getSearchQuery()) {
+                runBlocking {  viewModel.getSearchFilteredList()}
+            }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it)
+                    .zIndex(1f)
             ) {
-                items(dairyList.value) { item ->
+                items(customersList) { item ->
                     Spacer(modifier = Modifier.height(16.dp))
                     ShowDataView(item, navController, viewModel)
                 }
             }
         }
-        if (isActionButtonExtended.value) {
+        if (viewModel.isActionButtonExtended.value) {
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
-                .blur(radius = 50.dp)
-                .clickable { isActionButtonExtended.value = false }
+                .clickable { viewModel.isActionButtonExtended.value = false }
             )
         }
-        if (viewModel.getIsBlurredBackgroundActive()) {
-            BlurredBackground(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
-                .blur(radius = 50.dp)
-                .clickable { Log.d("hellow", "silpa") }
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        viewModel.deselectMoreOption()
-                    }
-                }
-            )
-        }
+
     }
+
     if (viewModel.getIsSetTempAmountViewActive()) {
+        BlurredBackground(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable { viewModel.disableSetTempAmountView() }
+        )
         ChangeAmountScreen(viewModel)
     }
     if (viewModel.getIsAlertDialogBox().value) {
         AlertDialogBoxView(viewModel)
     }
+    if(viewModel.getSignInAlertBox().value){
+        SignInAlert(viewModel,navController)
+    }
 }
 @Composable
 fun ShowDataView(item: DairyData, navController: NavController, viewModel: DairyViewModel) {
     Box(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()){
+        .fillMaxSize()
+        ){
         Column(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .clip(RoundedCornerShape(10.dp))
             .background(color = Primary)
             .padding(16.dp)
-            .clickable { navController.navigate(ScreenC(id = item.id)) }
+            .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() == -1L) {
+                navController.navigate(
+                    ScreenC(id = item.id)
+                )
+            }
+            .zIndex(0f)
         ) {
         Text(
             color = Color.White,
@@ -183,13 +182,11 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
         }
         if(viewModel.getIsEEditDeleteButtonEnabled() != -1L){
             BlurredBackground(modifier = Modifier
+                .fillMaxSize()
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.Black.copy(alpha = 0.5f))
-                .blur(radius = 50.dp)
                 .height(88.dp)
-                .pointerInput(Unit) { detectTapGestures { viewModel.deselectMoreOption() } }
                 .clickable { viewModel.deselectMoreOption() }
-//                .zIndex(1f)
             )
         }
         if(viewModel.getIsEEditDeleteButtonEnabled()==item.id){
@@ -206,9 +203,12 @@ fun EditDeleteButtons(
     item: DairyData,
     viewModel: DairyViewModel
 ){
-    Column (horizontalAlignment =Alignment.End ,modifier = Modifier
-        .fillMaxWidth()
-//        .zIndex(1f)
+    Column (horizontalAlignment =Alignment.End ,
+        modifier = Modifier
+            .fillMaxWidth()
+            .zIndex(1f)
+
+
     ){
     Column (modifier = Modifier
         .padding(0.dp, 24.dp, 34.dp, 0.dp)
@@ -231,7 +231,7 @@ fun EditDeleteButtons(
                 navController.navigate(ScreenB(item.id))
             }
             ){
-            Text(text = "edit")
+            Text(fontWeight =FontWeight.Medium,text = "edit")
         }
         Spacer(modifier = Modifier.height(12.dp))
         Box(modifier = Modifier
@@ -249,7 +249,7 @@ fun EditDeleteButtons(
 //                viewModel.deleteDataById(item)
             }
         ) {
-            Text(text = "delete")
+            Text(fontWeight = FontWeight.Medium,text = "delete")
         }
     }
     }

@@ -23,5 +23,7 @@ data class DairyData(
     @ColumnInfo(name = "DateUpdated")
     val dateUpdated:Long=System.currentTimeMillis(),
     @ColumnInfo(name = "dayForTempAmount")
-    val dayForTempAmount:Int=0
+    val dayForTempAmount:Int=0,
+    @ColumnInfo(name = "isSynced")
+    val isSynced:Boolean=false
 )

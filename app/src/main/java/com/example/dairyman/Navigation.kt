@@ -23,10 +23,10 @@ import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
 import com.example.dairyman.uiComponent.DairyHistoryVIew
 import com.example.dairyman.uiComponent.OtpAuthentication.ScreenD
 import com.example.dairyman.uiComponent.OtpAuthentication.SignInScreen
-import com.example.dairyman.uiComponent.ScreenA
+import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.uiComponent.ScreenC
-import com.example.dairyman.uiComponent.StartingView
+import com.example.dairyman.uiComponent.HomeScreen.HomeView
 import com.example.dairyman.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 
@@ -96,7 +96,7 @@ navController: NavHostController=rememberNavController()
         composable<ScreenA>{
             val scope=rememberCoroutineScope()
 
-            StartingView(navController, viewModel = DairyViewModel(),
+            HomeView(navController, viewModel = DairyViewModel(),
                 userData = googleAuthUiClient.getSignInUser(),
                 onSignOut = {
                     scope.launch {

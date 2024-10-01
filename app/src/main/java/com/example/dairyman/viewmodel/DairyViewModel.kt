@@ -1,22 +1,25 @@
 package com.example.dairyman.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
-import com.example.dairyman.Data.DatabaseDao
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
 import com.example.dairyman.Data.Model.JoinedResult
 import com.example.dairyman.firebase.FireStoreClass
-import com.google.api.ResourceDescriptor.History
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -25,11 +28,48 @@ class DairyViewModel:ViewModel(){
     private var tempAmount= mutableStateOf("0")
     private var idTempAmount= 0L
     private val isAlertDialogBox= mutableStateOf(false)
-    lateinit var getAllDairyData: Flow<List<DairyData>>
+    private  var customersList: MutableStateFlow<List<DairyData>> = MutableStateFlow(listOf())
+    private lateinit var customerListFromDatabase: Flow<List<DairyData>>
     private val databaseDao= DairyApp.db.DatabaseDao()
     private val isSetTempAmountViewActive= mutableStateOf(false)
     private val isBlurredBackgroundActive= mutableStateOf(false)
     private val isEditDeleteButtonEnabled= mutableLongStateOf(-1L)
+    private var searchQuery =  mutableStateOf("")
+    private val signInAlertBox= mutableStateOf(false)
+    private val isSearchActive= mutableStateOf(false)
+    val isActionButtonExtended = mutableStateOf(false)
+
+    fun getIsSearchActive():Boolean{
+        return isSearchActive.value
+    }
+    fun enableSearch(){
+        isSearchActive.value=true
+    }
+    fun disableSearch() {
+        isSearchActive.value = false
+    }
+
+    fun getSearchQuery(): String{
+        return searchQuery.value
+    }
+    fun setSearchQuery(value:String){
+        searchQuery.value=value
+    }
+    fun getIsActionButtonExtended():MutableState<Boolean>{
+        return isActionButtonExtended
+
+    }
+    fun setIsActionButtonExtended(value:Boolean){
+        isActionButtonExtended.value=value
+    }
+
+
+    fun getSignInAlertBox():MutableState<Boolean>{
+        return signInAlertBox
+    }
+    fun setSignInAlertBox(value:Boolean){
+        signInAlertBox.value=value
+    }
 
     private fun setIsEditDeleteButtonEnabled(value:Long){
         isEditDeleteButtonEnabled.longValue=value
@@ -41,16 +81,14 @@ class DairyViewModel:ViewModel(){
     private fun setIsBlurredBackgroundActive(value:Boolean){
         isBlurredBackgroundActive.value=value
     }
-    fun getIsBlurredBackgroundActive():Boolean{
-        return isBlurredBackgroundActive.value
-    }
+
     fun setIdTempAmount(id:Long){
         idTempAmount=id
     }
     fun getIsSetTempAmountViewActive():Boolean{
         return isSetTempAmountViewActive.value
     }
-    fun setIsSetTempAmountViewActive(value:Boolean){
+    private fun setIsSetTempAmountViewActive(value:Boolean){
         isSetTempAmountViewActive.value=value
     }
     fun getTempAmount(): String {
@@ -75,7 +113,9 @@ class DairyViewModel:ViewModel(){
 
     init {
             viewModelScope.launch (IO){
-                getAllDairyData= databaseDao.loadAllDairyData()
+                customerListFromDatabase = databaseDao.loadAllDairyData()
+                databaseDao.loadAllDairyData().collect{list->
+                customersList.value=list}
             }
     }
 
@@ -106,7 +146,7 @@ class DairyViewModel:ViewModel(){
                     databaseDao.upsertDairyData(it.copy(dayForTempAmount = 0,tempAmount = it.amount))
                 }
                 val child= HistoryData(
-                    amount = it.amount, tempAmount = it.tempAmount, date = SimpleDateFormat("yyyy/mm/dd", Locale.getDefault()).format(System.currentTimeMillis())
+                    amount = it.amount, tempAmount = it.tempAmount, date = System.currentTimeMillis()
                     , dataId = it.id)
                 historyDataList+=child
             }
@@ -139,7 +179,9 @@ class DairyViewModel:ViewModel(){
             }
         }
         setIsSetTempAmountViewActive(true)
-        setIsBlurredBackgroundActive(true)
+    }
+    fun disableSetTempAmountView(){
+        setIsSetTempAmountViewActive(false)
     }
 
     fun updateTempAmountView() {
@@ -159,36 +201,57 @@ class DairyViewModel:ViewModel(){
         setIsBlurredBackgroundActive(false)
     }
     suspend fun syncDataWithCloud() {
-        syncDairyDataWithCloud()
-        syncHistoryDataWithCloud()
-
+        if(FirebaseAuth.getInstance().currentUser!=null){
+            syncDairyDataWithCloud()
+            syncHistoryDataWithCloud()
+            setIsActionButtonExtended(false)
+        }
+        else{
+            signInAlertBox.value=true
+        }
     }
 
     private suspend fun syncDairyDataWithCloud(){
-        val fireBaseDairyData:List<DairyData> = FireStoreClass().getCustomerDairyDataFromFireStore()
-        val dairyDataList:List<DairyData> = runBlocking { getAllDairyData.first() }
+        val fireBaseDairyData:List<DairyData> =  FireStoreClass().getCustomerDairyDataFromFireStore()
+        val dairyDataList:List<DairyData> = customersList.first()
         val listToBeAddInDairyData= mutableListOf<DairyData>()
         val listToUpdateFireBaseDairyData= mutableListOf<DairyData>()
+//        val listToResolveCollision= mutableListOf<DairyData>()
+
         for (i in fireBaseDairyData){
+
             if ( dairyDataList.find {it.id ==i.id}==null){
                 listToBeAddInDairyData.add(i)
             }
             else{
                 val currentDairyData=dairyDataList.find { it.id==i.id }
-                if(currentDairyData!=i){
-                    listToUpdateFireBaseDairyData.add(currentDairyData!!)
-                }
+//                if(currentDairyData!!.isSynced){
+                    if(currentDairyData!=i){
+                        listToUpdateFireBaseDairyData.add(currentDairyData!!)
+                    }
+//                }
+//                else{
+//                    listToResolveCollision.add(currentDairyData)
+//                }
                 dairyDataList.minus(currentDairyData)
+
             }
+            Log.d("2",listToBeAddInDairyData.toString())
         }
+        Log.d("3",listToBeAddInDairyData.toString())
         viewModelScope.launch(IO){
-            for( i in dairyDataList) {
+            for( i in listToBeAddInDairyData) {
                 databaseDao.upsertDairyData(i)
+                Log.d("3",listToBeAddInDairyData.toString())
+
+            }
+            for(i in dairyDataList){
+                databaseDao.upsertDairyData(i.copy(isSynced = true))
             }
         }
         viewModelScope.launch (IO){
-            if(listToBeAddInDairyData.isNotEmpty()){
-                FireStoreClass().addCustomerDairyDataToFireStore(listToBeAddInDairyData)
+            if(dairyDataList.isNotEmpty()){
+                FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
             }
             if(listToUpdateFireBaseDairyData.isNotEmpty()) {
                 FireStoreClass().updateDiaryDataToFireStore(listToUpdateFireBaseDairyData)
@@ -209,14 +272,26 @@ class DairyViewModel:ViewModel(){
             }
         }
         viewModelScope.launch(IO){
-                databaseDao.insertHistory(historyDataList)
-        }
-        viewModelScope.launch (IO){
-            if(listToBeAddInHistoryData.isNotEmpty()){
-                FireStoreClass().addCustomerHistoryDataToFireStore(listToBeAddInHistoryData)
+                databaseDao.insertHistory(listToBeAddInHistoryData)
+            for(i in historyDataList){
+                databaseDao.updateHistory(i.copy(isSynced = true))
             }
         }
+        viewModelScope.launch (IO){
+            if(historyDataList.isNotEmpty()){
+                FireStoreClass().addCustomerHistoryDataToFireStore(historyDataList)
+            }
+        }
+    }
 
+    fun getCustomersList(): Flow<List<DairyData>> {
+        return customersList
+    }
+
+    suspend fun getSearchFilteredList(){
+          customersList.value = customerListFromDatabase.first().filter {item->
+              item.name.contains(searchQuery.value,ignoreCase = false)
+          }
     }
 
 

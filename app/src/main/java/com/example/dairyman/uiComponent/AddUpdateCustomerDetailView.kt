@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import kotlinx.serialization.Serializable
 
@@ -33,7 +34,9 @@ fun AddUpdateCustomerDetailView(
         viewModel.preFillUpdateInput(id=id)
     }
 
-    Scaffold(topBar = { TopAppBarView(title = if(id==0L) "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(ScreenA)}) },modifier = Modifier
+    Scaffold(topBar = { TopAppBarView(title = if(id==0L) "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(
+        ScreenA
+    )}) },modifier = Modifier
         .fillMaxSize()
     ) {padding->
         Box(modifier = Modifier

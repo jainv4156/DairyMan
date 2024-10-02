@@ -27,7 +27,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
         if(id==0L){
             dairyData= DairyData(
                 name = _addUpdateCustomerDetailData.name,
-                rate = _addUpdateCustomerDetailData.rate.toInt(),
+                rate = _addUpdateCustomerDetailData.rate.toFloat().toInt(),
                 amount = _addUpdateCustomerDetailData.amount.toFloat(),
                 pendingAmount = _addUpdateCustomerDetailData.pendingAmount.toInt(),
                 tempAmount = _addUpdateCustomerDetailData.amount.toFloat(),

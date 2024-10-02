@@ -46,13 +46,15 @@ fun AddUpdateCustomerDetailView(
                 OutlinedTextFieldStyle(
                     viewModel.fetchAddUpdateCustomerDetailData().name,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(name = it)) },
-                    title = "Name",KeyboardType.Text
+                    title = "Name",
+                    keyboardOptions = KeyboardType.Text
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextFieldStyle(
                     value = viewModel.fetchAddUpdateCustomerDetailData().rate,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(rate = it)) },
-                    title = "Rate"
+                    title = "Rate",
+                    keyboardOptions = KeyboardType.Number
                 )
                 Spacer(modifier = Modifier
                     .height(24.dp)
@@ -64,7 +66,7 @@ fun AddUpdateCustomerDetailView(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextFieldStyle(
-                    value =viewModel.fetchAddUpdateCustomerDetailData().pendingAmount.toString(),
+                    value =viewModel.fetchAddUpdateCustomerDetailData().pendingAmount,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(pendingAmount = it)) },
                     title = "Previous Balance"
                 )
@@ -86,7 +88,7 @@ fun AddUpdateCustomerDetailView(
     }
 }
 private fun addOrUpdateButtonOnClick(navController: NavController, viewModel: AddUpdateCustomerDetailViewModel, id: Long, context: Context) {
-    if(viewModel.fetchAddUpdateCustomerDetailData().name==""||viewModel.fetchAddUpdateCustomerDetailData()  .rate==""||viewModel.fetchAddUpdateCustomerDetailData().amount==""){
+    if(viewModel.fetchAddUpdateCustomerDetailData().name==""||viewModel.fetchAddUpdateCustomerDetailData().rate==""||viewModel.fetchAddUpdateCustomerDetailData().amount==""){
         Toast.makeText(context,"Please Fill All The Fields",Toast.LENGTH_SHORT).show()
     }else{
         viewModel.addUpdateDairyData(id=id)

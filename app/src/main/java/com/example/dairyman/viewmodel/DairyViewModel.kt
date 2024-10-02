@@ -1,11 +1,12 @@
 package com.example.dairyman.viewmodel
 
 import android.util.Log
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
@@ -17,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -37,6 +37,7 @@ class DairyViewModel:ViewModel(){
     private var searchQuery =  mutableStateOf("")
     private val signInAlertBox= mutableStateOf(false)
     private val isSearchActive= mutableStateOf(false)
+    var drawerState=DrawerState(initialValue = DrawerValue.Closed)
     val isActionButtonExtended = mutableStateOf(false)
 
     fun getIsSearchActive():Boolean{
@@ -47,6 +48,7 @@ class DairyViewModel:ViewModel(){
     }
     fun disableSearch() {
         isSearchActive.value = false
+        setSearchQuery("")
     }
 
     fun getSearchQuery(): String{
@@ -154,12 +156,12 @@ class DairyViewModel:ViewModel(){
             databaseDao.updateTodayAmount()
         }
     }
-    fun deleteDataById(dairyData: DairyData){
-        viewModelScope.launch(IO){
-            databaseDao.deleteHistoryData(dairyData.id)
-            databaseDao.deleteDairyData(dairyData)
-        }
-    }
+//    fun deleteDataById(dairyData: DairyData){
+//        viewModelScope.launch(IO){
+//            databaseDao.deleteHistoryData(dairyData.id)
+//            databaseDao.deleteDairyData(dairyData)
+//        }
+//    }
     fun getHistoryById(id:Long):Flow<List<JoinedResult>>{
         return databaseDao.getHistoryById(id = id)
     }

@@ -1,6 +1,5 @@
 package com.example.dairyman.uiComponent.HomeScreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +16,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,9 +55,20 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun HomeView(
-    navController: NavController, viewModel: DairyViewModel,
+    navController: NavController,
+    viewModel: DairyViewModel,
     userData: userDataModels?,
-    onSignOut: () -> Unit) {
+    onSignOut: () -> Unit
+){
+
+    ModalNavigationDrawer(
+        drawerContent = {
+            NavigationDrawerView()
+        },
+        drawerState = viewModel.drawerState
+
+    ) {
+
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(color = Background),
@@ -61,8 +77,11 @@ fun HomeView(
                 viewModel = viewModel,
                 navController = navController
             )
-        }, topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel) }
+        },
+        topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel
+        ) },
     ) {
+
         if (viewModel.getIsEEditDeleteButtonEnabled()!=-1L) {
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
@@ -71,6 +90,7 @@ fun HomeView(
                 .zIndex(0f)
             )
         }
+        DrawerDefaults
         Box(
             modifier = Modifier
                 .padding(8.dp)
@@ -104,6 +124,8 @@ fun HomeView(
         }
 
     }
+    }
+
 
     if (viewModel.getIsSetTempAmountViewActive()) {
         BlurredBackground(modifier = Modifier
@@ -190,7 +212,9 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
             )
         }
         if(viewModel.getIsEEditDeleteButtonEnabled()==item.id){
-            EditDeleteButtons(viewModel=viewModel, navController = navController, item = item)
+            EditDeleteButtons(
+//                viewModel=viewModel,
+                navController = navController, item = item)
         }
         }
 }
@@ -201,7 +225,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
 fun EditDeleteButtons(
     navController: NavController,
     item: DairyData,
-    viewModel: DairyViewModel
+//    viewModel: DairyViewModel
 ){
     Column (horizontalAlignment =Alignment.End ,
         modifier = Modifier

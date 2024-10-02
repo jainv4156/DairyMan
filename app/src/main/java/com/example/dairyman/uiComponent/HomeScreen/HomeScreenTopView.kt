@@ -1,7 +1,6 @@
 package com.example.dairyman.uiComponent.HomeScreen
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,15 +8,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -25,11 +29,13 @@ import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.viewmodel.DairyViewModel
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
+    val scope= rememberCoroutineScope()
     val navigationIcon: @Composable () ->Unit = {
         if(viewModel.getIsSearchActive()){
             IconButton(onClick = {viewModel.disableSearch() }) {
@@ -39,7 +45,17 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
                     contentDescription = null)
             }
         }
+        else{
+            IconButton(
+                onClick = {scope.launch {  viewModel.drawerState.open()}}) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    tint = Background,
+                    contentDescription = null)
+            }
+        }
     }
+
     TopAppBar(
         modifier = Modifier.clip(RoundedCornerShape(0.dp,0.dp,16.dp,16.dp)),
         title = {
@@ -79,4 +95,5 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
                         contentDescription = null)
                 } }}
     )
+
 }

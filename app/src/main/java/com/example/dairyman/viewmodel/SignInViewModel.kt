@@ -5,7 +5,6 @@ import com.example.dairyman.Data.Model.userdataModel.SignInResult
 import com.example.dairyman.Data.Model.userdataModel.SignInState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 
 class SignInViewModel:ViewModel() {

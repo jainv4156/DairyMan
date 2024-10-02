@@ -2,8 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
+//    alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+}
+ksp {
+    arg("incremental", "false")
 }
 
 android {
@@ -25,11 +29,17 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isDebuggable = true
         }
     }
     compileOptions {
@@ -51,6 +61,10 @@ android {
         }
     }
 }
+//composeCompiler {
+//    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+//}
 
 dependencies {
 
@@ -62,10 +76,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material3)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.com.google.firebase.firebase.auth)
+    implementation(libs.play.services.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -74,26 +90,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    val room = "2.6.1"
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    kapt("androidx.room:room-compiler:$room")
-
-    implementation (libs.hilt.android)
-    kapt (libs.hilt.android.compiler)
-    implementation (libs.androidx.hilt.lifecycle.viewmodel)
-    kapt (libs.androidx.hilt.compiler)
-    implementation (libs.androidx.hilt.navigation.compose)
+    ksp(libs.androidx.room.compiler)
 
     // message otp auth
     implementation (libs.firebase.auth.ktx)
-    implementation (libs.play.services.auth.v2041)
     implementation(libs.firebase.firestore)
 
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.lifecycle.runtime.compose)
-    implementation (libs.androidx.navigation.compose.v253)
     implementation (libs.coil.compose)
 
 }

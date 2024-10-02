@@ -2,9 +2,6 @@ package com.example.dairyman.Data.Model.firebaseModels
 
 import android.os.Parcel
 import android.os.Parcelable
-import android.provider.ContactsContract.CommonDataKinds.Email
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
 
 data class FirebaseCustomerModel(
     val id:Long=0L,
@@ -23,8 +20,7 @@ data class FirebaseCustomerModel(
         parcel.readInt(),
         parcel.readLong(),
         parcel.readLong(),
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)

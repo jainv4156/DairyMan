@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.ModalNavigationDrawer
 import com.example.dairyman.Presentation.Sign_in.GoogleAuthUiClint
 import com.example.dairyman.ui.theme.DairyManTheme
 import com.google.android.gms.auth.api.identity.Identity
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DairyManTheme {
+
                     Navigation(googleAuthUiClient=googleAuthUiClient)
             }
         }

@@ -1,3 +1,1 @@
-this app is currenty in production so the ui/ux is not up to the mark and is in development
-also it is not install on playsrtore for now to accss its apk refer to this link 
-https://drive.google.com/file/d/1qCNpE6HXBCHjlcdITSF2e19U4aWNXlMz/view
+"This app is currently in production, so the UI/UX is still under development. It is not available on the Play Store at the moment. To access the APK, please refer to this link: Google Drive link https://drive.google.com/file/d/1qCNpE6HXBCHjlcdITSF2e19U4aWNXlMz/view?usp=drive_link

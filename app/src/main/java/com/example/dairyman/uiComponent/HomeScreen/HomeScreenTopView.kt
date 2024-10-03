@@ -8,34 +8,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
+import com.example.dairyman.uiComponent.ProfilePhoto
 import com.example.dairyman.viewmodel.DairyViewModel
-import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
-    val scope= rememberCoroutineScope()
+fun HomeScreenTopView(viewModel: DairyViewModel, title:String, navController: NavController,
+){
     val navigationIcon: @Composable () ->Unit = {
         if(viewModel.getIsSearchActive()){
             IconButton(onClick = {viewModel.disableSearch() }) {
@@ -45,19 +40,12 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
                     contentDescription = null)
             }
         }
-        else{
-            IconButton(
-                onClick = {scope.launch {  viewModel.drawerState.open()}}) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    tint = Background,
-                    contentDescription = null)
-            }
-        }
     }
+
 
     TopAppBar(
         modifier = Modifier.clip(RoundedCornerShape(0.dp,0.dp,16.dp,16.dp)),
+        navigationIcon = navigationIcon,
         title = {
             if(!viewModel.getIsSearchActive()) {
                 Text(
@@ -69,7 +57,6 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
             }
         },
 
-        navigationIcon = navigationIcon,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Primary
         ),
@@ -82,7 +69,9 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
                         viewModel.setSearchQuery(it)
                     },
                     label = { Text("Search") },
-                    modifier = Modifier.fillMaxWidth().weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
             }
             else{
@@ -93,7 +82,9 @@ fun HomeScreenTopView(viewModel: DairyViewModel,title:String){
                         imageVector = Icons.Default.Search,
                         tint = Accent,
                         contentDescription = null)
-                } }}
+                } }
+                ProfilePhoto(viewModel = viewModel, navController = navController)
+        }
     )
 
 }

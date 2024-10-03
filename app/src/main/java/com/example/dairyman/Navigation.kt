@@ -2,6 +2,7 @@ package com.example.dairyman
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -21,8 +22,8 @@ import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
 import com.example.dairyman.uiComponent.DairyHistoryVIew
-import com.example.dairyman.uiComponent.OtpAuthentication.ScreenD
-import com.example.dairyman.uiComponent.OtpAuthentication.SignInScreen
+import com.example.dairyman.uiComponent.ScreenD
+import com.example.dairyman.uiComponent.SignInScreen
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.uiComponent.ScreenC
@@ -57,22 +58,16 @@ navController: NavHostController=rememberNavController()
                             viewModel.onSignInResult(signInResult)
                         }
                     }
-                }
+                                    }
             )
-            LaunchedEffect(key1 = Unit) {
-                if(googleAuthUiClient.getSignInUser() != null) {
-                    navController.navigate(ScreenA)
-                }
-            }
             LaunchedEffect(key1 = state.isSignInSuccessful) {
+
                 if(state.isSignInSuccessful) {
                     Toast.makeText(
                         context,
                         "Sign in successful",
                         Toast.LENGTH_LONG
                     ).show()
-
-                    navController.navigate(ScreenA)
                     viewModel.resetState()
                 }
             }
@@ -83,21 +78,16 @@ navController: NavHostController=rememberNavController()
                     scope.launch {
                         val signInIntentSender  =googleAuthUiClient.signIn()
                         launcher.launch(
+
                             IntentSenderRequest.Builder(
                                 signInIntentSender ?: return@launch
                             ).build()
+
                         )
                     }
 
-                }
-            )
-        }
-
-        composable<ScreenA>{
-            val scope=rememberCoroutineScope()
-
-            HomeView(navController, viewModel = DairyViewModel(),
-                userData = googleAuthUiClient.getSignInUser(),
+                },
+                navController = navController,
                 onSignOut = {
                     scope.launch {
                         googleAuthUiClient.signOut()
@@ -106,10 +96,15 @@ navController: NavHostController=rememberNavController()
                             "Signed out",
                             Toast.LENGTH_LONG
                         ).show()
-
                         navController.navigate(ScreenD)
+
                     }
-                })
+                }
+
+            )
+        }
+        composable<ScreenA>{
+            HomeView(navController, viewModel = DairyViewModel())
         }
         composable<ScreenB> {
             val args=it.toRoute<ScreenB>()

@@ -30,7 +30,6 @@ import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.R
 import com.example.dairyman.ui.theme.WarningDark
 import com.example.dairyman.ui.theme.WarningLight
-import com.example.dairyman.uiComponent.OtpAuthentication.ScreenD
 
 @Composable
 fun SignInAlert( viewModel: DairyViewModel,navController: NavController) {

@@ -57,18 +57,7 @@ import kotlinx.serialization.Serializable
 fun HomeView(
     navController: NavController,
     viewModel: DairyViewModel,
-    userData: userDataModels?,
-    onSignOut: () -> Unit
 ){
-
-    ModalNavigationDrawer(
-        drawerContent = {
-            NavigationDrawerView()
-        },
-        drawerState = viewModel.drawerState
-
-    ) {
-
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(color = Background),
@@ -78,7 +67,7 @@ fun HomeView(
                 navController = navController
             )
         },
-        topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel
+        topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel, navController = navController
         ) },
     ) {
 
@@ -124,7 +113,7 @@ fun HomeView(
         }
 
     }
-    }
+
 
 
     if (viewModel.getIsSetTempAmountViewActive()) {

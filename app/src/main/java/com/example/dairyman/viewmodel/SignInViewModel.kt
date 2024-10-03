@@ -1,5 +1,6 @@
 package com.example.dairyman.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.dairyman.Data.Model.userdataModel.SignInResult
 import com.example.dairyman.Data.Model.userdataModel.SignInState
@@ -16,6 +17,8 @@ class SignInViewModel:ViewModel() {
             isSignInSuccessful = result.data!=null,
             signInError = result.errorMessage
         )
+        Log.d("vaibhav","clicked")
+
     }
 
     fun resetState(){

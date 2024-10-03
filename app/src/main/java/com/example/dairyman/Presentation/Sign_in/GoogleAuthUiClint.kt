@@ -3,6 +3,7 @@ package com.example.dairyman.Presentation.Sign_in
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Log
 import com.example.dairyman.Data.Model.userdataModel.SignInResult
 import com.example.dairyman.Data.Model.userdataModel.userDataModels
 import com.example.dairyman.R
@@ -37,6 +38,8 @@ class GoogleAuthUiClint(
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try{
+            Log.d("vaibhav","clicked")
+
             val user=auth.signInWithCredential(googleCredentials).await().user
             SignInResult(
                 data= user?.run {

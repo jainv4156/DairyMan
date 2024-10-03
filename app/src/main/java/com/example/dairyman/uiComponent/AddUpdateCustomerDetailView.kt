@@ -2,6 +2,8 @@ package com.example.dairyman.uiComponent
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,16 +11,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dairyman.ui.theme.Background
+import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import kotlinx.serialization.Serializable
@@ -70,18 +77,20 @@ fun AddUpdateCustomerDetailView(
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(pendingAmount = it)) },
                     title = "Previous Balance"
                 )
-            Button(onClick = {
-                addOrUpdateButtonOnClick(
+            Box(modifier = Modifier
+                .padding( 0.dp,24.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Primary)
+                .padding( 16.dp)
+                .clickable { addOrUpdateButtonOnClick(
                     navController,
                     id =id,
                     viewModel = viewModel,
                     context = context
-
-                )
-            },modifier = Modifier
-                .padding(top = 24.dp)
-                .fillMaxWidth()) {
-                Text(text = if (id == 0L) "Add Record" else "Update Record")
+                ) }
+                .fillMaxWidth(),
+                contentAlignment = Alignment.Center) {
+                Text(text = if (id == 0L) "Add Record" else "Update Record", color = Background, fontSize = 16.sp)
             }
         }
         }

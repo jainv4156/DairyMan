@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -17,12 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.dairyman.ui.theme.Background
-import com.example.dairyman.viewmodel.DairyViewModel
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 @Composable
-fun ProfilePhoto(viewModel: DairyViewModel, navController: NavController){
+fun ProfilePhoto( navController: NavController){
     if(FirebaseAuth.getInstance().currentUser?.photoUrl==null){
         IconButton(
             onClick = {navController.navigate(ScreenD)}) {

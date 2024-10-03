@@ -1,9 +1,5 @@
 package com.example.dairyman.viewmodel
 
-import android.util.Log
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,71 +23,61 @@ class DairyViewModel:ViewModel(){
     private var dayForTempAmount = mutableStateOf("1")
     private var tempAmount= mutableStateOf("0")
     private var idTempAmount= 0L
-    private val isAlertDialogBox= mutableStateOf(false)
     private  var customersList: MutableStateFlow<List<DairyData>> = MutableStateFlow(listOf())
     private lateinit var customerListFromDatabase: Flow<List<DairyData>>
     private val databaseDao= DairyApp.db.DatabaseDao()
-    private val isSetTempAmountViewActive= mutableStateOf(false)
-    private val isBlurredBackgroundActive= mutableStateOf(false)
-    private val isEditDeleteButtonEnabled= mutableLongStateOf(-1L)
     private var searchQuery =  mutableStateOf("")
-    private val signInAlertBox= mutableStateOf(false)
-    private val isSearchActive= mutableStateOf(false)
-    var drawerState=DrawerState(initialValue = DrawerValue.Closed)
+    private val mIsSearchActive= mutableStateOf(false)
+    private val mIsAlertDialogBox= mutableStateOf(false)
+    private val mIsSetTempAmountViewActive= mutableStateOf(false)
+    private val mIsBlurredBackgroundActive= mutableStateOf(false)
+    private val mIsEditDeleteButtonEnabled= mutableLongStateOf(-1L)
+    private val mSignInAlertBox= mutableStateOf(false)
     val isActionButtonExtended = mutableStateOf(false)
+    private val mIsFloatingButtonVisible= mutableStateOf(true)
+
+    fun getIsFloatingButtonVisible():Boolean{
+        return mIsFloatingButtonVisible.value
+    }
+    private fun mSetIsFloatingButtonVisible(value:Boolean){
+        mIsFloatingButtonVisible.value=value
+    }
 
     fun getIsSearchActive():Boolean{
-        return isSearchActive.value
+        return mIsSearchActive.value
     }
-    fun enableSearch(){
-        isSearchActive.value=true
-    }
-    fun disableSearch() {
-        isSearchActive.value = false
-        setSearchQuery("")
-    }
-
     fun getSearchQuery(): String{
         return searchQuery.value
     }
-    fun setSearchQuery(value:String){
-        searchQuery.value=value
-    }
-    fun getIsActionButtonExtended():MutableState<Boolean>{
-        return isActionButtonExtended
+
+
+    fun getIsActionButtonExtended():Boolean{
+        return isActionButtonExtended.value
 
     }
     fun setIsActionButtonExtended(value:Boolean){
         isActionButtonExtended.value=value
     }
-
-
-    fun getSignInAlertBox():MutableState<Boolean>{
-        return signInAlertBox
-    }
-    fun setSignInAlertBox(value:Boolean){
-        signInAlertBox.value=value
-    }
-
     private fun setIsEditDeleteButtonEnabled(value:Long){
-        isEditDeleteButtonEnabled.longValue=value
-    }
-    fun getIsEEditDeleteButtonEnabled():Long{
-        return isEditDeleteButtonEnabled.longValue
+        mIsEditDeleteButtonEnabled.longValue=value
     }
 
+    fun getIsEEditDeleteButtonEnabled():Long{
+        return mIsEditDeleteButtonEnabled.longValue
+    }
     private fun setIsBlurredBackgroundActive(value:Boolean){
-        isBlurredBackgroundActive.value=value
+        mIsBlurredBackgroundActive.value=value
     }
 
     fun setIdTempAmount(id:Long){
         idTempAmount=id
     }
+
     fun getIsSetTempAmountViewActive():Boolean{
-        return isSetTempAmountViewActive.value
+        return mIsSetTempAmountViewActive.value
     }
     private fun setIsSetTempAmountViewActive(value:Boolean){
-        isSetTempAmountViewActive.value=value
+        mIsSetTempAmountViewActive.value=value
     }
     fun getTempAmount(): String {
         return tempAmount.value
@@ -99,12 +85,31 @@ class DairyViewModel:ViewModel(){
     fun setTempAmount(value:String){
         tempAmount.value= value
     }
-
     fun getIsAlertDialogBox(): MutableState<Boolean> {
-        return isAlertDialogBox
+        return mIsAlertDialogBox
     }
+
     fun setAlertDialogBox(value:Boolean){
-        isAlertDialogBox.value=value
+        mIsAlertDialogBox.value=value
+    }
+    private fun enableAlertDialogBax(){
+        setIsActionButtonExtended(false)
+        mSetIsFloatingButtonVisible(false)
+    }
+    fun disableAlertDialogBox() {
+        setIsActionButtonExtended(false)
+        mSetIsFloatingButtonVisible(true)
+        setSignInAlertBox(false)
+        setAlertDialogBox(false)
+    }
+    fun enableSearch(){
+        mSetIsFloatingButtonVisible(false)
+        mIsSearchActive.value=true
+    }
+    fun disableSearch() {
+        mSetIsFloatingButtonVisible(true)
+        mIsSearchActive.value = false
+        setSearchQuery("")
     }
     fun getDayForTempAmount(): String {
         return dayForTempAmount.value
@@ -120,10 +125,11 @@ class DairyViewModel:ViewModel(){
                 customersList.value=list}
             }
     }
-
+    fun setSearchQuery(value:String){
+        searchQuery.value=value
+    }
      fun checkTodayUpdate() {
         val todayDate= SimpleDateFormat("yyyy/mm/dd", Locale.getDefault()).format(System.currentTimeMillis())
-
          viewModelScope.launch (IO){
             if(databaseDao.getHistoryCount(todayDate)==0){
                 updateTodayAmountButton()
@@ -180,28 +186,39 @@ class DairyViewModel:ViewModel(){
                 preFillSetTempAmountView(it)
             }
         }
+        mSetIsFloatingButtonVisible(false)
         setIsSetTempAmountViewActive(true)
     }
     fun disableSetTempAmountView(){
+        mSetIsFloatingButtonVisible(true)
         setIsSetTempAmountViewActive(false)
     }
 
-    fun updateTempAmountView() {
+    fun updateTempAmount() {
         viewModelScope.launch {
             databaseDao.upsertDairyData(databaseDao.getDairyDataById(idTempAmount).first().copy(tempAmount = tempAmount.value.toFloat(), dayForTempAmount =dayForTempAmount.value.toInt()))
         }
-        setIsSetTempAmountViewActive(false)
+        disableSetTempAmountView()
+    }
+    fun getSignInAlertBox():Boolean{
+        return mSignInAlertBox.value
+    }
+     private fun setSignInAlertBox(value:Boolean){
+        mSignInAlertBox.value=value
     }
 
-    fun selectMoreOption(id: Long) {
+    fun enableMoreOption(id: Long) {
+        mSetIsFloatingButtonVisible(false)
         setIsEditDeleteButtonEnabled(id)
         setIsBlurredBackgroundActive(true)
     }
 
-    fun deselectMoreOption(){
+    fun disableMoreOption(){
+        mSetIsFloatingButtonVisible(true )
         setIsEditDeleteButtonEnabled(-1L)
         setIsBlurredBackgroundActive(false)
     }
+
     suspend fun syncDataWithCloud() {
         if(FirebaseAuth.getInstance().currentUser!=null){
             syncDairyDataWithCloud()
@@ -209,7 +226,8 @@ class DairyViewModel:ViewModel(){
             setIsActionButtonExtended(false)
         }
         else{
-            signInAlertBox.value=true
+            setSignInAlertBox(true)
+            enableAlertDialogBax()
         }
     }
 
@@ -238,13 +256,10 @@ class DairyViewModel:ViewModel(){
                 dairyDataList.minus(currentDairyData)
 
             }
-            Log.d("2",listToBeAddInDairyData.toString())
         }
-        Log.d("3",listToBeAddInDairyData.toString())
         viewModelScope.launch(IO){
             for( i in listToBeAddInDairyData) {
                 databaseDao.upsertDairyData(i)
-                Log.d("3",listToBeAddInDairyData.toString())
 
             }
             for(i in dairyDataList){
@@ -295,6 +310,4 @@ class DairyViewModel:ViewModel(){
               item.name.contains(searchQuery.value,ignoreCase = false)
           }
     }
-
-
 }

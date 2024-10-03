@@ -14,7 +14,6 @@ import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -40,18 +39,19 @@ fun FloatingActionButtonView(
 ){
     Column ( horizontalAlignment = Alignment.End){
     if(viewModel.isActionButtonExtended.value){
-        ActionButton(viewModel,navController,toggleActinButton= { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended().value) })
+        ActionButton(viewModel,navController,toggleActinButton= { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended()) })
     }
     FloatingActionButton(
         containerColor= if (viewModel.isActionButtonExtended.value) Primary else  Secondary,
         elevation = FloatingActionButtonDefaults.elevation(10.dp ),
         contentColor = contentColorFor(containerColor),
-        onClick = { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended().value) },
+        onClick = { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended()) },
 
     ) {
         Icon(imageVector = Icons.Default.Add,contentDescription = null, tint = if (viewModel.isActionButtonExtended.value) Color.White else  Color.Black)
     }
     }
+
 
 }
 @Composable

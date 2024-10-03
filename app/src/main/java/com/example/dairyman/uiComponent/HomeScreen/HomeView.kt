@@ -16,15 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DrawerDefaults
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +34,6 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.Data.Model.userdataModel.userDataModels
 import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
@@ -49,7 +42,7 @@ import com.example.dairyman.ui.theme.Secondary
 import com.example.dairyman.uiComponent.AlertDialogBoxView
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.uiComponent.ScreenC
-import com.example.dairyman.uiComponent.SignInAlert
+import com.example.dairyman.uiComponent.ScreenD
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
@@ -62,7 +55,7 @@ fun HomeView(
         .fillMaxSize()
         .background(color = Background),
         floatingActionButton = {
-            if (viewModel.getIsEEditDeleteButtonEnabled() == -1L && !viewModel.getIsSearchActive()) FloatingActionButtonView(
+            if (viewModel.getIsFloatingButtonVisible()) FloatingActionButtonView(
                 viewModel = viewModel,
                 navController = navController
             )
@@ -75,18 +68,16 @@ fun HomeView(
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
-                .clickable { viewModel.deselectMoreOption() }
+                .clickable { viewModel.disableMoreOption() }
                 .zIndex(0f)
             )
         }
-        DrawerDefaults
         Box(
             modifier = Modifier
                 .padding(8.dp)
                 .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() != -1L) {
-                    viewModel.deselectMoreOption()
+                    viewModel.disableMoreOption()
                 }
-
         ) {
             val customersList = viewModel.getCustomersList().collectAsState(initial = listOf()).value
             LaunchedEffect(key1 = viewModel.getSearchQuery()) {
@@ -104,7 +95,7 @@ fun HomeView(
                 }
             }
         }
-        if (viewModel.isActionButtonExtended.value) {
+        if (viewModel.isActionButtonExtended.value ) {
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
@@ -113,9 +104,6 @@ fun HomeView(
         }
 
     }
-
-
-
     if (viewModel.getIsSetTempAmountViewActive()) {
         BlurredBackground(modifier = Modifier
             .fillMaxSize()
@@ -125,10 +113,26 @@ fun HomeView(
         ChangeAmountScreen(viewModel)
     }
     if (viewModel.getIsAlertDialogBox().value) {
-        AlertDialogBoxView(viewModel)
+        BlurredBackground(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable { viewModel.disableAlertDialogBox() }
+        )
+        AlertDialogBoxView(alertTitle = "You Have Added Today's Amount Do You Wish To Continue adding the Amount",viewModel) {
+            viewModel.updateTodayAmountButton()
+            viewModel.setAlertDialogBox(false)
+        }
     }
-    if(viewModel.getSignInAlertBox().value){
-        SignInAlert(viewModel,navController)
+    if(viewModel.getSignInAlertBox()){
+        BlurredBackground(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable { viewModel.disableAlertDialogBox() }
+        )
+        AlertDialogBoxView(alertTitle =  "You Have To SignIn before Syncing",viewModel){
+            navController.navigate(ScreenD)
+            viewModel.setAlertDialogBox(false)
+        }
     }
 }
 @Composable
@@ -183,7 +187,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                     }
                     Icon(modifier = Modifier
                         .padding(start = 8.dp)
-                        .clickable { viewModel.selectMoreOption(item.id) },
+                        .clickable { viewModel.enableMoreOption(item.id) },
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "MoreOptions",
                         tint = Accent
@@ -197,75 +201,14 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.Black.copy(alpha = 0.5f))
                 .height(88.dp)
-                .clickable { viewModel.deselectMoreOption() }
+                .clickable { viewModel.disableMoreOption() }
             )
         }
         if(viewModel.getIsEEditDeleteButtonEnabled()==item.id){
-            EditDeleteButtons(
-//                viewModel=viewModel,
+            MoreOptionView(
                 navController = navController, item = item)
         }
         }
-}
-    //previous code
-////                Text(text = item.name.substring(0, 1).uppercase() + item.name.substring(1).lowercase(), fontSize = 20.sp, fontWeight = FontWeight.Bold)
-//
-@Composable
-fun EditDeleteButtons(
-    navController: NavController,
-    item: DairyData,
-//    viewModel: DairyViewModel
-){
-    Column (horizontalAlignment =Alignment.End ,
-        modifier = Modifier
-            .fillMaxWidth()
-            .zIndex(1f)
-
-
-    ){
-    Column (modifier = Modifier
-        .padding(0.dp, 24.dp, 34.dp, 0.dp)
-        .clip(RoundedCornerShape(16.dp))
-        .background(Background)
-        .padding(16.dp)
-    ){
-        Box (modifier = Modifier
-            .shadow(
-                elevation = 3.dp,
-                RoundedCornerShape(12.dp),
-                ambientColor = Color.Black,
-                spotColor = Color.Black
-            )
-            .padding(1.dp, 0.dp, 1.dp, 5.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(color = DarkBackground)
-            .padding(16.dp, 4.dp)
-            .clickable {
-                navController.navigate(ScreenB(item.id))
-            }
-            ){
-            Text(fontWeight =FontWeight.Medium,text = "edit")
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Box(modifier = Modifier
-            .shadow(
-                elevation = 3.dp,
-                RoundedCornerShape(12.dp),
-                ambientColor = Color.Black,
-                spotColor = Color.Black
-            )
-            .padding(1.dp, 0.dp, 1.dp, 5.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(color = DarkBackground)
-            .padding(16.dp, 4.dp)
-            .clickable {
-//                viewModel.deleteDataById(item)
-            }
-        ) {
-            Text(fontWeight = FontWeight.Medium,text = "delete")
-        }
-    }
-    }
 }
 @Composable
 fun BlurredBackground(modifier: Modifier) {

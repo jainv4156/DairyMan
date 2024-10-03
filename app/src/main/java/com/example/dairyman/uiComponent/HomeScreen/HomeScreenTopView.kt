@@ -1,6 +1,5 @@
 package com.example.dairyman.uiComponent.HomeScreen
 
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -83,7 +82,7 @@ fun HomeScreenTopView(viewModel: DairyViewModel, title:String, navController: Na
                         tint = Accent,
                         contentDescription = null)
                 } }
-                ProfilePhoto(viewModel = viewModel, navController = navController)
+                ProfilePhoto( navController = navController)
         }
     )
 

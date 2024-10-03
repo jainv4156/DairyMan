@@ -1,6 +1,7 @@
 package com.example.dairyman.uiComponent
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
@@ -25,41 +27,65 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dairyman.viewmodel.DairyViewModel
-import com.example.dairyman.R
-import com.example.dairyman.ui.theme.WarningDark
-import com.example.dairyman.ui.theme.WarningLight
+import com.example.dairyman.ui.theme.Background
+import com.example.dairyman.ui.theme.DarkBackground
 
 @Composable
-fun AlertDialogBoxView( viewModel: DairyViewModel) {
+fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: ()->Unit) {
         Box (modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
-            .pointerInput(Unit) {},
+            .padding(32.dp),
             contentAlignment = Alignment.Center){
-            val colorOnThemeBase=  if(isSystemInDarkTheme()) colorResource(R.color.white) else colorResource(
-                R.color.black)
             val shape = RoundedCornerShape(8.dp)
             Column (modifier = Modifier
                 .align(Alignment.Center)
                 .clip(shape)
-                .background(if(isSystemInDarkTheme()) Color.DarkGray else Color.LightGray)
+                .background(Background)
                 .padding(32.dp, 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally){
-                Text(color =colorOnThemeBase ,text = "Warning!", fontSize = 18.sp, fontWeight = FontWeight.W800)
                 Spacer(modifier = Modifier.height(32.dp))
-                Text(fontSize = 18.sp, color = if(isSystemInDarkTheme()) WarningDark else WarningLight,text = "You Have Added Today's Amount Do You Wish To Continue adding the Amount")
+                Text(fontSize = 18.sp, color =  Color.Red,text = alertTitle)
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround) {
-                    Button(onClick = { viewModel.setAlertDialogBox(false)}) {
-                        Text(text = "Cancel")
+                    Box (modifier = Modifier
+                        .shadow(
+                            elevation = 3.dp,
+                            RoundedCornerShape(12.dp),
+                            ambientColor = Color.Black,
+                            spotColor = Color.Black
+                        )
+                        .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(color = DarkBackground)
+                        .padding(16.dp, 4.dp)
+                        .clickable {
+                            viewModel.disableAlertDialogBox()
+                        }
+                    ){
+                        Text(fontWeight = FontWeight.Medium,text = "Cancel")
                     }
-                    Button(onClick = {
-                        viewModel.updateTodayAmountButton()
-                        viewModel.setAlertDialogBox(false) }) {
-                        Text(text = "Continue")
+                    Box (modifier = Modifier
+                        .shadow(
+                            elevation = 3.dp,
+                            RoundedCornerShape(12.dp),
+                            ambientColor = Color.Black,
+                            spotColor = Color.Black
+                        )
+                        .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(color = DarkBackground)
+                        .padding(16.dp, 4.dp)
+                        .clickable {
+                            onContinue()
+                        }
+                    ){
+                        Text(fontWeight = FontWeight.Medium,text = "Continue")
                     }
                 }
+
+
+
             }
         }
 }

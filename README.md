@@ -1,0 +1,1 @@
+"This app is currently in production, so the UI/UX is still under development. It is not available on the Play Store at the moment. To access the APK, please refer to this link: Google Drive link https://drive.google.com/file/d/1qCNpE6HXBCHjlcdITSF2e19U4aWNXlMz/view?usp=drive_link

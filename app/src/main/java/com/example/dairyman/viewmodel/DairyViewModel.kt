@@ -1,5 +1,6 @@
 package com.example.dairyman.viewmodel
 
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,13 +10,18 @@ import com.example.dairyman.DairyApp
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
 import com.example.dairyman.Data.Model.JoinedResult
+import com.example.dairyman.SnackBar.SnackBarController
+import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -156,6 +162,7 @@ class DairyViewModel:ViewModel(){
                 updateTodayAmountButton()
             }
              else{
+                 mAlertDialogTitle= "You Have Added Today's Amount Do You Wish To Continue adding the Amount"
                 setAlertDialogBox(true)
             } 
 
@@ -164,30 +171,69 @@ class DairyViewModel:ViewModel(){
     }
 
     fun updateTodayAmountButton(){
-        val historyDataList: MutableList<HistoryData> = mutableListOf()
-        viewModelScope.launch{
-            val dataToRecord= databaseDao.loadAllDairyData().first()
-            dataToRecord.forEach{
-                if(it.dayForTempAmount>=1){
-                    databaseDao.upsertDairyData(it.copy(dayForTempAmount = it.dayForTempAmount-1))
+
+        try {
+            val historyDataList: MutableList<HistoryData> = mutableListOf()
+            viewModelScope.launch{
+                val dataToRecord= databaseDao.loadAllDairyData().first()
+                dataToRecord.forEach{
+                    if(it.dayForTempAmount>=1){
+                        databaseDao.upsertDairyData(it.copy(dayForTempAmount = it.dayForTempAmount-1))
+                    }
+                    else{
+                        databaseDao.upsertDairyData(it.copy(dayForTempAmount = 0,tempAmount = it.amount))
+                    }
+                    val child= HistoryData(
+                        amount = it.amount, tempAmount = it.tempAmount, date = System.currentTimeMillis()
+                        , dataId = it.id)
+                    historyDataList+=child
                 }
-                else{
-                    databaseDao.upsertDairyData(it.copy(dayForTempAmount = 0,tempAmount = it.amount))
-                }
-                val child= HistoryData(
-                    amount = it.amount, tempAmount = it.tempAmount, date = System.currentTimeMillis()
-                    , dataId = it.id)
-                historyDataList+=child
+                databaseDao.insertHistory(historyDataList)
+                databaseDao.updateTodayAmount()
             }
-            databaseDao.insertHistory(historyDataList)
-            databaseDao.updateTodayAmount()
+
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message =
+                        "Today Amount Updated"
+                    )
+                )
+            }
+        }catch (e:Exception){
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Something Went Wrong"
+                    )
+                )
+            }
         }
     }
     fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
-        viewModelScope.launch(IO){
-            databaseDao.deleteHistoryData(dairyData.id)
-            databaseDao.deleteDairyData(dairyData)
+        try {
+            viewModelScope.launch(IO){
+                databaseDao.deleteHistoryData(dairyData.id)
+                databaseDao.deleteDairyData(dairyData)
+            }
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Customer Record Deleted Successfully"
+
+                    )
+                )
+            }
+        }catch (e:Exception){
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Something Went Wrong"
+                    )
+                )
+            }
         }
+
     }
     fun getHistoryById(id:Long):Flow<List<JoinedResult>>{
         return databaseDao.getHistoryById(id = id)
@@ -212,9 +258,27 @@ class DairyViewModel:ViewModel(){
     }
 
     fun updateTempAmount() {
-        viewModelScope.launch {
-            databaseDao.upsertDairyData(databaseDao.getDairyDataById(idTempAmount).first().copy(tempAmount = tempAmount.value.toFloat(), dayForTempAmount =dayForTempAmount.value.toInt()))
+        try {
+            viewModelScope.launch {
+                databaseDao.upsertDairyData(databaseDao.getDairyDataById(idTempAmount).first().copy(tempAmount = tempAmount.value.toFloat(), dayForTempAmount =dayForTempAmount.value.toInt()))
+            }
+                viewModelScope.launch {
+                    SnackBarController.sendEvent(
+                        event = SnackBarEvent(
+                            message = "Amount is ${tempAmount.value} for "+ if(dayForTempAmount.value=="1") "1 day" else " ${dayForTempAmount.value} Days"
+                        ))
+                }
+
         }
+        catch (e:Exception){
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                  event = SnackBarEvent(
+                      message = "Something Went Wrong"
+                ))
+            }
+        }
+        
         resetHomeViewState()
     }
     fun getSignInAlertBox():Boolean{
@@ -232,20 +296,43 @@ class DairyViewModel:ViewModel(){
 
     suspend fun syncDataWithCloud() {
         if(FirebaseAuth.getInstance().currentUser!=null){
-            resetHomeViewState()
-            syncDairyDataWithCloud()
-            syncHistoryDataWithCloud()
+            try {
+                viewModelScope.launch {
+                    resetHomeViewState()
+                    withContext(IO){
+                        syncDairyDataWithCloud()
+                        syncHistoryDataWithCloud()
+                    }
+                    SnackBarController.sendEvent(
+                        event = SnackBarEvent(
+                            message = "Data is Synced Successfully"
+                        ))
+                }
+
+
+            }
+            catch (e:Exception){
+                viewModelScope.launch {
+                    SnackBarController.sendEvent(
+                        event = SnackBarEvent(
+                            message = "Something Went Wrong"
+                        ))
+                }
+            }
+
+
 
         }
         else{
             setSignInAlertBox(true)
+            mAlertDialogTitle= "You Have To SignIn before Syncing"
             enableAlertDialogBax()
         }
     }
 
     private suspend fun syncDairyDataWithCloud(){
         val fireBaseDairyData:List<DairyData> =  FireStoreClass().getCustomerDairyDataFromFireStore()
-        val dairyDataList:List<DairyData> = customersList.first()
+        val dairyDataList:List<DairyData> = customerListFromDatabase.first()
         val listToBeAddInDairyData= mutableListOf<DairyData>()
         val listToUpdateFireBaseDairyData= mutableListOf<DairyData>()
 //        val listToResolveCollision= mutableListOf<DairyData>()

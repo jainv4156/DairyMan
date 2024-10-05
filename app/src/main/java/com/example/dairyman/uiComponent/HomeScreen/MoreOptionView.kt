@@ -76,7 +76,6 @@ fun MoreOptionView(
 
                 .clickable {
                     viewModel.enableDeleteAlert(item)
-//                viewModel.deleteDataById(item)
                 }
             ) {
                 Text(fontWeight = FontWeight.Medium,text = "delete")

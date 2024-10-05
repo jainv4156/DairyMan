@@ -23,9 +23,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,11 +45,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.dairyman.Data.Model.userdataModel.SignInState
+import com.example.dairyman.SnackBar.ObserveAsEvent
+import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.math.sin
 
@@ -55,10 +63,33 @@ fun SignInScreen(
     navController: NavController,
     onSignOut: () -> Unit
 ){
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    val scope = rememberCoroutineScope()
+    ObserveAsEvent(
+        flow = SnackBarController.events,
+        snackbarHostState
+    ) { event ->
+        scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+
+            snackbarHostState.showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short
+            )
+
+        }
+    }
     Scaffold (
         containerColor = Background,
         modifier = Modifier
             .fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
+        },
         topBar = { TopAppBarView(
             title = "Accounts",
             onBackNavClicked = { navController.navigate(ScreenA) }

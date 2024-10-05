@@ -18,6 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.dairyman.Presentation.Sign_in.GoogleAuthUiClint
+import com.example.dairyman.SnackBar.SnackBarController
+import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
@@ -63,11 +65,13 @@ navController: NavHostController=rememberNavController()
             LaunchedEffect(key1 = state.isSignInSuccessful) {
 
                 if(state.isSignInSuccessful) {
-                    Toast.makeText(
-                        context,
-                        "Sign in successful",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    scope.launch {
+                        SnackBarController.sendEvent(
+                            SnackBarEvent(
+                                message = "Sign in successful"
+                            )
+                        )
+                    }
                     viewModel.resetState()
                 }
             }
@@ -90,12 +94,9 @@ navController: NavHostController=rememberNavController()
                 navController = navController,
                 onSignOut = {
                     scope.launch {
+
                         googleAuthUiClient.signOut()
-                        Toast.makeText(
-                            navController.context,
-                            "Signed out",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out"))
                         navController.navigate(ScreenD)
 
                     }

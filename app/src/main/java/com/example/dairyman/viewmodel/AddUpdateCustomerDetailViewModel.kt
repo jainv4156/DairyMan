@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
 import com.example.dairyman.Data.Model.AddUpdateCustomerDetailData.AddUpdateCustomerDetailModel
 import com.example.dairyman.Data.Model.DairyData
+import com.example.dairyman.SnackBar.SnackBarController
+import com.example.dairyman.SnackBar.SnackBarEvent
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
 
     fun addUpdateDairyData(id:Long){
         lateinit var dairyData: DairyData
+        val isNew :Boolean
         if(id==0L){
             dairyData= DairyData(
                 name = _addUpdateCustomerDetailData.name,
@@ -32,6 +35,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
                 pendingAmount = _addUpdateCustomerDetailData.pendingAmount.toInt(),
                 tempAmount = _addUpdateCustomerDetailData.amount.toFloat(),
             )
+            isNew=true
         }
         else{
             dairyData= DairyData(
@@ -43,11 +47,39 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
                 tempAmount = _addUpdateCustomerDetailData.amount.toFloat(),
                 dateUpdated = System.currentTimeMillis()
             )
+            isNew=false
         }
 
-        viewModelScope.launch(IO){
-            databaseDao.upsertDairyData(dairyData)
+        try {
+            viewModelScope.launch(IO){
+                databaseDao.upsertDairyData(dairyData)
+            }
+
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message =
+                        if(isNew){
+                            dairyData.name+" Added Successfully"
+                        }else "Customer Record Updated Successfully"
+
+                    )
+                )
+            }
+
+
+        }catch (e:Exception){
+            viewModelScope.launch {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Something Went Wrong"
+                    )
+                )
+            }
         }
+
+
+
     }
     fun preFillUpdateInput(id: Long){
         viewModelScope.launch {

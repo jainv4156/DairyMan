@@ -10,18 +10,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import com.example.dairyman.SnackBar.ObserveAsEvent
+import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.uiComponent.AlertDialogBoxView
 import com.example.dairyman.uiComponent.ScreenD
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
@@ -30,6 +38,24 @@ fun HomeView(
     navController: NavController,
     viewModel: DairyViewModel,
 ){
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    val scope = rememberCoroutineScope()
+    ObserveAsEvent(
+        flow = SnackBarController.events,
+        snackbarHostState
+    ) { event ->
+        scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+
+             snackbarHostState.showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short
+            )
+
+        }
+    }
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(color = Background),
@@ -37,6 +63,11 @@ fun HomeView(
             if (viewModel.getIsFloatingButtonVisible()) FloatingActionButtonView(
                 viewModel = viewModel,
                 navController = navController
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
             )
         },
         topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel, navController = navController
@@ -98,9 +129,7 @@ fun HomeView(
             .clickable { viewModel.resetHomeViewState() }
         )
         AlertDialogBoxView(viewModel,navController)
-        "You Have Added Today's Amount Do You Wish To Continue adding the Amount"
     }
-        "You Have To SignIn before Syncing"
 }
 
 @Composable

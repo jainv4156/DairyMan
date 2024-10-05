@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,16 +55,20 @@ fun HomeView(
         scope.launch {
             snackbarHostState.currentSnackbarData?.dismiss()
 
-             snackbarHostState.showSnackbar(
+            val result = snackbarHostState.showSnackbar(
                 message = event.message,
-                duration = SnackbarDuration.Short
+                actionLabel = event.action?.name,
+                duration = SnackbarDuration.Long
             )
-
+            if(result == SnackbarResult.ActionPerformed) {
+                snackbarHostState.currentSnackbarData?.dismiss()
+            }
         }
     }
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Background),
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Background),
         floatingActionButton = {
             if (viewModel.getIsFloatingButtonVisible()) FloatingActionButtonView(
                 viewModel = viewModel,
@@ -73,8 +80,11 @@ fun HomeView(
                 hostState = snackbarHostState
             )
         },
-        topBar = { HomeScreenTopView(title = "Dairyman", viewModel = viewModel, navController = navController
-        ) },
+        topBar = {
+            HomeScreenTopView(
+                title = "Dairyman", viewModel = viewModel, navController = navController
+            )
+        },
     ) {
 
         if (viewModel.getIsEEditDeleteButtonEnabled()!=-1L) {

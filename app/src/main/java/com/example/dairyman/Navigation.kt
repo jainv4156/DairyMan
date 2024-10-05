@@ -1,7 +1,6 @@
 package com.example.dairyman
 
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -18,17 +17,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.dairyman.Presentation.Sign_in.GoogleAuthUiClint
+import com.example.dairyman.SnackBar.SnackBarAction
 import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
-import com.example.dairyman.uiComponent.CustomerProfilePage.CustomerProfileView
+import com.example.dairyman.uiComponent.customerProfilePage.CustomerProfileView
 import com.example.dairyman.uiComponent.ScreenD
 import com.example.dairyman.uiComponent.SignInScreen
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
-import com.example.dairyman.uiComponent.CustomerProfilePage.ScreenC
+import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
 import com.example.dairyman.uiComponent.HomeScreen.HomeView
 import com.example.dairyman.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
@@ -68,7 +68,10 @@ navController: NavHostController=rememberNavController()
                     scope.launch {
                         SnackBarController.sendEvent(
                             SnackBarEvent(
-                                message = "Sign in successful"
+                                message = "Sign in successful",
+                                action = SnackBarAction(
+                                    name = "X"
+                                )
                             )
                         )
                     }
@@ -95,7 +98,10 @@ navController: NavHostController=rememberNavController()
                     scope.launch {
                         googleAuthUiClient.signOut()
                         navController.navigate(ScreenD)
-                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out"))
+                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out",
+                            action = SnackBarAction(
+                                name = "X"
+                            )))
                     }
                 }
 

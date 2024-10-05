@@ -30,13 +30,13 @@ import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
-import com.example.dairyman.uiComponent.CustomerProfilePage.ScreenC
+import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
 import com.example.dairyman.viewmodel.DairyViewModel
 
 @Composable
 fun ShowDataView(item: DairyData, navController: NavController, viewModel: DairyViewModel) {
     Box(modifier = Modifier
-        .fillMaxSize()
+        .fillMaxSize().padding(0.dp,6.dp)
     ){
         Column(modifier = Modifier
             .fillMaxSize()

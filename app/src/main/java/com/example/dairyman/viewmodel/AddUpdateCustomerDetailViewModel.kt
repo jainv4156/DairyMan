@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
 import com.example.dairyman.Data.Model.AddUpdateCustomerDetailData.AddUpdateCustomerDetailModel
 import com.example.dairyman.Data.Model.DairyData
+import com.example.dairyman.SnackBar.SnackBarAction
 import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.SnackBar.SnackBarEvent
 import kotlinx.coroutines.Dispatchers.IO
@@ -61,7 +62,10 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
                         message =
                         if(isNew){
                             dairyData.name+" Added Successfully"
-                        }else "Customer Record Updated Successfully"
+                        }else "Customer Record Updated Successfully",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
 
                     )
                 )
@@ -72,7 +76,10 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
             viewModelScope.launch {
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
-                        message = "Something Went Wrong"
+                        message = "Something Went Wrong",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
                     )
                 )
             }

@@ -3,7 +3,6 @@ package com.example.dairyman.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,23 +11,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.SnackBar.SnackBarAction
 import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
-import java.util.Locale
 
 class DairyViewModel:ViewModel(){
     private var dayForTempAmount = mutableStateOf("1")
@@ -234,7 +230,11 @@ class DairyViewModel:ViewModel(){
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
                         message =
-                        "Today Amount Updated"
+                        "Today Amount Updated",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
+
                     )
                 )
             }
@@ -242,7 +242,10 @@ class DairyViewModel:ViewModel(){
             viewModelScope.launch {
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
-                        message = "Something Went Wrong"
+                        message = "Something Went Wrong",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
                     )
                 )
             }
@@ -258,7 +261,10 @@ class DairyViewModel:ViewModel(){
             viewModelScope.launch {
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
-                        message = "Customer Record Deleted Successfully"
+                        message = "Customer Record Deleted Successfully",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
 
                     )
                 )
@@ -267,7 +273,10 @@ class DairyViewModel:ViewModel(){
             viewModelScope.launch {
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
-                        message = "Something Went Wrong"
+                        message = "Something Went Wrong",
+                        action = SnackBarAction(
+                            name = "X"
+                        )
                     )
                 )
             }
@@ -306,7 +315,10 @@ class DairyViewModel:ViewModel(){
                 viewModelScope.launch {
                     SnackBarController.sendEvent(
                         event = SnackBarEvent(
-                            message = "Amount is ${tempAmount.value} for "+ if(dayForTempAmount.value=="1") "1 day" else " ${dayForTempAmount.value} Days"
+                            message = "Amount is ${tempAmount.value} for "+ if(dayForTempAmount.value=="1") "1 day" else " ${dayForTempAmount.value} Days",
+                            action = SnackBarAction(
+                                name = "X"
+                            )
                         ))
                 }
 
@@ -315,7 +327,10 @@ class DairyViewModel:ViewModel(){
             viewModelScope.launch {
                 SnackBarController.sendEvent(
                   event = SnackBarEvent(
-                      message = "Something Went Wrong"
+                      message = "Something Went Wrong",
+                      action = SnackBarAction(
+                          name = "X"
+                      )
                 ))
             }
         }
@@ -346,7 +361,10 @@ class DairyViewModel:ViewModel(){
                     }
                     SnackBarController.sendEvent(
                         event = SnackBarEvent(
-                            message = "Data is Synced Successfully"
+                            message = "Data is Synced Successfully",
+                            action = SnackBarAction(
+                                name = "X"
+                            )
                         ))
                 }
 
@@ -356,7 +374,10 @@ class DairyViewModel:ViewModel(){
                 viewModelScope.launch {
                     SnackBarController.sendEvent(
                         event = SnackBarEvent(
-                            message = "Something Went Wrong"
+                            message = "Something Went Wrong",
+                            action = SnackBarAction(
+                                name = "X"
+                            )
                         ))
                 }
             }
@@ -447,7 +468,7 @@ class DairyViewModel:ViewModel(){
 
     suspend fun getSearchFilteredList(){
           customersList.value = customerListFromDatabase.first().filter {item->
-              item.name.contains(searchQuery.value,ignoreCase = false)
+              item.name.contains(searchQuery.value,ignoreCase = true)
           }
     }
 }

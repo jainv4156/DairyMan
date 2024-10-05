@@ -10,7 +10,6 @@ data class SnackBarEvent (
         )
 data class SnackBarAction(
         val name: String,
-        val action: suspend () -> Unit
 )
 
 object SnackBarController {

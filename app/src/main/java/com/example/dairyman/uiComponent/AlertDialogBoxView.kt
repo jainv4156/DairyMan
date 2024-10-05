@@ -1,5 +1,6 @@
 package com.example.dairyman.uiComponent
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -79,7 +80,7 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
                         .background(color = DarkBackground)
                         .padding(16.dp, 4.dp)
                         .clickable {
-                            onAlertClick(viewModel, navController =navController)
+                            onAlertClick(viewModel, navController = navController)
                         }
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Continue")
@@ -96,12 +97,13 @@ fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)
     }
-     if(viewModel.getIsDeleteAlertEnabled() != DairyData(id=0)){
+     if(viewModel.getIsDeleteAlertEnabled().id != 0L){
         viewModel.deleteDataById()
         viewModel.resetHomeViewState()
     }
     if(viewModel.getIsUpdateAmountAlertEnable()){
         viewModel.updateTodayAmountButton()
         viewModel.resetHomeViewState()
+
     }
 }

@@ -1,5 +1,7 @@
 package com.example.dairyman.uiComponent.HomeScreen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeView(
     navController: NavController,

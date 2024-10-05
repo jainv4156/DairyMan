@@ -2,11 +2,11 @@ package com.example.dairyman
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,17 +23,18 @@ import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
-import com.example.dairyman.uiComponent.DairyHistoryVIew
+import com.example.dairyman.uiComponent.CustomerProfilePage.CustomerProfileView
 import com.example.dairyman.uiComponent.ScreenD
 import com.example.dairyman.uiComponent.SignInScreen
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
-import com.example.dairyman.uiComponent.ScreenC
+import com.example.dairyman.uiComponent.CustomerProfilePage.ScreenC
 import com.example.dairyman.uiComponent.HomeScreen.HomeView
 import com.example.dairyman.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(
     googleAuthUiClient:GoogleAuthUiClint,
@@ -47,7 +48,6 @@ navController: NavHostController=rememberNavController()
             val viewModel=SignInViewModel()
             val state by viewModel.state.collectAsStateWithLifecycle()
             val scope=rememberCoroutineScope()
-            val context:Context=navController.context
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                 onResult = { result ->
@@ -86,7 +86,6 @@ navController: NavHostController=rememberNavController()
                             IntentSenderRequest.Builder(
                                 signInIntentSender ?: return@launch
                             ).build()
-
                         )
                     }
 
@@ -94,11 +93,9 @@ navController: NavHostController=rememberNavController()
                 navController = navController,
                 onSignOut = {
                     scope.launch {
-
                         googleAuthUiClient.signOut()
-                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out"))
                         navController.navigate(ScreenD)
-
+                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out"))
                     }
                 }
 
@@ -113,8 +110,9 @@ navController: NavHostController=rememberNavController()
         }
         composable<ScreenC> {
             val args=it.toRoute<ScreenB>()
-            DairyHistoryVIew(args.id,navController)
+            CustomerProfileView(args.id,navController)
         }
     }
+
 
 }

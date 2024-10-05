@@ -11,9 +11,9 @@ data class HistoryData(
     val id:Long=0L,
     @ColumnInfo(name="amount")
     val amount:Float=0F,
-    @ColumnInfo(name="tempAmount")
-    val tempAmount:Float=0f,
-    @ColumnInfo(name ="Date")
+    @ColumnInfo(name="rate")
+    val rate:Int=0,
+    @ColumnInfo(name ="date")
     val date: Long=System.currentTimeMillis(),
     @ColumnInfo(name = "dataId")
     val dataId:Long=0L,

@@ -8,7 +8,6 @@ import androidx.room.Update
 import androidx.room.Upsert
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
-import com.example.dairyman.Data.Model.JoinedResult
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface DatabaseDao {
@@ -35,8 +34,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM historyDataTable")
     suspend fun getAllHistory():List<HistoryData>
 
-    @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date=:date")
-    suspend fun getHistoryCount(date:String):Int
+    @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date >=:date")
+    suspend fun getHistoryCount(date:Long):Int
 
     @Insert
     suspend fun insertHistory(historyData: List<HistoryData>)
@@ -45,8 +44,8 @@ interface DatabaseDao {
 
 
 
-    @Query("SELECT DairyTable.name,DairyTable.rate,historyDataTable.amount,historyDataTable.tempAmount,historyDataTable.date FROM DairyTable JOIN historyDataTable ON DairyTable.id= historyDataTable.dataId WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
-    fun getHistoryById(id:Long):Flow<List<JoinedResult>>
+    @Query("SELECT id,amount,rate,date,dataId,isSynced FROM historyDataTable  WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
+    fun getHistoryById(id:Long):Flow<List<HistoryData>>
 
 }
 

@@ -27,9 +27,10 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.ui.theme.Accent
+import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
-import com.example.dairyman.uiComponent.ScreenC
+import com.example.dairyman.uiComponent.CustomerProfilePage.ScreenC
 import com.example.dairyman.viewmodel.DairyViewModel
 
 @Composable
@@ -63,7 +64,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
             {
                 Column {
                     Text(
-                        color = Color.White,
+                        color = Background,
                         text = "Quantity: " + if (item.amount == item.tempAmount) item.tempAmount.toString() + "kg" else item.tempAmount.toString() + "Kg" + " for " + item.dayForTempAmount + if (item.dayForTempAmount == 1) " Day" else " Days"
                     )
                 }
@@ -78,6 +79,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
 
                     ) {
                         Text(
+
                             modifier = Modifier.padding(8.dp, 4.dp),
                             text = "Change"
                         )

@@ -1,5 +1,8 @@
 package com.example.dairyman.viewmodel
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
@@ -9,7 +12,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
 import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.Data.Model.HistoryData
-import com.example.dairyman.Data.Model.JoinedResult
 import com.example.dairyman.SnackBar.SnackBarController
 import com.example.dairyman.SnackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
@@ -23,6 +25,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
 class DairyViewModel:ViewModel(){
@@ -44,6 +49,11 @@ class DairyViewModel:ViewModel(){
     private val mIsFloatingButtonVisible= mutableStateOf(true)
     private val mIsDeleteAlertEnabled= mutableStateOf(DairyData())
     private var mAlertDialogTitle=""
+    private var mIsUpdateAmountAlertEnable= mutableStateOf(false)
+
+    fun getIsUpdateAmountAlertEnable():Boolean{
+        return mIsUpdateAmountAlertEnable.value
+    }
 
     fun getAlertDialogTitle():String{
         return mAlertDialogTitle
@@ -109,6 +119,12 @@ class DairyViewModel:ViewModel(){
         mSetIsFloatingButtonVisible(false)
         mIsSearchActive.value=true
     }
+    private fun enableUpdateAmountAlert(){
+        mAlertDialogTitle= "You Have Added Today's Amount Do You Wish To Continue adding the Amount"
+        mIsUpdateAmountAlertEnable.value=true
+        enableAlertDialogBax()
+
+    }
     fun enableDeleteAlert(item: DairyData) {
         resetHomeViewState()
         mAlertDialogTitle="Do you Want To Delete This Customer Account . You May Not Be Able To Recover It Again"
@@ -126,8 +142,10 @@ class DairyViewModel:ViewModel(){
         setIsSetTempAmountViewActive(false)
         mIsSearchActive.value = false
         setSignInAlertBox(false)
-        mIsDeleteAlertEnabled.value=DairyData()
+        mIsDeleteAlertEnabled.value=DairyData(id=0L)
         mAlertDialogTitle=""
+        mIsUpdateAmountAlertEnable.value=false
+
 
     }
 
@@ -155,15 +173,22 @@ class DairyViewModel:ViewModel(){
     fun setDayForTempAmount(value:String){
         dayForTempAmount.value= value
     }
-     fun checkTodayUpdate() {
-        val todayDate= SimpleDateFormat("yyyy/mm/dd", Locale.getDefault()).format(System.currentTimeMillis())
-         viewModelScope.launch (IO){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getToday0001Millis(): Long {
+        val today = LocalDate.now()
+        val time = LocalTime.of(0, 1) // 00:01
+        return today.atTime(time).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    }
+     @RequiresApi(Build.VERSION_CODES.O)
+     suspend fun checkTodayUpdate() {
+        val todayDate:Long=getToday0001Millis()
+         viewModelScope.launch(IO){
             if(databaseDao.getHistoryCount(todayDate)==0){
                 updateTodayAmountButton()
             }
              else{
-                 mAlertDialogTitle= "You Have Added Today's Amount Do You Wish To Continue adding the Amount"
-                setAlertDialogBox(true)
+                 Log.d("5","10")
+                enableUpdateAmountAlert()
             } 
 
         }
@@ -171,12 +196,19 @@ class DairyViewModel:ViewModel(){
     }
 
     fun updateTodayAmountButton(){
+        Log.d("ha","jaja")
 
         try {
             val historyDataList: MutableList<HistoryData> = mutableListOf()
+            Log.d("ha1","jaja")
+
             viewModelScope.launch{
+                Log.d("h2","jaja")
+
                 val dataToRecord= databaseDao.loadAllDairyData().first()
                 dataToRecord.forEach{
+                    if(it.tempAmount!=0f){
+
                     if(it.dayForTempAmount>=1){
                         databaseDao.upsertDairyData(it.copy(dayForTempAmount = it.dayForTempAmount-1))
                     }
@@ -184,15 +216,21 @@ class DairyViewModel:ViewModel(){
                         databaseDao.upsertDairyData(it.copy(dayForTempAmount = 0,tempAmount = it.amount))
                     }
                     val child= HistoryData(
-                        amount = it.amount, tempAmount = it.tempAmount, date = System.currentTimeMillis()
+                        amount = it.tempAmount, rate = it.rate, date = System.currentTimeMillis()
                         , dataId = it.id)
                     historyDataList+=child
+                    }
+
                 }
+                Log.d("h3","jaja")
+
                 databaseDao.insertHistory(historyDataList)
                 databaseDao.updateTodayAmount()
             }
 
             viewModelScope.launch {
+                Log.d("ha4","jaja")
+
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
                         message =
@@ -211,6 +249,7 @@ class DairyViewModel:ViewModel(){
         }
     }
     fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
+        Log.d("ju","jm")
         try {
             viewModelScope.launch(IO){
                 databaseDao.deleteHistoryData(dairyData.id)
@@ -235,7 +274,7 @@ class DairyViewModel:ViewModel(){
         }
 
     }
-    fun getHistoryById(id:Long):Flow<List<JoinedResult>>{
+    fun getHistoryById(id:Long):Flow<List<HistoryData>>{
         return databaseDao.getHistoryById(id = id)
     }
     fun getProfileDataForHistory(id: Long):Flow<DairyData>{
@@ -244,7 +283,9 @@ class DairyViewModel:ViewModel(){
 
     private fun preFillSetTempAmountView(dairyData: DairyData){
         setTempAmount(dairyData.tempAmount.toString())
-        setDayForTempAmount(dairyData.dayForTempAmount.toString())
+        if(dairyData.dayForTempAmount.toString() != "0"){
+            setDayForTempAmount(dairyData.dayForTempAmount.toString())
+        }
     }
 
     fun readySetTempAmountView(){

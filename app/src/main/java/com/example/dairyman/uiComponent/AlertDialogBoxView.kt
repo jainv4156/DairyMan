@@ -95,13 +95,12 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
 fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)
-        viewModel.resetHomeViewState()
     }
-    if(viewModel.getIsDeleteAlertEnabled()!= DairyData()){
+     if(viewModel.getIsDeleteAlertEnabled() != DairyData(id=0)){
         viewModel.deleteDataById()
         viewModel.resetHomeViewState()
     }
-    else{
+    if(viewModel.getIsUpdateAmountAlertEnable()){
         viewModel.updateTodayAmountButton()
         viewModel.resetHomeViewState()
     }

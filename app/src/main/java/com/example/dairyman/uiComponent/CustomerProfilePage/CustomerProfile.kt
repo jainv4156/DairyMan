@@ -1,4 +1,4 @@
-package com.example.dairyman.uiComponent
+package com.example.dairyman.uiComponent.CustomerProfilePage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -26,19 +26,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dairyman.uiComponent.HomeScreen.ScreenA
+import com.example.dairyman.uiComponent.TopAppBarView
 import com.example.dairyman.viewmodel.DairyViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun DairyHistoryVIew(id: Long,navController: NavController) {
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = { TopAppBarView(title = "History", onBackNavClicked = { navController.navigate(
+fun CustomerProfileView(id: Long,navController: NavController) {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = { CustomerProfileTopBar(title = id.toString(), onBackNavClicked = { navController.navigate(
         ScreenA
     ) }) }) {
         val history= DairyViewModel().getHistoryById(id).collectAsState(initial = listOf())
         val profile= DairyViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
-        val subContentColor=if(isSystemInDarkTheme()) LightGray else DarkGray
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)){
@@ -63,13 +63,13 @@ fun DairyHistoryVIew(id: Long,navController: NavController) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
-                                    text = (profile.value?.name?.substring(0, 1)
-                                        ?.uppercase()) + history.value[0].name.substring(1)
-                                        .lowercase(),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+//                                Text(
+//                                    text = (profile.value?.name?.substring(0, 1)
+//                                        ?.uppercase()) + history.value[0].substring(1)
+//                                        .lowercase(),
+//                                    fontSize = 20.sp,
+//                                    fontWeight = FontWeight.Bold
+//                                )
                                 Text(
                                     text = profile.value?.rate.toString() + "Rs",
                                     fontSize = 20.sp,
@@ -79,12 +79,10 @@ fun DairyHistoryVIew(id: Long,navController: NavController) {
                             Column {
                                 val simpleDateFormat =
                                     SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                val dateCreated =
-                                    simpleDateFormat.format(profile.value?.dateCreated)
+
                                 val dateUpdated =
                                     simpleDateFormat.format(profile.value?.dateUpdated)
-                                Text(text = "Created on : $dateCreated", color = subContentColor)
-                                Text(text = "Last updated on $dateUpdated", color = subContentColor)
+                                Text(text = "Last updated on $dateUpdated")
                             }
 
                         }
@@ -99,20 +97,7 @@ fun DairyHistoryVIew(id: Long,navController: NavController) {
                     }
                 }
 
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(history.value) { item ->
-
-                            val simpleDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                            val date = simpleDate.format(item.Date)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = item.tempAmount.toString())
-                                Text(text = date)
-                            }
-                        }
-                    }
+                CustomerHistoryView(id = id)
             }
         }
     }

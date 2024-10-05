@@ -1,5 +1,7 @@
 package com.example.dairyman.uiComponent.HomeScreen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +34,7 @@ import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.viewmodel.DairyViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FloatingActionButtonView(
     viewModel: DairyViewModel,
@@ -54,6 +57,7 @@ fun FloatingActionButtonView(
 
 
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
 fun ActionButton(viewModel: DairyViewModel,navController: NavController,toggleActinButton:()->Unit){
@@ -91,8 +95,11 @@ fun ActionButton(viewModel: DairyViewModel,navController: NavController,toggleAc
             .background(Secondary)
             .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
             .clickable {
-                viewModel.checkTodayUpdate()
-                toggleActinButton()
+                scope.launch {
+                    viewModel.checkTodayUpdate()
+                    viewModel.resetHomeViewState()
+
+                }
             }) {
             Text(text = "Update Today Amount", fontWeight = FontWeight.Medium, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
         }

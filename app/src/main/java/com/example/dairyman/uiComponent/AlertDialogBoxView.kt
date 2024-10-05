@@ -26,12 +26,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 
 @Composable
-fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: ()->Unit) {
+fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) {
         Box (modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
@@ -44,7 +46,7 @@ fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: 
                 .padding(32.dp, 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally){
                 Spacer(modifier = Modifier.height(32.dp))
-                Text(fontSize = 18.sp, color =  Color.Red,text = alertTitle)
+                Text(fontSize = 18.sp, color =  Color.Red,text = viewModel.getAlertDialogTitle())
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround) {
@@ -60,7 +62,7 @@ fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: 
                         .background(color = DarkBackground)
                         .padding(16.dp, 4.dp)
                         .clickable {
-                            viewModel.disableAlertDialogBox()
+                            viewModel.resetHomeViewState()
                         }
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Cancel")
@@ -77,7 +79,7 @@ fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: 
                         .background(color = DarkBackground)
                         .padding(16.dp, 4.dp)
                         .clickable {
-                            onContinue()
+                            onAlertClick(viewModel, navController =navController)
                         }
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Continue")
@@ -88,4 +90,19 @@ fun AlertDialogBoxView(alertTitle:String, viewModel: DairyViewModel,onContinue: 
 
             }
         }
+}
+
+fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
+    if(viewModel.getSignInAlertBox()){
+        navController.navigate(ScreenD)
+        viewModel.resetHomeViewState()
+    }
+    if(viewModel.getIsDeleteAlertEnabled()!= DairyData()){
+        viewModel.deleteDataById()
+        viewModel.resetHomeViewState()
+    }
+    else{
+        viewModel.updateTodayAmountButton()
+        viewModel.resetHomeViewState()
+    }
 }

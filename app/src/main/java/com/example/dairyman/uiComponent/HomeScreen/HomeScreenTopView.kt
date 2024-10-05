@@ -32,7 +32,7 @@ fun HomeScreenTopView(viewModel: DairyViewModel, title:String, navController: Na
 ){
     val navigationIcon: @Composable () ->Unit = {
         if(viewModel.getIsSearchActive()){
-            IconButton(onClick = {viewModel.disableSearch() }) {
+            IconButton(onClick = {viewModel.resetHomeViewState() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     tint = Background,

@@ -24,11 +24,13 @@ import com.example.dairyman.Data.Model.DairyData
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.uiComponent.ScreenB
+import com.example.dairyman.viewmodel.DairyViewModel
 
 @Composable
 fun MoreOptionView(
     navController: NavController,
     item: DairyData,
+    viewModel: DairyViewModel
 ){
     Column (horizontalAlignment = Alignment.End ,
         modifier = Modifier
@@ -71,7 +73,9 @@ fun MoreOptionView(
                 .clip(RoundedCornerShape(12.dp))
                 .background(color = DarkBackground)
                 .padding(16.dp, 4.dp)
+
                 .clickable {
+                    viewModel.enableDeleteAlert(item)
 //                viewModel.deleteDataById(item)
                 }
             ) {

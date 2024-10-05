@@ -59,7 +59,7 @@ fun ChangeAmountScreen(viewModel: DairyViewModel){
                     .background(color = DarkBackground)
                     .padding(16.dp, 4.dp)
                     .clickable {
-                        viewModel.disableSetTempAmountView()
+                        viewModel.resetHomeViewState()
                     }
                 ){
                     Text(fontWeight = FontWeight.Medium,text = "Cancel")

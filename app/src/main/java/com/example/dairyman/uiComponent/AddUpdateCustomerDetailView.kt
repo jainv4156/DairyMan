@@ -33,14 +33,14 @@ import kotlinx.serialization.Serializable
 fun AddUpdateCustomerDetailView(
     navController: NavController,
     viewModel: AddUpdateCustomerDetailViewModel,
-    id:Long=0L
+    id:String=""
 ){
     val context= LocalContext.current
-    if(id!=0L){
+    if(id!=""){
         viewModel.preFillUpdateInput(id=id)
     }
 
-    Scaffold(topBar = { TopAppBarView(title = if(id==0L) "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(
+    Scaffold(topBar = { TopAppBarView(title = if(id=="") "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(
         ScreenA
     )}) },modifier = Modifier
         .fillMaxSize()
@@ -89,13 +89,13 @@ fun AddUpdateCustomerDetailView(
                 ) }
                 .fillMaxWidth(),
                 contentAlignment = Alignment.Center) {
-                Text(text = if (id == 0L) "Add Record" else "Update Record", color = Background, fontSize = 16.sp)
+                Text(text = if (id == "") "Add Record" else "Update Record", color = Background, fontSize = 16.sp)
             }
         }
         }
     }
 }
-private fun addOrUpdateButtonOnClick(navController: NavController, viewModel: AddUpdateCustomerDetailViewModel, id: Long, context: Context) {
+private fun addOrUpdateButtonOnClick(navController: NavController, viewModel: AddUpdateCustomerDetailViewModel, id: String, context: Context) {
     if(viewModel.fetchAddUpdateCustomerDetailData().name==""||viewModel.fetchAddUpdateCustomerDetailData().rate==""||viewModel.fetchAddUpdateCustomerDetailData().amount==""){
         Toast.makeText(context,"Please Fill All The Fields",Toast.LENGTH_SHORT).show()
     }else{
@@ -107,5 +107,5 @@ private fun addOrUpdateButtonOnClick(navController: NavController, viewModel: Ad
 
 @Serializable
 data class  ScreenB(
-    val id:Long=0L
+    val id:String=""
 )

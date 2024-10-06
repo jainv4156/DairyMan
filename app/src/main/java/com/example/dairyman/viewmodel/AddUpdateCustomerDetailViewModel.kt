@@ -25,10 +25,10 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
         _addUpdateCustomerDetailData=newAddUpdateCustomerDetailModel
     }
 
-    fun addUpdateDairyData(id:Long){
+    fun addUpdateDairyData(id:String){
         lateinit var dairyData: DairyData
         val isNew :Boolean
-        if(id==0L){
+        if(id==""){
             dairyData= DairyData(
                 name = _addUpdateCustomerDetailData.name,
                 rate = _addUpdateCustomerDetailData.rate.toFloat().toInt(),
@@ -88,7 +88,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
 
 
     }
-    fun preFillUpdateInput(id: Long){
+    fun preFillUpdateInput(id: String){
         viewModelScope.launch {
             getDairyDataById(id).collect { dairyData ->
                 dairyData.let {
@@ -102,7 +102,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
             }
         }
     }
-    private fun getDairyDataById(id:Long): Flow<DairyData> {
+    private fun getDairyDataById(id:String): Flow<DairyData> {
         return databaseDao.getDairyDataById(id)
     }
 }

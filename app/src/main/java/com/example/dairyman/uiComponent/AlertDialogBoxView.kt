@@ -95,7 +95,7 @@ suspend fun onAlertClick(viewModel: DairyViewModel,navController: NavController)
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)
     }
-     if(viewModel.getIsDeleteAlertEnabled().id != 0L){
+     if(viewModel.getIsDeleteAlertEnabled().id != ""){
         viewModel.deleteDataById()
         viewModel.resetHomeViewState()
     }

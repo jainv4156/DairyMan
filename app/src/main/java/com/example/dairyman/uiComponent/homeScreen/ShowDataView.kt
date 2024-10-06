@@ -43,7 +43,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
             .clip(RoundedCornerShape(10.dp))
             .background(color = Primary)
             .padding(16.dp)
-            .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() == -1L) {
+            .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() == "") {
                 navController.navigate(
                     ScreenC(id = item.id)
                 )
@@ -94,7 +94,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                 }
             }
         }
-        if(viewModel.getIsEEditDeleteButtonEnabled() != -1L){
+        if(viewModel.getIsEEditDeleteButtonEnabled() != ""){
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(10.dp))

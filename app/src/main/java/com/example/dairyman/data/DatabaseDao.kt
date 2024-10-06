@@ -16,7 +16,7 @@ interface DatabaseDao {
     suspend fun upsertDairyData(dairyData: DairyData)
 
     @Query("SELECT * FROM DairyTable WHERE id=:id")
-    fun getDairyDataById(id:Long):Flow<DairyData>
+    fun getDairyDataById(id:String):Flow<DairyData>
 
     @Delete
     fun deleteDairyData(data: DairyData)
@@ -29,7 +29,7 @@ interface DatabaseDao {
 
 
     @Query("DELETE FROM historyDataTable WHERE dataId=:dataId")
-    suspend fun deleteHistoryData(dataId: Long)
+    suspend fun deleteHistoryData(dataId: String)
 
     @Query("SELECT * FROM historyDataTable")
     suspend fun getAllHistory():List<HistoryData>
@@ -45,7 +45,7 @@ interface DatabaseDao {
 
 
     @Query("SELECT id,amount,rate,date,dataId,isSynced FROM historyDataTable  WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
-    fun getHistoryById(id:Long):Flow<List<HistoryData>>
+    fun getHistoryById(id:String):Flow<List<HistoryData>>
 
 }
 

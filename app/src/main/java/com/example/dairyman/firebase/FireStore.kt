@@ -17,7 +17,7 @@ class FireStoreClass {
          val batch=mFireStoreDb.batch()
 
         for(i in customersInfo){
-            batch.set(mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i.copy(isSynced = true))
+            batch.set(mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(i.id),i.copy(isSynced = true))
         }
         batch.commit()
     }
@@ -28,7 +28,7 @@ class FireStoreClass {
 
         val batch = mFireStoreDb.batch()
         for (diaryData in diaryDataList) {
-            val docRef = mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(diaryData.id.toString())
+            val docRef = mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(diaryData.id)
             val updates = mutableMapOf<String, Any>()
             updates["name"] = diaryData.name
             updates["rate"] = diaryData.rate
@@ -62,7 +62,7 @@ class FireStoreClass {
         val batch=mFireStoreDb.batch()
 
         for(i in customersHistory){
-            batch.set(mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").document(i.id.toString()),i.copy(isSynced = true))
+            batch.set(mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").document(i.id),i.copy(isSynced = true))
         }
         batch.commit()
     }

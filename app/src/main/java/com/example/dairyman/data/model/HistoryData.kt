@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(tableName = "historyDataTable", foreignKeys = [ForeignKey(entity = DairyData::class, childColumns = ["dataId"], parentColumns = ["id"])])
 data class HistoryData(
-    @PrimaryKey(autoGenerate = true)
-    val id:Long=0L,
+    @PrimaryKey
+    val id:String= UUID.randomUUID().toString(),
     @ColumnInfo(name="amount")
     val amount:Float=0F,
     @ColumnInfo(name="rate")
@@ -16,7 +17,7 @@ data class HistoryData(
     @ColumnInfo(name ="date")
     val date: Long=System.currentTimeMillis(),
     @ColumnInfo(name = "dataId")
-    val dataId:Long=0L,
+    val dataId:String="",
     @ColumnInfo(name = "isSynced")
     val isSynced:Boolean=false
 )

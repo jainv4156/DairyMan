@@ -86,7 +86,7 @@ fun HomeView(
         },
     ) {
 
-        if (viewModel.getIsEEditDeleteButtonEnabled()!=-1L) {
+        if (viewModel.getIsEEditDeleteButtonEnabled()!="") {
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
@@ -104,7 +104,7 @@ fun HomeView(
             Box(
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() != -1L) {
+                    .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() != "") {
                         viewModel.resetHomeViewState()
                     }
             ) {

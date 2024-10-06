@@ -38,7 +38,6 @@ class GoogleAuthUiClint(
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try{
-            Log.d("vaibhav","clicked")
 
             val user=auth.signInWithCredential(googleCredentials).await().user
             SignInResult(

@@ -3,7 +3,6 @@ package com.example.dairyman.viewmodel
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +28,7 @@ import java.time.ZoneId
 class DairyViewModel:ViewModel(){
     private var dayForTempAmount = mutableStateOf("1")
     private var tempAmount= mutableStateOf("0")
-    private var idTempAmount= 0L
+    private var idTempAmount= ""
     private  var customersList: MutableStateFlow<List<DairyData>> = MutableStateFlow(listOf())
     private lateinit var customerListFromDatabase: Flow<List<DairyData>>
     private val databaseDao= DairyApp.db.DatabaseDao()
@@ -39,7 +38,7 @@ class DairyViewModel:ViewModel(){
     private val mIsAlertDialogBox= mutableStateOf(false)
     private val mIsSetTempAmountViewActive= mutableStateOf(false)
     private val mIsBlurredBackgroundActive= mutableStateOf(false)
-    private val mIsEditDeleteButtonEnabled= mutableLongStateOf(-1L)
+    private val mIsEditDeleteButtonEnabled= mutableStateOf("")
     private val mSignInAlertBox= mutableStateOf(false)
     val isActionButtonExtended = mutableStateOf(false)
     private val mIsFloatingButtonVisible= mutableStateOf(true)
@@ -86,20 +85,20 @@ class DairyViewModel:ViewModel(){
     fun getIsActionButtonExtended():Boolean{
         return isActionButtonExtended.value
     }
-    fun getIsEEditDeleteButtonEnabled():Long{
-        return mIsEditDeleteButtonEnabled.longValue
+    fun getIsEEditDeleteButtonEnabled():String{
+        return mIsEditDeleteButtonEnabled.value
     }
 
 
 
-    fun setIsCircularProgressBarActive(value:Boolean){
+    private fun setIsCircularProgressBarActive(value:Boolean){
         isCircularProgressBarActive.value=value
     }
     private fun setIsBlurredBackgroundActive(value:Boolean){
         mIsBlurredBackgroundActive.value=value
     }
-    private fun setIsEditDeleteButtonEnabled(value:Long){
-        mIsEditDeleteButtonEnabled.longValue=value
+    private fun setIsEditDeleteButtonEnabledId(value:String){
+        mIsEditDeleteButtonEnabled.value=value
     }
     private fun mSetIsFloatingButtonVisible(value:Boolean){
         mIsFloatingButtonVisible.value=value
@@ -138,12 +137,12 @@ class DairyViewModel:ViewModel(){
         setIsActionButtonExtended(false)
         mIsAlertDialogBox.value=false
         mSetIsFloatingButtonVisible(true )
-        setIsEditDeleteButtonEnabled(-1L)
+        setIsEditDeleteButtonEnabledId("")
         setIsBlurredBackgroundActive(false)
         setIsSetTempAmountViewActive(false)
         mIsSearchActive.value = false
         setSignInAlertBox(false)
-        mIsDeleteAlertEnabled.value=DairyData(id=0L)
+        mIsDeleteAlertEnabled.value=DairyData(id="")
         mAlertDialogTitle=""
         mIsUpdateAmountAlertEnable.value=false
 
@@ -159,7 +158,7 @@ class DairyViewModel:ViewModel(){
     }
 
 
-    fun setIdTempAmount(id:Long){
+    fun setIdTempAmount(id:String){
         idTempAmount=id
     }
     fun setSearchQuery(value:String){
@@ -257,10 +256,10 @@ class DairyViewModel:ViewModel(){
         }
 
     }
-    fun getHistoryById(id:Long):Flow<List<HistoryData>>{
+    fun getHistoryById(id:String):Flow<List<HistoryData>>{
         return databaseDao.getHistoryById(id = id)
     }
-    fun getProfileDataForHistory(id: Long):Flow<DairyData>{
+    fun getProfileDataForHistory(id: String):Flow<DairyData>{
         return databaseDao.getDairyDataById(id=id)
     }
 
@@ -312,9 +311,9 @@ class DairyViewModel:ViewModel(){
         mSignInAlertBox.value=value
     }
 
-    fun enableMoreOption(id: Long) {
+    fun enableMoreOption(id: String) {
         mSetIsFloatingButtonVisible(false)
-        setIsEditDeleteButtonEnabled(id)
+        setIsEditDeleteButtonEnabledId(id)
         setIsBlurredBackgroundActive(true)
     }
 

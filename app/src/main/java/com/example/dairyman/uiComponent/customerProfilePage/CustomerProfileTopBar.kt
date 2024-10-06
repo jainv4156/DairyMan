@@ -22,7 +22,7 @@ import com.example.dairyman.viewmodel.DairyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomerProfileTopBar(id:Long,onBackNavClicked:()->Unit={}){
+fun CustomerProfileTopBar(id:String,onBackNavClicked:()->Unit={}){
     val navigationIcon: @Composable () ->Unit = {
         IconButton(onClick = { onBackNavClicked()}) {
             Icon(

@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun CustomerProfileView(id: Long,navController: NavController) {
+fun CustomerProfileView(id: String,navController: NavController) {
     Scaffold(modifier = Modifier
         .fillMaxSize(),
         topBar = { CustomerProfileTopBar(id = id, onBackNavClicked = { navController.navigate(
@@ -100,5 +100,5 @@ fun CustomerProfileView(id: Long,navController: NavController) {
 }
 @Serializable
 data class ScreenC(
-    val id:Long
+    val id:String
 )

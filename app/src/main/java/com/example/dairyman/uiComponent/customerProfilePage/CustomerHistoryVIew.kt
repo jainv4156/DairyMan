@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun CustomerHistoryView(id:Long){
+fun CustomerHistoryView(id:String){
     val historyList=DairyViewModel().getHistoryById(id).collectAsState(initial = listOf())
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(12.dp,20.dp)) {
         Text(text = "History", fontWeight = FontWeight.Bold, fontSize = 24.sp, modifier =Modifier.padding(bottom = 16.dp,top=16.dp))

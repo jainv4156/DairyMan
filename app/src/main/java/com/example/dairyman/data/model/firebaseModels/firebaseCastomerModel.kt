@@ -2,9 +2,10 @@ package com.example.dairyman.data.model.firebaseModels
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.util.UUID
 
 data class FirebaseCustomerModel(
-    val id:Long=0L,
+    val id:String= UUID.randomUUID().toString(),
     val name:String="",
     val rate:Int=0,
     val amount:Float=0F,
@@ -13,7 +14,7 @@ data class FirebaseCustomerModel(
     val dateUpdated:Long=System.currentTimeMillis(),
 ):Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readLong(),
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readInt(),
         parcel.readFloat(),
@@ -23,7 +24,7 @@ data class FirebaseCustomerModel(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(id)
+        parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeInt(rate)
         parcel.writeFloat(amount)

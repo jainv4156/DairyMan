@@ -1,4 +1,4 @@
-package com.example.dairyman.uiComponent.HomeScreen
+package com.example.dairyman.uiComponent.homeScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.example.dairyman.Data.Model.DairyData
+import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary

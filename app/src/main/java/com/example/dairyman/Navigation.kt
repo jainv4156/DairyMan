@@ -16,20 +16,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.dairyman.Presentation.Sign_in.GoogleAuthUiClint
-import com.example.dairyman.SnackBar.SnackBarAction
-import com.example.dairyman.SnackBar.SnackBarController
-import com.example.dairyman.SnackBar.SnackBarEvent
+import com.example.dairyman.Presentation.sign_in.GoogleAuthUiClint
+import com.example.dairyman.snackBar.SnackBarAction
+import com.example.dairyman.snackBar.SnackBarController
+import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
 import com.example.dairyman.uiComponent.customerProfilePage.CustomerProfileView
 import com.example.dairyman.uiComponent.ScreenD
 import com.example.dairyman.uiComponent.SignInScreen
-import com.example.dairyman.uiComponent.HomeScreen.ScreenA
+import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
-import com.example.dairyman.uiComponent.HomeScreen.HomeView
+import com.example.dairyman.uiComponent.homeScreen.HomeView
 import com.example.dairyman.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 

@@ -1,9 +1,9 @@
-package com.example.dairyman.Data
+package com.example.dairyman.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.data.model.HistoryData
 
 @Database(entities = [DairyData::class, HistoryData::class], version = 1)
 

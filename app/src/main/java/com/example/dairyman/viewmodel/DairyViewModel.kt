@@ -9,11 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
-import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.Data.Model.HistoryData
-import com.example.dairyman.SnackBar.SnackBarAction
-import com.example.dairyman.SnackBar.SnackBarController
-import com.example.dairyman.SnackBar.SnackBarEvent
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.data.model.HistoryData
+import com.example.dairyman.snackBar.SnackBarAction
+import com.example.dairyman.snackBar.SnackBarController
+import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers.IO
@@ -93,9 +93,6 @@ class DairyViewModel:ViewModel(){
     private fun setIsEditDeleteButtonEnabled(value:Long){
         mIsEditDeleteButtonEnabled.longValue=value
     }
-    private fun setAlertDialogBox(value:Boolean){
-        mIsAlertDialogBox.value=value
-    }
     private fun mSetIsFloatingButtonVisible(value:Boolean){
         mIsFloatingButtonVisible.value=value
     }
@@ -131,7 +128,7 @@ class DairyViewModel:ViewModel(){
     fun resetHomeViewState(){
         setSearchQuery("")
         setIsActionButtonExtended(false)
-        setAlertDialogBox(false)
+        mIsAlertDialogBox.value=false
         mSetIsFloatingButtonVisible(true )
         setIsEditDeleteButtonEnabled(-1L)
         setIsBlurredBackgroundActive(false)
@@ -192,14 +189,11 @@ class DairyViewModel:ViewModel(){
     }
 
     fun updateTodayAmountButton(){
-        Log.d("ha","jaja")
 
         try {
             val historyDataList: MutableList<HistoryData> = mutableListOf()
-            Log.d("ha1","jaja")
 
             viewModelScope.launch{
-                Log.d("h2","jaja")
 
                 val dataToRecord= databaseDao.loadAllDairyData().first()
                 dataToRecord.forEach{
@@ -218,14 +212,12 @@ class DairyViewModel:ViewModel(){
                     }
 
                 }
-                Log.d("h3","jaja")
 
                 databaseDao.insertHistory(historyDataList)
                 databaseDao.updateTodayAmount()
             }
 
             viewModelScope.launch {
-                Log.d("ha4","jaja")
 
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.data.model.HistoryData
 import com.example.dairyman.ui.theme.GoodGreen
 import com.example.dairyman.viewmodel.DairyViewModel
 import java.text.SimpleDateFormat

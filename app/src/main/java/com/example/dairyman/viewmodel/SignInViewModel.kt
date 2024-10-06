@@ -2,8 +2,8 @@ package com.example.dairyman.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.dairyman.Data.Model.userdataModel.SignInResult
-import com.example.dairyman.Data.Model.userdataModel.SignInState
+import com.example.dairyman.data.model.userdataModel.SignInResult
+import com.example.dairyman.data.model.userdataModel.SignInState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

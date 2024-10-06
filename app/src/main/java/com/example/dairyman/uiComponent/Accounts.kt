@@ -1,11 +1,8 @@
 package com.example.dairyman.uiComponent
 
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -36,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,17 +38,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.dairyman.Data.Model.userdataModel.SignInState
-import com.example.dairyman.SnackBar.ObserveAsEvent
-import com.example.dairyman.SnackBar.SnackBarController
+import com.example.dairyman.data.model.userdataModel.SignInState
+import com.example.dairyman.snackBar.ObserveAsEvent
+import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
-import com.example.dairyman.uiComponent.HomeScreen.ScreenA
+import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlin.math.sin
 
 @Composable
 fun SignInScreen(
@@ -64,24 +56,24 @@ fun SignInScreen(
     navController: NavController,
     onSignOut: () -> Unit
 ){
-    val snackbarHostState = remember {
+    val snackBarHostState = remember {
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
     ObserveAsEvent(
         flow = SnackBarController.events,
-        snackbarHostState
+        snackBarHostState
     ) { event ->
         scope.launch {
-            snackbarHostState.currentSnackbarData?.dismiss()
+            snackBarHostState.currentSnackbarData?.dismiss()
 
-            val result=snackbarHostState.showSnackbar(
+            val result=snackBarHostState.showSnackbar(
                 message = event.message,
                 actionLabel = event.action?.name,
                 duration = SnackbarDuration.Short
             )
             if(result == SnackbarResult.ActionPerformed) {
-                snackbarHostState.currentSnackbarData?.dismiss()
+                snackBarHostState.currentSnackbarData?.dismiss()
             }
 
         }
@@ -92,7 +84,7 @@ fun SignInScreen(
             .fillMaxSize(),
         snackbarHost = {
             SnackbarHost(
-                hostState = snackbarHostState
+                hostState = snackBarHostState
             )
         },
         topBar = { TopAppBarView(

@@ -1,4 +1,4 @@
-package com.example.dairyman.Data.Model.AddUpdateCustomerDetailData
+package com.example.dairyman.data.model.addUpdateCustomerDetailData
 
 data class AddUpdateCustomerDetailModel(
     val name:String,

@@ -6,11 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
-import com.example.dairyman.Data.Model.AddUpdateCustomerDetailData.AddUpdateCustomerDetailModel
-import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.SnackBar.SnackBarAction
-import com.example.dairyman.SnackBar.SnackBarController
-import com.example.dairyman.SnackBar.SnackBarEvent
+import com.example.dairyman.data.model.addUpdateCustomerDetailData.AddUpdateCustomerDetailModel
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.snackBar.SnackBarAction
+import com.example.dairyman.snackBar.SnackBarController
+import com.example.dairyman.snackBar.SnackBarEvent
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

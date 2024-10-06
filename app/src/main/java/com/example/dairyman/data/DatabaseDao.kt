@@ -1,4 +1,4 @@
-package com.example.dairyman.Data
+package com.example.dairyman.data
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,8 +6,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
-import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.data.model.HistoryData
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface DatabaseDao {

@@ -1,11 +1,11 @@
-package com.example.dairyman.Presentation.Sign_in
+package com.example.dairyman.Presentation.sign_in
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
-import com.example.dairyman.Data.Model.userdataModel.SignInResult
-import com.example.dairyman.Data.Model.userdataModel.userDataModels
+import com.example.dairyman.data.model.userdataModel.SignInResult
+import com.example.dairyman.data.model.userdataModel.UserDataModel
 import com.example.dairyman.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -43,7 +43,7 @@ class GoogleAuthUiClint(
             val user=auth.signInWithCredential(googleCredentials).await().user
             SignInResult(
                 data= user?.run {
-                    userDataModels(
+                    UserDataModel(
                         userId=uid,
                         userName = displayName,
                     )
@@ -66,8 +66,8 @@ class GoogleAuthUiClint(
             if( e is CancellationException) throw  e
 
     }}
-    fun getSignInUser():userDataModels?=auth.currentUser?.run {
-        userDataModels(
+    fun getSignInUser():UserDataModel?=auth.currentUser?.run {
+        UserDataModel(
             userId = uid,
             userName = displayName,
         )

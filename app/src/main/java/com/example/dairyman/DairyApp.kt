@@ -2,7 +2,7 @@ package com.example.dairyman
 
 import android.app.Application
 import androidx.room.Room
-import com.example.dairyman.Data.AppDatabase
+import com.example.dairyman.data.AppDatabase
 import com.google.firebase.FirebaseApp
 
 class DairyApp: Application() {

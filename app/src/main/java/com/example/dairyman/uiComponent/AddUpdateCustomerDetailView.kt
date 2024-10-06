@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
-import com.example.dairyman.uiComponent.HomeScreen.ScreenA
+import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
 import kotlinx.serialization.Serializable
 

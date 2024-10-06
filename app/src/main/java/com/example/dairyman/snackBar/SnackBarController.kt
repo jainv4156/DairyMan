@@ -1,4 +1,4 @@
-package com.example.dairyman.SnackBar
+package com.example.dairyman.snackBar
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

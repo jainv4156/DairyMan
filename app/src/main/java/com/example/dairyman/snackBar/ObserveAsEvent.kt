@@ -1,4 +1,4 @@
-package com.example.dairyman.SnackBar
+package com.example.dairyman.snackBar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

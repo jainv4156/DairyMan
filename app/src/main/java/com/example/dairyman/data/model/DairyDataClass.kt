@@ -1,4 +1,4 @@
-package com.example.dairyman.Data.Model
+package com.example.dairyman.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

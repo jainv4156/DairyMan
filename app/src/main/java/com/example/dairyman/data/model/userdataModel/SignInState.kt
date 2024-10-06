@@ -1,4 +1,4 @@
-package com.example.dairyman.Data.Model.userdataModel
+package com.example.dairyman.data.model.userdataModel
 
 data class SignInState(
         val isSignInSuccessful:Boolean=false,

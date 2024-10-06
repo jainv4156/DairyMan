@@ -1,4 +1,4 @@
-package com.example.dairyman.Data.Model.firebaseModels
+package com.example.dairyman.data.model.firebaseModels
 
 import android.os.Parcel
 import android.os.Parcelable

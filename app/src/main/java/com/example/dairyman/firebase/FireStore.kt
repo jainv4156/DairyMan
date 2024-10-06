@@ -1,7 +1,7 @@
 package com.example.dairyman.firebase
 
-import com.example.dairyman.Data.Model.DairyData
-import com.example.dairyman.Data.Model.HistoryData
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.data.model.HistoryData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await

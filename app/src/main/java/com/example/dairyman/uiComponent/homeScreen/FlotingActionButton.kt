@@ -1,4 +1,4 @@
-package com.example.dairyman.uiComponent.HomeScreen
+package com.example.dairyman.uiComponent.homeScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -42,7 +42,7 @@ fun FloatingActionButtonView(
 ){
     Column ( horizontalAlignment = Alignment.End){
     if(viewModel.isActionButtonExtended.value){
-        ActionButton(viewModel,navController,toggleActinButton= { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended()) })
+        ActionButton(viewModel,navController)
     }
     FloatingActionButton(
         containerColor= if (viewModel.isActionButtonExtended.value) Primary else  Secondary,
@@ -60,7 +60,7 @@ fun FloatingActionButtonView(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
-fun ActionButton(viewModel: DairyViewModel,navController: NavController,toggleActinButton:()->Unit){
+fun ActionButton(viewModel: DairyViewModel,navController: NavController){
 
     val scope=rememberCoroutineScope()
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {

@@ -1,4 +1,4 @@
-package com.example.dairyman.uiComponent.HomeScreen
+package com.example.dairyman.uiComponent.homeScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -28,12 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.example.dairyman.SnackBar.ObserveAsEvent
-import com.example.dairyman.SnackBar.SnackBarController
+import com.example.dairyman.snackBar.ObserveAsEvent
+import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.uiComponent.AlertDialogBoxView
-import com.example.dairyman.uiComponent.ScreenD
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -44,24 +41,24 @@ fun HomeView(
     navController: NavController,
     viewModel: DairyViewModel,
 ){
-    val snackbarHostState = remember {
+    val snackBarHostState = remember {
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
     ObserveAsEvent(
         flow = SnackBarController.events,
-        snackbarHostState
+        snackBarHostState
     ) { event ->
         scope.launch {
-            snackbarHostState.currentSnackbarData?.dismiss()
+            snackBarHostState.currentSnackbarData?.dismiss()
 
-            val result = snackbarHostState.showSnackbar(
+            val result = snackBarHostState.showSnackbar(
                 message = event.message,
                 actionLabel = event.action?.name,
                 duration = SnackbarDuration.Long
             )
             if(result == SnackbarResult.ActionPerformed) {
-                snackbarHostState.currentSnackbarData?.dismiss()
+                snackBarHostState.currentSnackbarData?.dismiss()
             }
         }
     }
@@ -77,7 +74,7 @@ fun HomeView(
         },
         snackbarHost = {
             SnackbarHost(
-                hostState = snackbarHostState
+                hostState = snackBarHostState
             )
         },
         topBar = {

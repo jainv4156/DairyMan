@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dairyman.ui.theme.Background
-import com.example.dairyman.uiComponent.HomeScreen.ScreenA
+import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.DairyViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat

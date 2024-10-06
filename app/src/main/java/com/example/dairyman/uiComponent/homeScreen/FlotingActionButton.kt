@@ -70,15 +70,17 @@ fun ActionButton(viewModel: DairyViewModel,navController: NavController){
 
         Box(
             modifier = Modifier
+
+                .padding(bottom = 16.dp)
+
+                .clip(RoundedCornerShape(10.dp))
+                .background(Secondary)
+                .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
                 .clickable {
                     scope.launch {
                         viewModel.checkSyncDataWithCloud(context)
                     }
                 }
-                .padding(bottom = 16.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(Secondary)
-                .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
 
         ) {
             Text(text = "Sync", modifier = Modifier.padding(10.dp), fontWeight = FontWeight.Medium, fontSize = 18.sp)

@@ -68,18 +68,7 @@ fun ChangeAmountView(viewModel: HistoryViewModel){
                     Text(fontWeight = FontWeight.Medium,text = "Cancel")
                 }
                 Box (modifier = Modifier
-                    .clickable {
-                        if(viewModel.getPendingAmount().isNotEmpty()){
 
-                            scope.launch {
-                                viewModel.updatePendingAmount()
-                            }
-                        }
-                        else{
-                            Toast.makeText(context,"Please Fill Required The Fields", Toast.LENGTH_SHORT).show()
-                        }
-
-                    }
                     .shadow(
                         elevation = 3.dp,
                         RoundedCornerShape(12.dp),
@@ -89,6 +78,17 @@ fun ChangeAmountView(viewModel: HistoryViewModel){
                     .padding(1.dp, 0.dp, 1.dp, 5.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(color = DarkBackground)
+                    .clickable {
+                        if(viewModel.getPendingAmount().isNotEmpty()){
+                            scope.launch {
+                                viewModel.updatePendingAmount()
+                            }
+                        }
+                        else{
+                            Toast.makeText(context,"Please Fill Required The Fields", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
                     .padding(16.dp, 4.dp)
 
                 ){

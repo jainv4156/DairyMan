@@ -43,12 +43,13 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
             .fillMaxSize()
             .clip(RoundedCornerShape(10.dp))
             .background(color = Primary)
-            .padding(16.dp)
+
             .clickable(enabled = viewModel.getIsEEditDeleteButtonEnabled() == "") {
                 navController.navigate(
                     ScreenC(id = item.id)
                 )
             }
+            .padding(16.dp)
             .zIndex(0f)
         ) {
             Text(

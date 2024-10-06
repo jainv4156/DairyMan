@@ -135,6 +135,10 @@ fun AddUpdateCustomerDetailView(
                     focusRequester.requestFocus()
                 }
             Box(modifier = Modifier
+
+                .padding(0.dp, 24.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Primary)
                 .clickable {
                     addOrUpdateButtonOnClick(
                         navController,
@@ -143,9 +147,6 @@ fun AddUpdateCustomerDetailView(
                         context = context
                     )
                 }
-                .padding(0.dp, 24.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Primary)
                 .padding(16.dp)
 
                 .fillMaxWidth(),

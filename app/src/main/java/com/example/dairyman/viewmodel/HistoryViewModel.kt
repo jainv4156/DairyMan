@@ -4,6 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
+import com.example.dairyman.snackBar.SnackBarAction
+import com.example.dairyman.snackBar.SnackBarController
+import com.example.dairyman.snackBar.SnackBarEvent
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -36,10 +39,26 @@ class HistoryViewModel: ViewModel() {
 
      suspend fun updatePendingAmount(){
         viewModelScope.launch (IO){
-            val dairyData=databaseDao.getDairyDataById(pendingAmountId).first()
-            databaseDao.upsertDairyData(dairyData.copy(pendingAmount = pendingAmount.value.toInt()))
-            setChangeAmountViewStatus(false)
-            setPendingAmount("")
+            try{
+                val dairyData=databaseDao.getDairyDataById(pendingAmountId).first()
+                databaseDao.upsertDairyData(dairyData.copy(pendingAmount = pendingAmount.value.toInt()))
+                setChangeAmountViewStatus(false)
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Amount is Updated to ${pendingAmount.value}",
+                        action = SnackBarAction(name = "X")
+                    )
+                )
+                setPendingAmount("")
+
+            }catch (e:Exception){
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Something wrong happened",
+                        action = SnackBarAction(name = "X")
+                    )
+                )
+            }
         }
     }
 }

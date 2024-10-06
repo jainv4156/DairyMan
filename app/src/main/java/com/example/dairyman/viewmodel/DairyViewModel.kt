@@ -8,10 +8,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dairyman.DairyApp
 import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.data.model.HistoryData
@@ -244,9 +242,6 @@ class DairyViewModel:ViewModel(){
     suspend fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
         try {
             viewModelScope.launch(IO) {
-                if(databaseDao.getHistoryById(dairyData.id).first().isNotEmpty()){
-                    databaseDao.deleteHistoryData(dairyData.id)
-                }
                 databaseDao.deleteDairyData(dairyData)
             }
             SnackBarController.sendEvent(
@@ -258,7 +253,7 @@ class DairyViewModel:ViewModel(){
                     )
                 )
         }catch (e:Exception){
-            Log.d("helow",e.toString())
+            Log.d("error",e.message.toString())
                somethingWrongSnackBar()
         }
         resetHomeViewState()
@@ -339,7 +334,7 @@ class DairyViewModel:ViewModel(){
             resetHomeViewState()
             if(isInternetAvailable(context =context )){
                 setIsCircularProgressBarActive(true)
-                viewModelScope.launch() {
+                viewModelScope.launch {
                     try {
                         syncDataWithCloud()
                         setIsCircularProgressBarActive(false)

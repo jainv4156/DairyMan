@@ -45,9 +45,7 @@ fun MoreOptionView(
             .padding(16.dp)
         ){
             Box (modifier = Modifier
-                .clickable {
-                    navController.navigate(ScreenB(item.id))
-                }
+
                 .shadow(
                     elevation = 3.dp,
                     RoundedCornerShape(12.dp),
@@ -57,6 +55,9 @@ fun MoreOptionView(
                 .padding(1.dp, 0.dp, 1.dp, 5.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(color = DarkBackground)
+                .clickable {
+                    navController.navigate(ScreenB(item.id))
+                }
                 .padding(16.dp, 4.dp)
 
             ){
@@ -64,9 +65,7 @@ fun MoreOptionView(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Box(modifier = Modifier
-                .clickable {
-                    viewModel.enableDeleteAlert(item)
-                }
+
                 .shadow(
                     elevation = 3.dp,
                     RoundedCornerShape(12.dp),
@@ -76,6 +75,9 @@ fun MoreOptionView(
                 .padding(1.dp, 0.dp, 1.dp, 5.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(color = DarkBackground)
+                .clickable {
+                    viewModel.enableDeleteAlert(item)
+                }
                 .padding(16.dp, 4.dp)
 
 

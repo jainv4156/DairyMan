@@ -12,9 +12,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -23,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dairyman.snackBar.ObserveAsEvent
+import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Secondary
 import com.example.dairyman.uiComponent.homeScreen.BlurredBackground
@@ -30,14 +38,41 @@ import com.example.dairyman.uiComponent.homeScreen.ChangeQuantityScreen
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.viewmodel.HistoryViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun CustomerProfileView(id: String,navController: NavController,viewModel:HistoryViewModel) {
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+    val scope = rememberCoroutineScope()
+    ObserveAsEvent(
+        flow = SnackBarController.events,
+        snackBarHostState
+    ) { event ->
+        scope.launch {
+            snackBarHostState.currentSnackbarData?.dismiss()
+
+            val result = snackBarHostState.showSnackbar(
+                message = event.message,
+                actionLabel = event.action?.name,
+                duration = SnackbarDuration.Long
+            )
+            if(result == SnackbarResult.ActionPerformed) {
+                snackBarHostState.currentSnackbarData?.dismiss()
+            }
+        }
+    }
     Scaffold(modifier = Modifier
         .fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState
+            )
+        },
         topBar = { CustomerProfileTopBar(id = id, onBackNavClicked = { navController.navigate(
         ScreenA
     ) }) }) {

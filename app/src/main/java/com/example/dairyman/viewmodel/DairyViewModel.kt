@@ -222,7 +222,10 @@ class DairyViewModel:ViewModel(){
 
             }
             delay(500)
-            databaseDao.insertHistory(historyDataList)
+            for( historyData in historyDataList){
+
+                databaseDao.insertInHistory(historyData)
+            }
             databaseDao.updateTodayAmount()
 
             setIsCircularProgressBarActive(false)
@@ -337,8 +340,8 @@ class DairyViewModel:ViewModel(){
             if(isInternetAvailable(context =context )){
                 setIsCircularProgressBarActive(true)
                 viewModelScope.launch() {
-                    syncDataWithCloud()
                     try {
+                        syncDataWithCloud()
                         setIsCircularProgressBarActive(false)
                         SnackBarController.sendEvent(
                             event = SnackBarEvent(
@@ -429,7 +432,7 @@ class DairyViewModel:ViewModel(){
         val historyDataList:List<HistoryData> =databaseDao.getAllHistory()
         val fireBaseListNotInHistoryList= mutableListOf<HistoryData>()
         for (i in fireBaseHistoryData){
-            if ( historyDataList.find {it.id ==i.id}==null){
+            if ( historyDataList.find {it.id == i.id}==null){
                 fireBaseListNotInHistoryList.add(i)
             }
             else{
@@ -444,7 +447,12 @@ class DairyViewModel:ViewModel(){
             }
             else{
                 if(fireBaseListNotInHistoryList.isNotEmpty()){
-                    databaseDao.insertHistory(fireBaseListNotInHistoryList)
+                    for (historyData in fireBaseListNotInHistoryList){
+                        databaseDao.insertInHistory(historyData)
+
+                    }
+
+
                 }
             }
             if(historyDataList.isNotEmpty()){

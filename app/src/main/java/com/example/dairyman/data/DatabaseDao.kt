@@ -38,7 +38,8 @@ interface DatabaseDao {
     suspend fun getHistoryCount(date:Long):Int
 
     @Insert
-    suspend fun insertHistory(historyData: List<HistoryData>)
+    suspend fun insertInHistory(historyData:HistoryData)
+
     @Update
     suspend fun updateHistory(historyData: HistoryData)
 

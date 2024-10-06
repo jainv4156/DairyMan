@@ -22,8 +22,13 @@ class FireStoreClass {
         batch.commit()
     }
     fun deleteDairyDataFromFireStore(dairyDataList:List<DairyData>){
-
+        val batch = mFireStoreDb.batch()
+        for(dairyData in dairyDataList){
+            batch.delete(mFireStoreDb.collection("CustomerData").document(getCurrentUserMail()).collection("data").document(dairyData.id))
+        }
+        batch.commit()
     }
+
     fun updateDiaryDataToFireStore(diaryDataList: List<DairyData>) {
 
         val batch = mFireStoreDb.batch()
@@ -75,4 +80,12 @@ class FireStoreClass {
          }
         return list
     }
+    fun deleteHistoryDataFromFireStore(fireBaseListNotInHistoryList: List<HistoryData>) {
+        val batch = mFireStoreDb.batch()
+        for(historyData in fireBaseListNotInHistoryList){
+            batch.delete(mFireStoreDb.collection("CustomerHistory").document(getCurrentUserMail()).collection("data").document(historyData.id))
+        }
+        batch.commit()
+    }
+
 }

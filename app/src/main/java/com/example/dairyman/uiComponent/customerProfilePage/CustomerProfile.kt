@@ -2,17 +2,21 @@ package com.example.dairyman.uiComponent.customerProfilePage
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,14 +24,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dairyman.ui.theme.Background
+import com.example.dairyman.ui.theme.Secondary
+import com.example.dairyman.uiComponent.homeScreen.BlurredBackground
+import com.example.dairyman.uiComponent.homeScreen.ChangeQuantityScreen
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HistoryViewModel
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun CustomerProfileView(id: String,navController: NavController) {
+fun CustomerProfileView(id: String,navController: NavController,viewModel:HistoryViewModel) {
     Scaffold(modifier = Modifier
         .fillMaxSize(),
         topBar = { CustomerProfileTopBar(id = id, onBackNavClicked = { navController.navigate(
@@ -74,15 +82,31 @@ fun CustomerProfileView(id: String,navController: NavController) {
 
                     )
                 }
-
-                val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                if(profile.value !=null){
-                    val dateUpdated = simpleDateFormat.format(profile.value!!.dateUpdated)
-                    Text(text = "Last updated: $dateUpdated",
-                        modifier = Modifier.padding(top=12.dp)
+                    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    if(profile.value !=null){
+                        val dateUpdated = simpleDateFormat.format(profile.value!!.dateUpdated)
+                        Text(text = "Last updated: $dateUpdated",
+                            modifier = Modifier.padding(top=12.dp)
                         )
 
 
+                    }
+
+                Box(modifier = Modifier
+                    .padding(top=12.dp)
+                    .clickable {
+                        viewModel.setPendingAmountId(id)
+                        viewModel.setChangeAmountViewStatus(true)
+                    }
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(color = Secondary)
+                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(10.dp))
+
+                ) {
+                    Text(
+                        modifier = Modifier.padding(8.dp, 4.dp),
+                        text = "Change Amount"
+                    )
                 }
             }
                 Canvas(modifier = Modifier.fillMaxWidth()){
@@ -95,6 +119,14 @@ fun CustomerProfileView(id: String,navController: NavController) {
                 CustomerHistoryView(id = id)
             }
 
+        }
+        if (viewModel.getChangeAmountViewStatus()) {
+            BlurredBackground(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable { viewModel.setChangeAmountViewStatus(false) }
+            )
+            ChangeAmountView(viewModel)
         }
     }
 }

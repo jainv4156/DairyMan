@@ -39,6 +39,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
         .fillMaxSize().padding(0.dp,6.dp)
     ){
         Column(modifier = Modifier
+
             .fillMaxSize()
             .clip(RoundedCornerShape(10.dp))
             .background(color = Primary)
@@ -85,8 +86,8 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                         )
                     }
                     Icon(modifier = Modifier
-                        .padding(start = 8.dp)
-                        .clickable { viewModel.enableMoreOption(item.id) },
+                        .clickable { viewModel.enableMoreOption(item.id) }
+                        .padding(start = 8.dp),
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "MoreOptions",
                         tint = Accent
@@ -97,10 +98,11 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
         if(viewModel.getIsEEditDeleteButtonEnabled() != ""){
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
+                .clickable { viewModel.resetHomeViewState() }
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.Black.copy(alpha = 0.5f))
                 .height(88.dp)
-                .clickable { viewModel.resetHomeViewState() }
+
             )
         }
         if(viewModel.getIsEEditDeleteButtonEnabled()==item.id){

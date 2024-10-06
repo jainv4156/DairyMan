@@ -12,13 +12,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +37,7 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -49,18 +60,39 @@ fun AddUpdateCustomerDetailView(
             .fillMaxSize()
             .padding(24.dp),contentAlignment=Alignment.Center) {
         Column (modifier = Modifier.padding(bottom = 150.dp),horizontalAlignment = Alignment.CenterHorizontally){
+                val focusRequester = remember {
+                    FocusRequester()
+                }
+                val focusManager = LocalFocusManager.current
                 OutlinedTextFieldStyle(
                     viewModel.fetchAddUpdateCustomerDetailData().name,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(name = it)) },
                     title = "Name",
-                    keyboardOptions = KeyboardType.Text
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                            ),
+                    keyboardAction = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextFieldStyle(
                     value = viewModel.fetchAddUpdateCustomerDetailData().rate,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(rate = it)) },
                     title = "Rate",
-                    keyboardOptions = KeyboardType.Number
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardAction = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
                 Spacer(modifier = Modifier
                     .height(24.dp)
@@ -68,25 +100,54 @@ fun AddUpdateCustomerDetailView(
                 OutlinedTextFieldStyle(
                     value = viewModel.fetchAddUpdateCustomerDetailData().amount,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(amount = it)) },
-                    title = "Quantity(kg)"
+                    title = "Quantity(kg)",
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardAction = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextFieldStyle(
                     value =viewModel.fetchAddUpdateCustomerDetailData().pendingAmount,
                     onValueChange = { viewModel.setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = viewModel.fetchAddUpdateCustomerDetailData().copy(pendingAmount = it)) },
-                    title = "Previous Balance"
+                    title = "Previous Balance",
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardAction = KeyboardActions(
+                        onNext = {
+                            addOrUpdateButtonOnClick(
+                                navController,
+                                id = id,
+                                viewModel = viewModel,
+                                context = context
+                            )
+                        }
+                    )
                 )
+                LaunchedEffect(key1 = Unit) {
+                    focusRequester.requestFocus()
+                }
             Box(modifier = Modifier
-                .padding( 0.dp,24.dp)
+                .clickable {
+                    addOrUpdateButtonOnClick(
+                        navController,
+                        id = id,
+                        viewModel = viewModel,
+                        context = context
+                    )
+                }
+                .padding(0.dp, 24.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(Primary)
-                .padding( 16.dp)
-                .clickable { addOrUpdateButtonOnClick(
-                    navController,
-                    id =id,
-                    viewModel = viewModel,
-                    context = context
-                ) }
+                .padding(16.dp)
+
                 .fillMaxWidth(),
                 contentAlignment = Alignment.Center) {
                 Text(text = if (id == "") "Add Record" else "Update Record", color = Background, fontSize = 16.sp)

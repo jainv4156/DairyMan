@@ -2,6 +2,7 @@ package com.example.dairyman.uiComponent
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -17,7 +18,9 @@ fun OutlinedTextFieldStyle(
     value:String,
     onValueChange:(String)-> Unit,
     title:String,
-    keyboardOptions:KeyboardType= KeyboardType.Decimal
+    modifier:Modifier=Modifier,
+    keyboardOptions:KeyboardOptions= KeyboardOptions(keyboardType = KeyboardType.Decimal),
+    keyboardAction: KeyboardActions = KeyboardActions.Default,
 ){
     val colorOnThemeBase=  if(isSystemInDarkTheme()) colorResource(R.color.white) else colorResource(
         R.color.black)
@@ -26,8 +29,9 @@ fun OutlinedTextFieldStyle(
         label = { Text(text = title) },
         value = value,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType =keyboardOptions),
+        modifier =Modifier.let { modifier.fillMaxWidth() },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardAction,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorOnThemeBase,
             unfocusedBorderColor = colorOnThemeBase,

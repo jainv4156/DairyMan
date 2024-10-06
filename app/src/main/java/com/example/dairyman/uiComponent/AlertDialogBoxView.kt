@@ -49,6 +49,9 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround) {
                     Box (modifier = Modifier
+                        .clickable {
+                            viewModel.resetHomeViewState()
+                        }
                         .shadow(
                             elevation = 3.dp,
                             RoundedCornerShape(12.dp),
@@ -59,28 +62,27 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
                         .clip(RoundedCornerShape(12.dp))
                         .background(color = DarkBackground)
                         .padding(16.dp, 4.dp)
-                        .clickable {
-                            viewModel.resetHomeViewState()
-                        }
+
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Cancel")
                     }
                     Box (modifier = Modifier
-                        .shadow(
-                            elevation = 3.dp,
-                            RoundedCornerShape(12.dp),
-                            ambientColor = Color.Black,
-                            spotColor = Color.Black
-                        )
-                        .padding(1.dp, 0.dp, 1.dp, 5.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(color = DarkBackground)
-                        .padding(16.dp, 4.dp)
                         .clickable {
                             coroutineScope.launch {
                                 onAlertClick(viewModel, navController = navController)
                             }
                         }
+                        .shadow(
+                            elevation = 3.dp,
+                            RoundedCornerShape(12.dp),
+                            ambientColor = Color.Black,
+                            spotColor = Color.Black
+                        )
+                        .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(color = DarkBackground)
+                        .padding(16.dp, 4.dp)
+
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Continue")
                     }
@@ -97,7 +99,6 @@ suspend fun onAlertClick(viewModel: DairyViewModel,navController: NavController)
     }
      if(viewModel.getIsDeleteAlertEnabled().id != ""){
         viewModel.deleteDataById()
-        viewModel.resetHomeViewState()
     }
     if(viewModel.getIsUpdateAmountAlertEnable()){
 

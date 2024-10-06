@@ -45,24 +45,9 @@ fun MoreOptionView(
             .padding(16.dp)
         ){
             Box (modifier = Modifier
-                .shadow(
-                    elevation = 3.dp,
-                    RoundedCornerShape(12.dp),
-                    ambientColor = Color.Black,
-                    spotColor = Color.Black
-                )
-                .padding(1.dp, 0.dp, 1.dp, 5.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(color = DarkBackground)
-                .padding(16.dp, 4.dp)
                 .clickable {
                     navController.navigate(ScreenB(item.id))
                 }
-            ){
-                Text(fontWeight = FontWeight.Medium,text = "edit")
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Box(modifier = Modifier
                 .shadow(
                     elevation = 3.dp,
                     RoundedCornerShape(12.dp),
@@ -74,12 +59,30 @@ fun MoreOptionView(
                 .background(color = DarkBackground)
                 .padding(16.dp, 4.dp)
 
+            ){
+                Text(fontWeight = FontWeight.Medium,text = "edit")
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(modifier = Modifier
                 .clickable {
                     viewModel.enableDeleteAlert(item)
                 }
+                .shadow(
+                    elevation = 3.dp,
+                    RoundedCornerShape(12.dp),
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black
+                )
+                .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(color = DarkBackground)
+                .padding(16.dp, 4.dp)
+
+
             ) {
                 Text(fontWeight = FontWeight.Medium,text = "delete")
             }
+
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.dairyman.uiComponent.homeScreen
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,19 +65,21 @@ fun FloatingActionButtonView(
 fun ActionButton(viewModel: DairyViewModel,navController: NavController){
 
     val scope=rememberCoroutineScope()
+    val context:Context= LocalContext.current
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
 
         Box(
             modifier = Modifier
+                .clickable {
+                    scope.launch {
+                        viewModel.checkSyncDataWithCloud(context)
+                    }
+                }
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(Secondary)
                 .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
-                .clickable {
-                    scope.launch {
-                        viewModel.checkSyncDataWithCloud()
-                    }
-                }
+
         ) {
             Text(text = "Sync", modifier = Modifier.padding(10.dp), fontWeight = FontWeight.Medium, fontSize = 18.sp)
         }

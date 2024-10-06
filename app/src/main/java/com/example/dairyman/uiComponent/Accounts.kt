@@ -177,6 +177,7 @@ fun UserProfilePhoto() {
 fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
     if(FirebaseAuth.getInstance().currentUser?.photoUrl==null){
         Box(modifier = Modifier
+            .clickable { onSignInClick() }
             .shadow(
                 elevation = 3.dp,
                 RoundedCornerShape(12.dp),
@@ -189,13 +190,14 @@ fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
             .clip(RoundedCornerShape(12.dp))
             .background(color = DarkBackground)
             .padding(24.dp, 8.dp)
-            .clickable { onSignInClick() },
+           ,
             contentAlignment = Alignment.Center){
                 Text(text = "SignIn")
         }
     }
     else{
         Box(modifier = Modifier
+            .clickable { onSignOut() }
             .shadow(
                 elevation = 3.dp,
                 RoundedCornerShape(12.dp),
@@ -207,7 +209,7 @@ fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
             .clip(RoundedCornerShape(12.dp))
             .background(color = DarkBackground)
             .padding(24.dp, 8.dp)
-            .clickable { onSignOut() },
+            ,
             contentAlignment = Alignment.Center){
                 Text(text = "Logout", fontSize = 18.sp, fontWeight = FontWeight.Medium)
         }

@@ -141,7 +141,7 @@ fun HomeView(
             .background(Color.Black.copy(alpha = 0.5f))
             .clickable { viewModel.resetHomeViewState() }
         )
-        ChangeAmountScreen(viewModel)
+        ChangeQuantityScreen(viewModel)
     }
     if (viewModel.getIsAlertDialogBox().value) {
         BlurredBackground(modifier = Modifier

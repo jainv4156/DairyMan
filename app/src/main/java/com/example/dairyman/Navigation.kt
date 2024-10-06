@@ -30,6 +30,7 @@ import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
 import com.example.dairyman.uiComponent.homeScreen.HomeView
+import com.example.dairyman.viewmodel.HistoryViewModel
 import com.example.dairyman.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 
@@ -83,25 +84,48 @@ navController: NavHostController=rememberNavController()
                 state=state,
                 onSignInClick = {
                     scope.launch {
-                        val signInIntentSender  =googleAuthUiClient.signIn()
-                        launcher.launch(
+                        if(viewModel.isInternetAvailable(context = navController.context)){
+                            val signInIntentSender  =googleAuthUiClient.signIn()
+                            launcher.launch(
 
-                            IntentSenderRequest.Builder(
-                                signInIntentSender ?: return@launch
-                            ).build()
+                                IntentSenderRequest.Builder(
+                                    signInIntentSender ?: return@launch
+                                ).build()
+                            )
+                        }
+                        else(
+                                    SnackBarController.sendEvent(
+                                        SnackBarEvent(
+                                            message = "No internet connection",
+                                            action = SnackBarAction(
+                                                name = "X"
+                                            )
+                                        )
+                                    )
                         )
                     }
+
 
                 },
                 navController = navController,
                 onSignOut = {
                     scope.launch {
-                        googleAuthUiClient.signOut()
-                        navController.navigate(ScreenD)
-                        SnackBarController.sendEvent(SnackBarEvent(message = "Signed out",
-                            action = SnackBarAction(
-                                name = "X"
-                            )))
+                        if(viewModel.isInternetAvailable(context = navController.context)) {
+                            googleAuthUiClient.signOut()
+                            navController.navigate(ScreenD)
+                            SnackBarController.sendEvent(SnackBarEvent(message = "Signed out",
+                                action = SnackBarAction(
+                                    name = "X"
+                                )))
+                        }else{
+                            SnackBarController.sendEvent(SnackBarEvent(message = "No internet connection",
+                                action = SnackBarAction(
+                                    name = "X"
+                                )))
+
+
+                        }
+
                     }
                 }
 
@@ -116,7 +140,7 @@ navController: NavHostController=rememberNavController()
         }
         composable<ScreenC> {
             val args=it.toRoute<ScreenB>()
-            CustomerProfileView(args.id,navController)
+            CustomerProfileView(args.id,navController, viewModel = HistoryViewModel())
         }
     }
 

@@ -1,11 +1,17 @@
 package com.example.dairyman.viewmodel
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dairyman.DairyApp
 import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.data.model.HistoryData
@@ -127,7 +133,7 @@ class DairyViewModel:ViewModel(){
     }
     fun enableDeleteAlert(item: DairyData) {
         resetHomeViewState()
-        mAlertDialogTitle="Do you Want To Delete This Customer Account . You May Not Be Able To Recover It Again"
+        mAlertDialogTitle="Do you Want To Delete This Customer Account Having Pending Amount ${item.pendingAmount}. You May Not Be Able To Recover It Again"
         mIsDeleteAlertEnabled.value=item
         enableAlertDialogBax()
     }
@@ -195,7 +201,7 @@ class DairyViewModel:ViewModel(){
     }
 
     suspend fun updateTodayAmountButton(){
-        viewModelScope.launch{
+        viewModelScope.launch(IO){
 
         try {setIsCircularProgressBarActive(true)
             val historyDataList: MutableList<HistoryData> = mutableListOf()
@@ -232,29 +238,27 @@ class DairyViewModel:ViewModel(){
         }
         }
     }
-    fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
+    suspend fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
         try {
-            viewModelScope.launch(IO){
-                databaseDao.deleteHistoryData(dairyData.id)
+            viewModelScope.launch(IO) {
+                if(databaseDao.getHistoryById(dairyData.id).first().isNotEmpty()){
+                    databaseDao.deleteHistoryData(dairyData.id)
+                }
                 databaseDao.deleteDairyData(dairyData)
             }
-            viewModelScope.launch {
-                SnackBarController.sendEvent(
-                    event = SnackBarEvent(
+            SnackBarController.sendEvent(
+                event = SnackBarEvent(
                         message = "Customer Record Deleted Successfully",
                         action = SnackBarAction(
                             name = "X"
                         )
-
                     )
                 )
-            }
         }catch (e:Exception){
-            viewModelScope.launch {
+            Log.d("helow",e.toString())
                somethingWrongSnackBar()
-            }
         }
-
+        resetHomeViewState()
     }
     fun getHistoryById(id:String):Flow<List<HistoryData>>{
         return databaseDao.getHistoryById(id = id)
@@ -271,7 +275,7 @@ class DairyViewModel:ViewModel(){
     }
 
     fun readySetTempAmountView(){
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             databaseDao.getDairyDataById(idTempAmount).first().let {
                 preFillSetTempAmountView(it)
             }
@@ -282,7 +286,7 @@ class DairyViewModel:ViewModel(){
 
     fun updateTempAmount() {
         try {
-            viewModelScope.launch {
+            viewModelScope.launch(IO) {
                 databaseDao.upsertDairyData(databaseDao.getDairyDataById(idTempAmount).first().copy(tempAmount = tempAmount.value.toFloat(), dayForTempAmount =dayForTempAmount.value.toInt()))
             }
                 viewModelScope.launch {
@@ -318,9 +322,6 @@ class DairyViewModel:ViewModel(){
     }
 
 
-
-
-
     fun getCustomersList(): Flow<List<DairyData>> {
         return customersList
     }
@@ -330,25 +331,39 @@ class DairyViewModel:ViewModel(){
               item.name.contains(searchQuery.value,ignoreCase = true)
           }
     }
-
-    suspend fun checkSyncDataWithCloud(){
+    suspend fun checkSyncDataWithCloud(context: Context){
         if(FirebaseAuth.getInstance().currentUser!=null) {
             resetHomeViewState()
-            setIsCircularProgressBarActive(true)
-            try {
-                syncDataWithCloud()
-                setIsCircularProgressBarActive(false)
-                SnackBarController.sendEvent(
-                    event = SnackBarEvent(
-                        message = "Data is Synced Successfully",
-                        action = SnackBarAction(name = "X")
+            if(isInternetAvailable(context =context )){
+                setIsCircularProgressBarActive(true)
+                viewModelScope.launch() {
+                    syncDataWithCloud()
+                    try {
+                        setIsCircularProgressBarActive(false)
+                        SnackBarController.sendEvent(
+                            event = SnackBarEvent(
+                                message = "Data is Synced Successfully",
+                                action = SnackBarAction(name = "X")
+                            )
+                        )
+                    }
+                    catch (e:Exception){
+                        setIsCircularProgressBarActive(false)
+                        somethingWrongSnackBar()
+                    }
+                }
+            }
+            else{
+                viewModelScope.launch {
+                    SnackBarController.sendEvent(
+                        event = SnackBarEvent(
+                            message = "No Internet Connection",
+                            action = SnackBarAction(name = "X")
+                        )
                     )
-                )
+                }
             }
-            catch (e:Exception){
-                setIsCircularProgressBarActive(false)
-                somethingWrongSnackBar()
-            }
+
 
         }
         else{
@@ -365,11 +380,11 @@ class DairyViewModel:ViewModel(){
     }
     private suspend fun syncDairyDataWithCloud(){
         val fireBaseDairyData:List<DairyData> =  FireStoreClass().getCustomerDairyDataFromFireStore()
+
         val dairyDataList:List<DairyData> = customerListFromDatabase.first()
+
         val fireBaseListNotInDairyData= mutableListOf<DairyData>()
         val listToUpdateFireBaseDairyData= mutableListOf<DairyData>()
-//        val listToResolveCollision= mutableListOf<DairyData>()
-
 
         for (i in fireBaseDairyData){
             if ( dairyDataList.find {it.id ==i.id}==null){
@@ -377,26 +392,22 @@ class DairyViewModel:ViewModel(){
             }
             else{
                 val currentDairyData=dairyDataList.find { it.id==i.id }
-//               if(currentDairyData!!.isSynced){
                 if(currentDairyData!=i){
                     listToUpdateFireBaseDairyData.add(currentDairyData!!)
                 }
-//                }
-//                else{
-//                    listToResolveCollision.add(currentDairyData)
-//                }
                 dairyDataList.minus(currentDairyData)
-
             }
         }
-        if(dairyDataList.find { it.isSynced } !=null){
-            viewModelScope.launch (IO){
-                if(dairyDataList.isNotEmpty()){
-                    for(dairyData in dairyDataList){
-                        databaseDao.upsertDairyData(dairyData.copy(isSynced = true))
-                    }
-                    FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
+
+
+            if(dairyDataList.isNotEmpty()){
+                FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
+                for(dairyData in dairyDataList){
+                    databaseDao.upsertDairyData(dairyData.copy(isSynced = true))
                 }
+            }
+
+            if(dairyDataList.find { it.isSynced } !=null){
                 if(listToUpdateFireBaseDairyData.isNotEmpty()) {
                     FireStoreClass().updateDiaryDataToFireStore(listToUpdateFireBaseDairyData)
                 }
@@ -404,52 +415,44 @@ class DairyViewModel:ViewModel(){
                     FireStoreClass().deleteDairyDataFromFireStore(fireBaseListNotInDairyData)
                 }
             }
-        }
-        else{
-            viewModelScope.launch(IO){
-                for( i in fireBaseListNotInDairyData) {
-                    databaseDao.upsertDairyData(i)
-
-                }
-                for(i in dairyDataList){
-                    databaseDao.upsertDairyData(i.copy(isSynced = true))
+            else{
+                if(fireBaseListNotInDairyData.isNotEmpty()){
+                    for( i in fireBaseListNotInDairyData) {
+                        databaseDao.upsertDairyData(i)
+                    }
                 }
             }
-
-        }
-
-        viewModelScope.launch (IO){
-            if(dairyDataList.isNotEmpty()){
-                FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
-            }
-            if(listToUpdateFireBaseDairyData.isNotEmpty()) {
-                FireStoreClass().updateDiaryDataToFireStore(listToUpdateFireBaseDairyData)
-            }
-        }
     }
-    private suspend fun syncHistoryDataWithCloud()
-    {
+    private suspend fun syncHistoryDataWithCloud() {
         val fireBaseHistoryData:List<HistoryData> = FireStoreClass().getCustomerHistoryDataFromFireStore()
+
         val historyDataList:List<HistoryData> =databaseDao.getAllHistory()
-        val listToBeAddInHistoryData= mutableListOf<HistoryData>()
+        val fireBaseListNotInHistoryList= mutableListOf<HistoryData>()
         for (i in fireBaseHistoryData){
             if ( historyDataList.find {it.id ==i.id}==null){
-                listToBeAddInHistoryData.add(i)
+                fireBaseListNotInHistoryList.add(i)
             }
             else{
                 historyDataList.minus(i)
             }
         }
-        viewModelScope.launch(IO){
-            databaseDao.insertHistory(listToBeAddInHistoryData)
-            for(i in historyDataList){
-                databaseDao.updateHistory(i.copy(isSynced = true))
+
+            if(historyDataList.find { it.isSynced } !=null){
+                if(fireBaseListNotInHistoryList.isNotEmpty()){
+                    FireStoreClass().deleteHistoryDataFromFireStore(fireBaseListNotInHistoryList)
+                }
             }
-        }
-        viewModelScope.launch (IO){
+            else{
+                if(fireBaseListNotInHistoryList.isNotEmpty()){
+                    databaseDao.insertHistory(fireBaseListNotInHistoryList)
+                }
+            }
             if(historyDataList.isNotEmpty()){
                 FireStoreClass().addCustomerHistoryDataToFireStore(historyDataList)
-            }
+
+                for(i in historyDataList){
+                    databaseDao.updateHistory(i.copy(isSynced = true))
+                }
         }
     }
 
@@ -462,4 +465,11 @@ class DairyViewModel:ViewModel(){
         )
     }
 
+    private fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network= connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
 }

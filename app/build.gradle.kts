@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.com.google.firebase.firebase.auth)
     implementation(libs.play.services.auth)
+    implementation(libs.androidx.work.runtime.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

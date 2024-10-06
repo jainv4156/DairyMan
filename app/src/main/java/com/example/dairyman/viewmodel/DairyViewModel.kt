@@ -372,7 +372,7 @@ class DairyViewModel:ViewModel(){
             enableAlertDialogBax()
         }
     }
-    private suspend fun syncDataWithCloud() {
+     suspend fun syncDataWithCloud() {
         withContext(IO){
             syncDairyDataWithCloud()
             syncHistoryDataWithCloud()

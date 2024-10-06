@@ -1,7 +1,6 @@
 package com.example.dairyman.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
@@ -17,6 +16,7 @@ import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -46,7 +46,12 @@ class DairyViewModel:ViewModel(){
     private val mIsDeleteAlertEnabled= mutableStateOf(DairyData())
     private var mAlertDialogTitle=""
     private var mIsUpdateAmountAlertEnable= mutableStateOf(false)
+    private val isCircularProgressBarActive=mutableStateOf(false)
 
+
+    fun getIsCircularProgressBarActive(): Boolean {
+        return isCircularProgressBarActive.value
+    }
     fun getIsUpdateAmountAlertEnable():Boolean{
         return mIsUpdateAmountAlertEnable.value
     }
@@ -87,6 +92,9 @@ class DairyViewModel:ViewModel(){
 
 
 
+    fun setIsCircularProgressBarActive(value:Boolean){
+        isCircularProgressBarActive.value=value
+    }
     private fun setIsBlurredBackgroundActive(value:Boolean){
         mIsBlurredBackgroundActive.value=value
     }
@@ -180,7 +188,6 @@ class DairyViewModel:ViewModel(){
                 updateTodayAmountButton()
             }
              else{
-                 Log.d("5","10")
                 enableUpdateAmountAlert()
             } 
 
@@ -188,17 +195,14 @@ class DairyViewModel:ViewModel(){
 
     }
 
-    fun updateTodayAmountButton(){
+    suspend fun updateTodayAmountButton(){
+        viewModelScope.launch{
 
-        try {
+        try {setIsCircularProgressBarActive(true)
             val historyDataList: MutableList<HistoryData> = mutableListOf()
-
-            viewModelScope.launch{
-
-                val dataToRecord= databaseDao.loadAllDairyData().first()
-                dataToRecord.forEach{
-                    if(it.tempAmount!=0f){
-
+            val dataToRecord= databaseDao.loadAllDairyData().first()
+            dataToRecord.forEach{
+                if(it.tempAmount!=0f){
                     if(it.dayForTempAmount>=1){
                         databaseDao.upsertDairyData(it.copy(dayForTempAmount = it.dayForTempAmount-1))
                     }
@@ -209,42 +213,27 @@ class DairyViewModel:ViewModel(){
                         amount = it.tempAmount, rate = it.rate, date = System.currentTimeMillis()
                         , dataId = it.id)
                     historyDataList+=child
-                    }
-
                 }
 
-                databaseDao.insertHistory(historyDataList)
-                databaseDao.updateTodayAmount()
             }
+            delay(500)
+            databaseDao.insertHistory(historyDataList)
+            databaseDao.updateTodayAmount()
 
-            viewModelScope.launch {
-
-                SnackBarController.sendEvent(
-                    event = SnackBarEvent(
-                        message =
-                        "Today Amount Updated",
-                        action = SnackBarAction(
-                            name = "X"
-                        )
-
-                    )
+            setIsCircularProgressBarActive(false)
+            SnackBarController.sendEvent(
+                event = SnackBarEvent(
+                    message = "Today Amount Updated",
+                    action = SnackBarAction(name = "X")
                 )
-            }
+            )
         }catch (e:Exception){
-            viewModelScope.launch {
-                SnackBarController.sendEvent(
-                    event = SnackBarEvent(
-                        message = "Something Went Wrong",
-                        action = SnackBarAction(
-                            name = "X"
-                        )
-                    )
-                )
-            }
+            setIsCircularProgressBarActive(false)
+            somethingWrongSnackBar()
+        }
         }
     }
     fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
-        Log.d("ju","jm")
         try {
             viewModelScope.launch(IO){
                 databaseDao.deleteHistoryData(dairyData.id)
@@ -263,14 +252,7 @@ class DairyViewModel:ViewModel(){
             }
         }catch (e:Exception){
             viewModelScope.launch {
-                SnackBarController.sendEvent(
-                    event = SnackBarEvent(
-                        message = "Something Went Wrong",
-                        action = SnackBarAction(
-                            name = "X"
-                        )
-                    )
-                )
+               somethingWrongSnackBar()
             }
         }
 
@@ -317,13 +299,7 @@ class DairyViewModel:ViewModel(){
         }
         catch (e:Exception){
             viewModelScope.launch {
-                SnackBarController.sendEvent(
-                  event = SnackBarEvent(
-                      message = "Something Went Wrong",
-                      action = SnackBarAction(
-                          name = "X"
-                      )
-                ))
+                somethingWrongSnackBar()
             }
         }
         
@@ -342,39 +318,38 @@ class DairyViewModel:ViewModel(){
         setIsBlurredBackgroundActive(true)
     }
 
-    suspend fun syncDataWithCloud() {
-        if(FirebaseAuth.getInstance().currentUser!=null){
+
+
+
+
+    fun getCustomersList(): Flow<List<DairyData>> {
+        return customersList
+    }
+
+    suspend fun getSearchFilteredList(){
+          customersList.value = customerListFromDatabase.first().filter {item->
+              item.name.contains(searchQuery.value,ignoreCase = true)
+          }
+    }
+
+    suspend fun checkSyncDataWithCloud(){
+        if(FirebaseAuth.getInstance().currentUser!=null) {
+            resetHomeViewState()
+            setIsCircularProgressBarActive(true)
             try {
-                viewModelScope.launch {
-                    resetHomeViewState()
-                    withContext(IO){
-                        syncDairyDataWithCloud()
-                        syncHistoryDataWithCloud()
-                    }
-                    SnackBarController.sendEvent(
-                        event = SnackBarEvent(
-                            message = "Data is Synced Successfully",
-                            action = SnackBarAction(
-                                name = "X"
-                            )
-                        ))
-                }
-
-
+                syncDataWithCloud()
+                setIsCircularProgressBarActive(false)
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Data is Synced Successfully",
+                        action = SnackBarAction(name = "X")
+                    )
+                )
             }
             catch (e:Exception){
-                viewModelScope.launch {
-                    SnackBarController.sendEvent(
-                        event = SnackBarEvent(
-                            message = "Something Went Wrong",
-                            action = SnackBarAction(
-                                name = "X"
-                            )
-                        ))
-                }
+                setIsCircularProgressBarActive(false)
+                somethingWrongSnackBar()
             }
-
-
 
         }
         else{
@@ -383,25 +358,30 @@ class DairyViewModel:ViewModel(){
             enableAlertDialogBax()
         }
     }
-
+    private suspend fun syncDataWithCloud() {
+        withContext(IO){
+            syncDairyDataWithCloud()
+            syncHistoryDataWithCloud()
+        }
+    }
     private suspend fun syncDairyDataWithCloud(){
         val fireBaseDairyData:List<DairyData> =  FireStoreClass().getCustomerDairyDataFromFireStore()
         val dairyDataList:List<DairyData> = customerListFromDatabase.first()
-        val listToBeAddInDairyData= mutableListOf<DairyData>()
+        val fireBaseListNotInDairyData= mutableListOf<DairyData>()
         val listToUpdateFireBaseDairyData= mutableListOf<DairyData>()
 //        val listToResolveCollision= mutableListOf<DairyData>()
 
-        for (i in fireBaseDairyData){
 
+        for (i in fireBaseDairyData){
             if ( dairyDataList.find {it.id ==i.id}==null){
-                listToBeAddInDairyData.add(i)
+                fireBaseListNotInDairyData.add(i)
             }
             else{
                 val currentDairyData=dairyDataList.find { it.id==i.id }
-//                if(currentDairyData!!.isSynced){
-                    if(currentDairyData!=i){
-                        listToUpdateFireBaseDairyData.add(currentDairyData!!)
-                    }
+//               if(currentDairyData!!.isSynced){
+                if(currentDairyData!=i){
+                    listToUpdateFireBaseDairyData.add(currentDairyData!!)
+                }
 //                }
 //                else{
 //                    listToResolveCollision.add(currentDairyData)
@@ -410,15 +390,35 @@ class DairyViewModel:ViewModel(){
 
             }
         }
-        viewModelScope.launch(IO){
-            for( i in listToBeAddInDairyData) {
-                databaseDao.upsertDairyData(i)
-
-            }
-            for(i in dairyDataList){
-                databaseDao.upsertDairyData(i.copy(isSynced = true))
+        if(dairyDataList.find { it.isSynced } !=null){
+            viewModelScope.launch (IO){
+                if(dairyDataList.isNotEmpty()){
+                    for(dairyData in dairyDataList){
+                        databaseDao.upsertDairyData(dairyData.copy(isSynced = true))
+                    }
+                    FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
+                }
+                if(listToUpdateFireBaseDairyData.isNotEmpty()) {
+                    FireStoreClass().updateDiaryDataToFireStore(listToUpdateFireBaseDairyData)
+                }
+                if(fireBaseListNotInDairyData.isNotEmpty()){
+                    FireStoreClass().deleteDairyDataFromFireStore(fireBaseListNotInDairyData)
+                }
             }
         }
+        else{
+            viewModelScope.launch(IO){
+                for( i in fireBaseListNotInDairyData) {
+                    databaseDao.upsertDairyData(i)
+
+                }
+                for(i in dairyDataList){
+                    databaseDao.upsertDairyData(i.copy(isSynced = true))
+                }
+            }
+
+        }
+
         viewModelScope.launch (IO){
             if(dairyDataList.isNotEmpty()){
                 FireStoreClass().addCustomerDairyDataToFireStore(dairyDataList)
@@ -442,7 +442,7 @@ class DairyViewModel:ViewModel(){
             }
         }
         viewModelScope.launch(IO){
-                databaseDao.insertHistory(listToBeAddInHistoryData)
+            databaseDao.insertHistory(listToBeAddInHistoryData)
             for(i in historyDataList){
                 databaseDao.updateHistory(i.copy(isSynced = true))
             }
@@ -454,13 +454,13 @@ class DairyViewModel:ViewModel(){
         }
     }
 
-    fun getCustomersList(): Flow<List<DairyData>> {
-        return customersList
+    private suspend  fun somethingWrongSnackBar(){
+        SnackBarController.sendEvent(
+            event = SnackBarEvent(
+                message = "Something Went Wrong",
+                action = SnackBarAction(name = "X")
+            )
+        )
     }
 
-    suspend fun getSearchFilteredList(){
-          customersList.value = customerListFromDatabase.first().filter {item->
-              item.name.contains(searchQuery.value,ignoreCase = true)
-          }
-    }
 }

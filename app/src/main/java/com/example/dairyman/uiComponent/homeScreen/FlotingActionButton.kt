@@ -73,7 +73,7 @@ fun ActionButton(viewModel: DairyViewModel,navController: NavController){
                 .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
                 .clickable {
                     scope.launch {
-                        viewModel.syncDataWithCloud()
+                        viewModel.checkSyncDataWithCloud()
                     }
                 }
         ) {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,9 +27,11 @@ import androidx.navigation.NavController
 import com.example.dairyman.viewmodel.DairyViewModel
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
+import kotlinx.coroutines.launch
 
 @Composable
 fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
         Box (modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
@@ -74,7 +77,9 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
                         .background(color = DarkBackground)
                         .padding(16.dp, 4.dp)
                         .clickable {
-                            onAlertClick(viewModel, navController = navController)
+                            coroutineScope.launch {
+                                onAlertClick(viewModel, navController = navController)
+                            }
                         }
                     ){
                         Text(fontWeight = FontWeight.Medium,text = "Continue")
@@ -86,8 +91,7 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
             }
         }
 }
-
-fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
+suspend fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)
     }
@@ -96,6 +100,7 @@ fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
         viewModel.resetHomeViewState()
     }
     if(viewModel.getIsUpdateAmountAlertEnable()){
+
         viewModel.updateTodayAmountButton()
         viewModel.resetHomeViewState()
 

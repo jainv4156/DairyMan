@@ -1,10 +1,10 @@
 package com.example.dairyman.viewmodel
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +18,7 @@ import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.firebase.FireStoreClass
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -46,7 +47,7 @@ class DairyViewModel:ViewModel(){
     private val mSignInAlertBox= mutableStateOf(false)
     val isActionButtonExtended = mutableStateOf(false)
     private val mIsFloatingButtonVisible= mutableStateOf(true)
-    private val mIsDeleteAlertEnabled= mutableStateOf(DairyData())
+    private val mIsDeleteAlertEnabled= mutableStateOf(DairyData(id=""))
     private var mAlertDialogTitle=""
     private var mIsUpdateAmountAlertEnable= mutableStateOf(false)
     private val isCircularProgressBarActive=mutableStateOf(false)
@@ -132,6 +133,7 @@ class DairyViewModel:ViewModel(){
     fun enableDeleteAlert(item: DairyData) {
         resetHomeViewState()
         mAlertDialogTitle="Do you Want To Delete This Customer Account Having Pending Amount ${item.pendingAmount}. You May Not Be Able To Recover It Again"
+
         mIsDeleteAlertEnabled.value=item
         enableAlertDialogBax()
     }
@@ -146,10 +148,9 @@ class DairyViewModel:ViewModel(){
         setIsSetTempAmountViewActive(false)
         mIsSearchActive.value = false
         setSignInAlertBox(false)
-        mIsDeleteAlertEnabled.value=DairyData(id="")
+        mIsDeleteAlertEnabled.value=DairyData(id = "")
         mAlertDialogTitle=""
         mIsUpdateAmountAlertEnable.value=false
-
 
     }
 
@@ -239,22 +240,35 @@ class DairyViewModel:ViewModel(){
         }
         }
     }
-    suspend fun deleteDataById(dairyData: DairyData=mIsDeleteAlertEnabled.value){
+    suspend fun deleteDataById(){
         try {
-            viewModelScope.launch(IO) {
-                databaseDao.deleteDairyData(dairyData)
+            withContext(IO) {
+                databaseDao.deleteDairyData(mIsDeleteAlertEnabled.value)
             }
             SnackBarController.sendEvent(
                 event = SnackBarEvent(
-                        message = "Customer Record Deleted Successfully",
+                    message = "Customer Record Deleted Successfully",
+                    action = SnackBarAction(
+                        name = "X"
+                    )
+                )
+            )
+        }
+        catch (e: SQLiteConstraintException) {
+            withContext(Dispatchers.Main) {
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = e.message.toString(),
                         action = SnackBarAction(
                             name = "X"
                         )
                     )
                 )
-        }catch (e:Exception){
-            Log.d("error",e.message.toString())
-               somethingWrongSnackBar()
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                somethingWrongSnackBar()
+            }
         }
         resetHomeViewState()
     }

@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) {
-    val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
         Box (modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
@@ -68,9 +68,9 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
                     }
                     Box (modifier = Modifier
                         .clickable {
-                            coroutineScope.launch {
-                                onAlertClick(viewModel, navController = navController)
-                            }
+                                coroutineScope.launch {
+                                    onAlertClick(viewModel, navController = navController)
+                                }
                         }
                         .shadow(
                             elevation = 3.dp,
@@ -94,14 +94,15 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
         }
 }
 suspend fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
+
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)
+
     }
      if(viewModel.getIsDeleteAlertEnabled().id != ""){
-        viewModel.deleteDataById()
+         viewModel.deleteDataById()
     }
     if(viewModel.getIsUpdateAmountAlertEnable()){
-
         viewModel.updateTodayAmountButton()
         viewModel.resetHomeViewState()
 

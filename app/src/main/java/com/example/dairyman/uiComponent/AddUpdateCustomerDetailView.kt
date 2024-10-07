@@ -37,7 +37,6 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -46,16 +45,16 @@ fun AddUpdateCustomerDetailView(
     viewModel: AddUpdateCustomerDetailViewModel,
     id:String=""
 ){
-    val context= LocalContext.current
     if(id!=""){
         viewModel.preFillUpdateInput(id=id)
     }
-
     Scaffold(topBar = { TopAppBarView(title = if(id=="") "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(
         ScreenA
     )}) },modifier = Modifier
         .fillMaxSize()
     ) {padding->
+        val context= LocalContext.current
+
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),contentAlignment=Alignment.Center) {

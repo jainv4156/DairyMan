@@ -13,6 +13,7 @@ import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.snackBar.SnackBarEvent
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AddUpdateCustomerDetailViewModel: ViewModel() {
@@ -54,9 +55,7 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
         try {
             viewModelScope.launch(IO){
                 databaseDao.upsertDairyData(dairyData)
-            }
 
-            viewModelScope.launch {
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
                         message =
@@ -84,23 +83,19 @@ class AddUpdateCustomerDetailViewModel: ViewModel() {
                 )
             }
         }
-
-
-
     }
     fun preFillUpdateInput(id: String){
-        viewModelScope.launch {
-            getDairyDataById(id).collect { dairyData ->
+        viewModelScope.launch{
+            val dairyData=getDairyDataById(id).first()
                 dairyData.let {
-                   setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = AddUpdateCustomerDetailModel(
-                       name =it.name,
-                       rate = it.rate.toString(),
-                       amount = it.amount.toString(),
-                       pendingAmount = it.pendingAmount.toString()
-                   ))
+                    setAddUpdateCustomerDetailData(newAddUpdateCustomerDetailModel = AddUpdateCustomerDetailModel(
+                        name =it.name,
+                        rate = it.rate.toString(),
+                        amount = it.amount.toString(),
+                        pendingAmount = it.pendingAmount.toString()
+                    ))
                 }
             }
-        }
     }
     private fun getDairyDataById(id:String): Flow<DairyData> {
         return databaseDao.getDairyDataById(id)

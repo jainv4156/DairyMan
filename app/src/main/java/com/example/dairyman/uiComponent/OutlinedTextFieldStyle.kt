@@ -29,6 +29,7 @@ fun OutlinedTextFieldStyle(
         modifier =Modifier.let { modifier.fillMaxWidth() },
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardAction,
+        singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Black,
             unfocusedBorderColor = Color.Black,

@@ -2,6 +2,7 @@ package com.example.dairyman.uiComponent.homeScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dairyman.ui.theme.Background
@@ -37,7 +39,11 @@ fun ChangeQuantityScreen(viewModel: DairyViewModel){
             .align(Alignment.Center)
             .clip(RoundedCornerShape(8.dp))
             .background(Background)
-            .padding(32.dp),
+            .padding(32.dp)
+            .pointerInput(Unit){
+                detectTapGestures {
+                }
+            },
             horizontalAlignment = Alignment.CenterHorizontally){
             OutlinedTextFieldStyle(value = viewModel.getTempAmount(), onValueChange = {viewModel.setTempAmount(it)}, title = "Quantity")
             Spacer(modifier = Modifier.height(32.dp))

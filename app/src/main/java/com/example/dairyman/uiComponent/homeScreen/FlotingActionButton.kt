@@ -42,13 +42,14 @@ fun FloatingActionButtonView(
     viewModel: DairyViewModel,
     navController: NavController
 ){
+
     Column ( horizontalAlignment = Alignment.End){
     if(viewModel.isActionButtonExtended.value){
         ActionButton(viewModel,navController)
     }
     FloatingActionButton(
         containerColor= if (viewModel.isActionButtonExtended.value) Primary else  Secondary,
-        elevation = FloatingActionButtonDefaults.elevation(10.dp ),
+        elevation = FloatingActionButtonDefaults.elevation(6.dp ),
         contentColor = contentColorFor(containerColor),
         onClick = { viewModel.setIsActionButtonExtended(!viewModel.getIsActionButtonExtended()) },
 

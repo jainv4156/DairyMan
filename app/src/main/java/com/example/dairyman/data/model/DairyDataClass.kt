@@ -26,5 +26,7 @@ data class DairyData(
     @ColumnInfo(name = "dayForTempAmount")
     val dayForTempAmount:Int=0,
     @ColumnInfo(name = "isSynced")
-    val isSynced:Boolean=false
+    val isSynced:Boolean=false,
+    @ColumnInfo(name="isSuspended")
+    val isSuspended:Boolean=false
 )

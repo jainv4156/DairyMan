@@ -206,7 +206,7 @@ class DairyViewModel:ViewModel(){
             val historyDataList: MutableList<HistoryData> = mutableListOf()
             val dataToRecord= databaseDao.loadAllDairyData().first()
             dataToRecord.forEach{
-                if(it.tempAmount!=0f){
+                if(it.tempAmount!=0f && !it.isSuspended){
                     if(it.dayForTempAmount>=1){
                         databaseDao.upsertDairyData(it.copy(dayForTempAmount = it.dayForTempAmount-1))
                     }
@@ -335,6 +335,7 @@ class DairyViewModel:ViewModel(){
 
 
     fun getCustomersList(): Flow<List<DairyData>> {
+
         return customersList
     }
 
@@ -488,5 +489,9 @@ class DairyViewModel:ViewModel(){
         val capabilities = connectivityManager.getNetworkCapabilities(network)
 
         return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
+    suspend fun toggleSuspendCustomer(item: DairyData) {
+        databaseDao.upsertDairyData(item.copy(isSuspended  =!item.isSuspended))
     }
 }

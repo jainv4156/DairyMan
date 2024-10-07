@@ -72,16 +72,17 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier
-                        .clickable {
+
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable (enabled =  !item.isSuspended ){
                             viewModel.setIdTempAmount(id = item.id)
                             viewModel.readySetTempAmountView()
                         }
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(color = Secondary)
+                        .background(color = if(!item.isSuspended) Secondary else Color.Gray)
+
 
                     ) {
                         Text(
-
                             modifier = Modifier.padding(8.dp, 4.dp),
                             text = "Change"
                         )

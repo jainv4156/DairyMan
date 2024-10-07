@@ -2,7 +2,6 @@ package com.example.dairyman.firebase
 
 import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.data.model.HistoryData
-import com.example.dairyman.viewmodel.DairyViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -40,6 +39,7 @@ class FireStoreClass {
             updates["amount"] = diaryData.amount
             updates["pendingAmount"] = diaryData.pendingAmount
             updates["dateUpdated"] = diaryData.dateUpdated
+            updates["isSuspended"] = diaryData.isSuspended
             batch.update(docRef, updates)
         }
         batch.commit()

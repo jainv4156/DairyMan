@@ -2,6 +2,17 @@ package com.example.dairyman.uiComponent.homeScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,18 +31,19 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.dairyman.snackBar.ObserveAsEvent
 import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.viewmodel.DairyViewModel
-import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.uiComponent.AlertDialogBoxView
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -59,15 +71,21 @@ fun HomeView(
                 actionLabel = event.action?.name,
                 duration = SnackbarDuration.Long
             )
+
             if(result == SnackbarResult.ActionPerformed) {
                 snackBarHostState.currentSnackbarData?.dismiss()
             }
         }
     }
+    val alpha by animateFloatAsState(
+        targetValue =if (viewModel.getIsEEditDeleteButtonEnabled()!=""||viewModel.isActionButtonExtended.value||viewModel.getIsSetTempAmountViewActive() ||viewModel.getIsAlertDialogBox().value) 0.5f else 0f, label = ""
+    )
     Scaffold(
+
         modifier = Modifier
+
             .fillMaxSize()
-            .background(color = Background),
+        ,
         floatingActionButton = {
             if (viewModel.getIsFloatingButtonVisible()) FloatingActionButtonView(
                 viewModel = viewModel,
@@ -89,14 +107,16 @@ fun HomeView(
         if (viewModel.getIsEEditDeleteButtonEnabled()!="") {
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
+                .background(Color.Black.copy(alpha))
                 .clickable { viewModel.resetHomeViewState() }
                 .zIndex(0f)
             )
         }
         if(viewModel.getIsCircularProgressBarActive()){
 
-            Box(modifier = Modifier.fillMaxSize().background(color = Color.Black.copy(alpha = 0.5f)), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Black.copy(alpha)), contentAlignment = Alignment.Center){
                 CircularProgressIndicator()
             }
         }else{
@@ -118,7 +138,7 @@ fun HomeView(
                         .padding(it)
                         .zIndex(1f)
                 ) {
-                    items(customersList) { item ->
+                    items(customersList.sortedBy { it.isSuspended }) { item ->
                         Spacer(modifier = Modifier.height(16.dp))
                         ShowDataView(item, navController, viewModel)
                     }
@@ -126,27 +146,38 @@ fun HomeView(
             }
         }
 
-        if (viewModel.isActionButtonExtended.value ) {
-            BlurredBackground(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
-                .clickable { viewModel.isActionButtonExtended.value = false }
-            )
-        }
+            if(viewModel.isActionButtonExtended.value){
+
+                BlurredBackground(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha))
+                    .clickable { viewModel.isActionButtonExtended.value = false }
+                )
+            }
 
     }
-    if (viewModel.getIsSetTempAmountViewActive()) {
+    if(viewModel.getIsSetTempAmountViewActive()){
         BlurredBackground(modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
+            .background(Color.Black.copy(alpha))
             .clickable { viewModel.resetHomeViewState() }
         )
+    }
+    AnimatedVisibility(visible =viewModel.getIsSetTempAmountViewActive(),
+        enter = slideInVertically(animationSpec = tween(durationMillis = 100), initialOffsetY = { fullHeight -> fullHeight / 6 })
+                + expandVertically(animationSpec = tween(durationMillis = 100),expandFrom = Alignment. Top)
+                + scaleIn(animationSpec = tween(durationMillis = 100),transformOrigin = TransformOrigin(0.5f, 0f))
+                + fadeIn(animationSpec = tween(durationMillis = 100),initialAlpha = 0.3f),
+        exit = slideOutVertically(targetOffsetY = { fullHeight -> fullHeight / 6 }) + shrinkVertically() + fadeOut() + scaleOut(targetScale = 0.2f)
+
+    ) {
+
         ChangeQuantityScreen(viewModel)
     }
     if (viewModel.getIsAlertDialogBox().value) {
         BlurredBackground(modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
+            .background(Color.Black.copy(alpha))
             .clickable { viewModel.resetHomeViewState() }
         )
         AlertDialogBoxView(viewModel,navController)

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +28,7 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.uiComponent.ScreenB
 import com.example.dairyman.viewmodel.DairyViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MoreOptionView(
@@ -34,6 +36,7 @@ fun MoreOptionView(
     item: DairyData,
     viewModel: DairyViewModel
 ){
+    val scope= rememberCoroutineScope()
     Column (horizontalAlignment = Alignment.End ,
         modifier = Modifier
             .fillMaxWidth()
@@ -88,6 +91,30 @@ fun MoreOptionView(
 
             ) {
                 Text(fontWeight = FontWeight.Medium,text = "delete")
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(modifier = Modifier
+
+                .shadow(
+                    elevation = 3.dp,
+                    RoundedCornerShape(12.dp),
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black
+                )
+                .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(color = DarkBackground)
+                .clickable {
+                    scope.launch {
+                        viewModel.toggleSuspendCustomer(item)
+                        viewModel.resetHomeViewState()
+                    }
+                }
+                .padding(16.dp, 4.dp)
+
+            ) {
+                Text(fontWeight = FontWeight.Medium,text =
+                if(!item.isSuspended) "suspend" else "unSuspend")
             }
 
         }

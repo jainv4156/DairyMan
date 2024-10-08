@@ -164,15 +164,18 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
 
         }
 
-        val alpha by animateFloatAsState(
-            targetValue =if (viewModel.getChangeAmountViewStatus()) 0.5f else 0f, label = "",
-            animationSpec = tween(250)
-        )
+        if(viewModel.getChangeAmountViewStatus()){
+            val alpha by animateFloatAsState(
+                targetValue =if (viewModel.getChangeAmountViewStatus()) 0.5f else 0f, label = "",
+                animationSpec = tween(250)
+            )
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = alpha))
                 .clickable { viewModel.setChangeAmountViewStatus(false) }
             )
+        }
+
         AnimatedVisibility(visible =viewModel.getChangeAmountViewStatus(),
             enter = scaleIn(animationSpec = tween(durationMillis = 250))
                     + fadeIn(animationSpec = tween(durationMillis = 250),initialAlpha = 0.3f),

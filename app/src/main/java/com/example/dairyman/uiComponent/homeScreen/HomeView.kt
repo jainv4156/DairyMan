@@ -1,5 +1,6 @@
 package com.example.dairyman.uiComponent.homeScreen
 
+import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -34,12 +35,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -107,8 +112,18 @@ fun HomeView(
             )
         },
     ) {
+        var backPressCount by remember { mutableIntStateOf(0) }
+        val activity = LocalContext.current as Activity
+
         BackHandler {
-            viewModel.resetHomeViewState()
+            if (backPressCount == 0) {
+                // Execute your custom function
+                viewModel.resetHomeViewState()
+                backPressCount++
+            } else {
+                activity.finish()
+                backPressCount = 0
+            }
         }
 
         if (viewModel.getIsEEditDeleteButtonEnabled()!="") {

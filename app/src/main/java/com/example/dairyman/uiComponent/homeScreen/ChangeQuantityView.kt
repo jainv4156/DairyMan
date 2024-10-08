@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.uiComponent.OutlinedTextFieldStyle
@@ -32,19 +33,20 @@ import com.example.dairyman.viewmodel.HomeViewModel
 fun ChangeQuantityScreen(viewModel: HomeViewModel){
     Box (modifier = Modifier
         .fillMaxSize()
-        .padding(32.dp,0.dp,32.dp,32.dp),
+        .padding(32.dp, 0.dp, 32.dp, 32.dp),
         contentAlignment = Alignment.Center){
 
         Column (modifier = Modifier
             .align(Alignment.Center)
             .clip(RoundedCornerShape(8.dp))
             .background(Background)
-            .padding(32.dp)
-            .pointerInput(Unit){
+            .padding(30.dp)
+            .pointerInput(Unit) {
                 detectTapGestures {
                 }
             },
             horizontalAlignment = Alignment.CenterHorizontally){
+            Text(text = "Temporarily adjust quantity", fontSize = 20.sp , fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(bottom = 32.dp))
             OutlinedTextFieldStyle(value = viewModel.getTempAmount(), onValueChange = {viewModel.setTempAmount(it)}, title = "Quantity")
             Spacer(modifier = Modifier.height(32.dp))
             OutlinedTextFieldStyle(value = viewModel.getDayForTempAmount(), onValueChange = {viewModel.setDayForTempAmount(it)}, title = "No Of Days")

@@ -34,7 +34,7 @@ fun CustomerHistoryView(id:String){
         }
         else{
             LazyColumn {
-                items(historyList.value){item ->
+                items(historyList.value.sortedByDescending { it.date  }){item ->
                     HistoryListView(item)
                 }
             }
@@ -45,7 +45,7 @@ fun CustomerHistoryView(id:String){
 fun HistoryListView(item:HistoryData){
     Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
         .fillMaxWidth()
-        .padding(12.dp)){
+        .padding(12.dp,14.dp)){
         Row {
             Text(text = "${item.amount}Kg",fontSize = 18.sp)
             Text(text = "(Rs${item.rate})", color = GoodGreen,fontSize = 18.sp)

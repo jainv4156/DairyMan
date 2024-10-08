@@ -60,10 +60,8 @@ fun FloatingActionButtonView(
 ){
 
     Column ( horizontalAlignment = Alignment.End){
-//    if(viewModel.isActionButtonExtended.value){
         ActionButton(viewModel,navController)
 
-//    }
         val floatingActionButtonColor by animateColorAsState(
             targetValue =if (viewModel.isActionButtonExtended.value) Primary else  Secondary,
             label = "",
@@ -107,7 +105,6 @@ fun ActionButton(viewModel: HomeViewModel, navController: NavController){
     ){
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
 
-//        AnimatedVisibility(visible = animationState) {
 
             Box(
                 modifier = Modifier
@@ -126,7 +123,6 @@ fun ActionButton(viewModel: HomeViewModel, navController: NavController){
             ) {
                 Text(text = "Sync", modifier = Modifier.padding(10.dp), fontWeight = FontWeight.Medium, fontSize = 18.sp)
             }
-//        }
 
 
             Box(
@@ -139,8 +135,6 @@ fun ActionButton(viewModel: HomeViewModel, navController: NavController){
             ) {
                 Text(text = "Add Customer", fontWeight = FontWeight.Medium, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
             }
-//        }
-//        AnimatedVisibility(visible = animationState) {
             Box(modifier = Modifier
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
@@ -153,9 +147,8 @@ fun ActionButton(viewModel: HomeViewModel, navController: NavController){
 
                     }
                 }) {
-                Text(text = "Update Today Amount", fontWeight = FontWeight.Medium, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
+                Text(text = "Adjust Daily Totals", fontWeight = FontWeight.Medium, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
             }
-//        }
 
     }
 }}

@@ -48,7 +48,7 @@ fun AddUpdateCustomerDetailView(
     if(id!=""){
         viewModel.preFillUpdateInput(id=id)
     }
-    Scaffold(topBar = { TopAppBarView(title = if(id=="") "Add New Record" else "Update Record",onBackNavClicked = {navController.navigate(
+    Scaffold(topBar = { TopAppBarView(title = if(id=="") "Add new customer" else "record",onBackNavClicked = {navController.navigate(
         ScreenA
     )}) },modifier = Modifier
         .fillMaxSize()
@@ -150,7 +150,7 @@ fun AddUpdateCustomerDetailView(
 
                 .fillMaxWidth(),
                 contentAlignment = Alignment.Center) {
-                Text(text = if (id == "") "Add Record" else "Update Record", color = Background, fontSize = 16.sp)
+                Text(text = if (id == "") "Add Customer" else "Update record", color = Background, fontSize = 16.sp)
             }
         }
         }

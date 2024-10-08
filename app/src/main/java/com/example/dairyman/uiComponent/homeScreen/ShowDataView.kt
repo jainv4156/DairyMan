@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.ui.theme.Background
+import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
 import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
@@ -89,7 +90,7 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: HomeV
                             viewModel.setIdTempAmount(id = item.id)
                             viewModel.readySetTempAmountView()
                         }
-                        .background(color = if (!item.isSuspended) Secondary else Color.Gray)
+                        .background(color = if (!item.isSuspended) Secondary else DarkBackground)
 
 
                     ) {

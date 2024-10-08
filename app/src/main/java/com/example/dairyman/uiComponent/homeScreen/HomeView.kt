@@ -85,7 +85,7 @@ fun HomeView(
         }
     }
     val alpha by animateFloatAsState(
-        targetValue =if (viewModel.getIsEEditDeleteButtonEnabled()!=""||viewModel.isActionButtonExtended.value||viewModel.getIsSetTempAmountViewActive() ||viewModel.getIsAlertDialogBox().value) 0.5f else 0f, label = "",
+        targetValue =if (viewModel.getIsEEditDeleteButtonEnabled()!=""||viewModel.isActionButtonExtended.value||viewModel.getIsSetTempAmountViewActive() ||viewModel.getIsAlertDialogBox()) 0.5f else 0f, label = "",
         animationSpec = tween(250)
     )
     Scaffold(
@@ -141,7 +141,10 @@ fun HomeView(
                 .background(color = Color.Black.copy(alpha)), contentAlignment = Alignment.Center){
                 CircularProgressIndicator()
             }
-        }else{
+        }
+
+        if(!viewModel.getIsCircularProgressBarActive() && !viewModel.getIsAlertDialogBox() && !viewModel.getIsSetTempAmountViewActive()){
+
 
             Box(
                 modifier = Modifier
@@ -178,7 +181,7 @@ fun HomeView(
             }
 
     }
-    if(viewModel.getIsSetTempAmountViewActive()||viewModel.getIsAlertDialogBox().value){
+    if(viewModel.getIsSetTempAmountViewActive()||viewModel.getIsAlertDialogBox()){
         BlurredBackground(modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))
@@ -196,7 +199,7 @@ fun HomeView(
         ChangeQuantityScreen(viewModel)
     }
 
-    AnimatedVisibility(visible =viewModel.getIsAlertDialogBox().value,
+    AnimatedVisibility(visible =viewModel.getIsAlertDialogBox(),
         enter = slideInVertically(animationSpec = tween(durationMillis = 250),initialOffsetY = { fullHeight -> -fullHeight })
                 +scaleIn(animationSpec = tween(durationMillis = 250))
       ,

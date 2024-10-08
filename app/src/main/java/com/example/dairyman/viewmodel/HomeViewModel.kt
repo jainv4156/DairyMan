@@ -81,8 +81,8 @@ class HomeViewModel:ViewModel(){
     fun getIsSetTempAmountViewActive():Boolean{
         return mIsSetTempAmountViewActive.value
     }
-    fun getIsAlertDialogBox(): MutableState<Boolean> {
-        return mIsAlertDialogBox
+    fun getIsAlertDialogBox():Boolean {
+        return mIsAlertDialogBox.value
     }
     fun getDayForTempAmount(): String {
         return dayForTempAmount.value
@@ -125,15 +125,14 @@ class HomeViewModel:ViewModel(){
         mIsSearchActive.value=true
     }
     private fun enableUpdateAmountAlert(){
-        mAlertDialogTitle= "You Have Added Today's Amount Do You Wish To Continue adding the Amount"
+        mAlertDialogTitle= "You have already performed this action for today. Do you still want to continue?"
         mIsUpdateAmountAlertEnable.value=true
         enableAlertDialogBax()
 
     }
     fun enableDeleteAlert(item: DairyData) {
         resetHomeViewState()
-        mAlertDialogTitle="Do you Want To Delete This Customer Account Having Pending Amount ${item.pendingAmount}. You May Not Be Able To Recover It Again"
-
+        mAlertDialogTitle="Are you sure you want to delete this customer's account? They have a pending amount of ${item.pendingAmount} ,  which will be lost"
         mIsDeleteAlertEnabled.value=item
         enableAlertDialogBax()
     }
@@ -380,7 +379,7 @@ class HomeViewModel:ViewModel(){
         }
         else{
             setSignInAlertBox(true)
-            mAlertDialogTitle= "You Have To SignIn before Syncing"
+            mAlertDialogTitle= "Please sign in to enable syncing"
             enableAlertDialogBax()
         }
     }

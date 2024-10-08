@@ -26,9 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dairyman.ui.theme.Accent
 import com.example.dairyman.viewmodel.HomeViewModel
-import com.example.dairyman.ui.theme.Background
+import com.example.dairyman.ui.theme.CancelRed
 import com.example.dairyman.ui.theme.DarkBackground
+import com.example.dairyman.ui.theme.Primary
+import com.example.dairyman.ui.theme.Secondary
+import com.example.dairyman.ui.theme.Warning
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,11 +52,11 @@ fun AlertDialogBoxView(viewModel: HomeViewModel, navController: NavController) {
             Column (modifier = Modifier
                 .align(Alignment.Center)
                 .clip(shape)
-                .background(Background)
+                .background(Primary)
                 .padding(32.dp, 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally){
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(fontSize = 18.sp, color =  Color.Red,text = viewModel.getAlertDialogTitle())
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(fontSize = 18.sp, color =  Accent,text = viewModel.getAlertDialogTitle())
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround) {
@@ -63,8 +67,6 @@ fun AlertDialogBoxView(viewModel: HomeViewModel, navController: NavController) {
                         .shadow(
                             elevation = 3.dp,
                             RoundedCornerShape(12.dp),
-                            ambientColor = Color.Black,
-                            spotColor = Color.Black
                         )
                         .padding(1.dp, 0.dp, 1.dp, 5.dp)
                         .clip(RoundedCornerShape(12.dp))
@@ -83,16 +85,16 @@ fun AlertDialogBoxView(viewModel: HomeViewModel, navController: NavController) {
                         .shadow(
                             elevation = 3.dp,
                             RoundedCornerShape(12.dp),
-                            ambientColor = Color.Black,
+                            ambientColor = Secondary,
                             spotColor = Color.Black
                         )
                         .padding(1.dp, 0.dp, 1.dp, 5.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(color = DarkBackground)
+                        .background(color = if(viewModel.getIsDeleteAlertEnabled().id != "") CancelRed else Secondary)
                         .padding(16.dp, 4.dp)
 
                     ){
-                        Text(fontWeight = FontWeight.Medium,text = "Continue")
+                        Text(fontWeight = FontWeight.Medium,text =  if(viewModel.getIsDeleteAlertEnabled().id != "") "Delete" else "Continue")
                     }
                 }
 

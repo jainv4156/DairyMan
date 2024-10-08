@@ -88,7 +88,7 @@ navController: NavHostController=rememberNavController()
                     scope.launch {
                         SnackBarController.sendEvent(
                             SnackBarEvent(
-                                message = "Sign in successful",
+                                message = "Sign-in successful",
                                 action = SnackBarAction(
                                     name = "X"
                                 )

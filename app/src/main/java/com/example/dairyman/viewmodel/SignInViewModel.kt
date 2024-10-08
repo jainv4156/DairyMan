@@ -3,6 +3,7 @@ package com.example.dairyman.viewmodel
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.dairyman.data.model.userdataModel.SignInResult
 import com.example.dairyman.data.model.userdataModel.SignInState
@@ -11,8 +12,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class SignInViewModel:ViewModel() {
+    private val isCircularProgressBarActive= mutableStateOf(false)
+
     private val _state= MutableStateFlow( SignInState())
     val state=_state.asStateFlow()
+
 
     fun onSignInResult(result: SignInResult){
         _state.value=state.value.copy(
@@ -33,5 +37,11 @@ class SignInViewModel:ViewModel() {
         return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 
+    fun getIsCircularProgressBarActive(): Boolean {
+        return isCircularProgressBarActive.value
+    }
+     fun setIsCircularProgressBarActive(value:Boolean){
+        isCircularProgressBarActive.value=value
+    }
 
 }

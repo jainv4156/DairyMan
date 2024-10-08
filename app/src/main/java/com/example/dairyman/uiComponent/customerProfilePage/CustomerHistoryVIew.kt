@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dairyman.data.model.HistoryData
 import com.example.dairyman.ui.theme.GoodGreen
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun CustomerHistoryView(id:String){
-    val historyList=DairyViewModel().getHistoryById(id).collectAsState(initial = listOf())
+    val historyList=HomeViewModel().getHistoryById(id).collectAsState(initial = listOf())
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .fillMaxWidth()
         .padding(12.dp, 20.dp)) {

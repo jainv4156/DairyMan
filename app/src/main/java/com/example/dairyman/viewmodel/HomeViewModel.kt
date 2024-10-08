@@ -30,7 +30,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 
-class DairyViewModel:ViewModel(){
+class HomeViewModel:ViewModel(){
     private var dayForTempAmount = mutableStateOf("1")
     private var tempAmount= mutableStateOf("0")
     private var idTempAmount= ""
@@ -161,7 +161,6 @@ class DairyViewModel:ViewModel(){
                 customersList.value=list}
             }
     }
-
 
     fun setIdTempAmount(id:String){
         idTempAmount=id
@@ -492,6 +491,17 @@ class DairyViewModel:ViewModel(){
     }
 
     suspend fun toggleSuspendCustomer(item: DairyData) {
-        databaseDao.upsertDairyData(item.copy(isSuspended  =!item.isSuspended))
+        try{
+            databaseDao.upsertDairyData(item.copy(isSuspended =!item.isSuspended))
+            SnackBarController.sendEvent(
+                event = SnackBarEvent(
+                    message = item.name + " is ${if(!item.isSuspended) "Suspended" else "Unsuspended"}",
+                    action = SnackBarAction(name = "X")
+                )
+            )
+
+        }catch (e:Exception){
+                somethingWrongSnackBar()
+        }
     }
 }

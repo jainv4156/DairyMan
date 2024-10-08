@@ -26,13 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import kotlinx.coroutines.launch
 
 @Composable
-fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) {
+fun AlertDialogBoxView(viewModel: HomeViewModel, navController: NavController) {
         val coroutineScope = rememberCoroutineScope()
         Box (modifier = Modifier
             .fillMaxSize()
@@ -101,7 +101,7 @@ fun AlertDialogBoxView( viewModel: DairyViewModel,navController: NavController) 
             }
         }
 }
-suspend fun onAlertClick(viewModel: DairyViewModel,navController: NavController) {
+suspend fun onAlertClick(viewModel: HomeViewModel, navController: NavController) {
 
     if(viewModel.getSignInAlertBox()){
         navController.navigate(ScreenD)

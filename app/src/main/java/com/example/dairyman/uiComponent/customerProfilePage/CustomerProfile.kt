@@ -1,5 +1,12 @@
 package com.example.dairyman.uiComponent.customerProfilePage
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +26,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -34,9 +42,8 @@ import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Secondary
 import com.example.dairyman.uiComponent.homeScreen.BlurredBackground
-import com.example.dairyman.uiComponent.homeScreen.ChangeQuantityScreen
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import com.example.dairyman.viewmodel.HistoryViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -49,6 +56,7 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
+
     ObserveAsEvent(
         flow = SnackBarController.events,
         snackBarHostState
@@ -76,7 +84,7 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
         topBar = { CustomerProfileTopBar(id = id, onBackNavClicked = { navController.navigate(
         ScreenA
     ) }) }) {
-        val profile= DairyViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
+        val profile= HomeViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Background)
@@ -155,13 +163,24 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
             }
 
         }
-        if (viewModel.getChangeAmountViewStatus()) {
+
+        val alpha by animateFloatAsState(
+            targetValue =if (viewModel.getChangeAmountViewStatus()) 0.5f else 0f, label = "",
+            animationSpec = tween(250)
+        )
             BlurredBackground(modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
+                .background(Color.Black.copy(alpha = alpha))
                 .clickable { viewModel.setChangeAmountViewStatus(false) }
             )
-            ChangeAmountView(viewModel)
+        AnimatedVisibility(visible =viewModel.getChangeAmountViewStatus(),
+            enter = scaleIn(animationSpec = tween(durationMillis = 250))
+                    + fadeIn(animationSpec = tween(durationMillis = 250),initialAlpha = 0.3f),
+            exit =  scaleOut(animationSpec = tween(durationMillis = 200))
+                    + fadeOut(animationSpec = tween(durationMillis = 200), targetAlpha = 0.3f)
+
+        ) {
+        ChangeAmountView(viewModel)
         }
     }
 }

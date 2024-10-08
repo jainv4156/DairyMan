@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.uiComponent.OutlinedTextFieldStyle
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 
 @Composable
-fun ChangeQuantityScreen(viewModel: DairyViewModel){
+fun ChangeQuantityScreen(viewModel: HomeViewModel){
     Box (modifier = Modifier
         .fillMaxSize()
         .padding(32.dp,0.dp,32.dp,32.dp),

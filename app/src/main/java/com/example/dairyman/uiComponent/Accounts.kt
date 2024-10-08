@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -45,16 +46,17 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.uiComponent.homeScreen.ScreenA
+import com.example.dairyman.viewmodel.SignInViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Composable
 fun SignInScreen(
-    state: SignInState,
     onSignInClick: () -> Unit,
     navController: NavController,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    viewModel: SignInViewModel
 ){
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -110,21 +112,21 @@ fun SignInScreen(
         }
         }
         }
+            if(viewModel.getIsCircularProgressBarActive()){
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Black.copy(alpha = 0.3f)), contentAlignment = Alignment.Center){
+                    CircularProgressIndicator()
+                }
+            }
+            else{
             Box (modifier = Modifier.padding(24.dp)
             ){
 
-        SignInSignOutButton(onSignOut=onSignOut, onSignInClick = onSignInClick)
+        SignInSignOutButton(onSignOut=onSignOut, onSignInClick = onSignInClick,viewModel)
             }
+        }}
         }
-    }
-    val context= LocalContext.current
-    LaunchedEffect(key1 = state.signInError, block = {
-        state.signInError?.let { error->
-            Toast.makeText(context, error,Toast.LENGTH_LONG).show()
-        }
-    })
-
-
 }
 
 
@@ -174,7 +176,9 @@ fun UserProfilePhoto() {
 
 }
 @Composable
-fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
+fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit,viewModel: SignInViewModel){
+
+
     if(FirebaseAuth.getInstance().currentUser?.photoUrl==null){
         Box(modifier = Modifier
             .clickable { onSignInClick() }
@@ -190,9 +194,9 @@ fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
             .clip(RoundedCornerShape(12.dp))
             .background(color = DarkBackground)
             .padding(24.dp, 8.dp)
-           ,
+            ,
             contentAlignment = Alignment.Center){
-                Text(text = "SignIn")
+            Text(text = "SignIn")
         }
     }
     else{
@@ -211,9 +215,11 @@ fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
             .padding(24.dp, 8.dp)
             ,
             contentAlignment = Alignment.Center){
-                Text(text = "Logout", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            Text(text = "Logout", fontSize = 18.sp, fontWeight = FontWeight.Medium)
         }
     }
+
+
 
 }
 

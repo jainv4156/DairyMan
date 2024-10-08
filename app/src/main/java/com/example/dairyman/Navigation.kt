@@ -6,6 +6,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,7 +23,7 @@ import com.example.dairyman.snackBar.SnackBarAction
 import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.AddUpdateCustomerDetailViewModel
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import com.example.dairyman.uiComponent.AddUpdateCustomerDetailView
 import com.example.dairyman.uiComponent.customerProfilePage.CustomerProfileView
 import com.example.dairyman.uiComponent.ScreenD
@@ -43,8 +45,25 @@ navController: NavHostController=rememberNavController()
 ){
     NavHost(
         navController=navController,
-        startDestination = ScreenA
+        startDestination = ScreenA,
+        enterTransition = {slideInHorizontally(initialOffsetX = { it })},
+        exitTransition = {slideOutHorizontally(targetOffsetX = { it }) }
     ){
+
+
+        composable<ScreenA>(
+            enterTransition ={slideInHorizontally(initialOffsetX = { -it })},
+            exitTransition = {slideOutHorizontally(targetOffsetX = { -it }) }){
+            HomeView(navController, viewModel = HomeViewModel())
+        }
+        composable<ScreenB> {
+            val args=it.toRoute<ScreenB>()
+            AddUpdateCustomerDetailView(navController, viewModel = AddUpdateCustomerDetailViewModel(),args.id)
+        }
+        composable<ScreenC> {
+            val args=it.toRoute<ScreenB>()
+            CustomerProfileView(args.id,navController, viewModel = HistoryViewModel())
+        }
         composable<ScreenD>{
             val viewModel=SignInViewModel()
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -52,6 +71,7 @@ navController: NavHostController=rememberNavController()
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                 onResult = { result ->
+                    viewModel.setIsCircularProgressBarActive(false)
                     if(result.resultCode == RESULT_OK) {
                         scope.launch {
                             val signInResult = googleAuthUiClient
@@ -61,10 +81,9 @@ navController: NavHostController=rememberNavController()
                             viewModel.onSignInResult(signInResult)
                         }
                     }
-                                    }
+                }
             )
             LaunchedEffect(key1 = state.isSignInSuccessful) {
-
                 if(state.isSignInSuccessful) {
                     scope.launch {
                         SnackBarController.sendEvent(
@@ -81,10 +100,10 @@ navController: NavHostController=rememberNavController()
             }
 
             SignInScreen(
-                state=state,
                 onSignInClick = {
                     scope.launch {
                         if(viewModel.isInternetAvailable(context = navController.context)){
+                            viewModel.setIsCircularProgressBarActive(true)
                             val signInIntentSender  =googleAuthUiClient.signIn()
                             launcher.launch(
 
@@ -94,15 +113,15 @@ navController: NavHostController=rememberNavController()
                             )
                         }
                         else(
-                                    SnackBarController.sendEvent(
-                                        SnackBarEvent(
-                                            message = "No internet connection",
-                                            action = SnackBarAction(
-                                                name = "X"
-                                            )
+                                SnackBarController.sendEvent(
+                                    SnackBarEvent(
+                                        message = "No internet connection",
+                                        action = SnackBarAction(
+                                            name = "X"
                                         )
                                     )
-                        )
+                                )
+                                )
                     }
 
 
@@ -127,21 +146,12 @@ navController: NavHostController=rememberNavController()
                         }
 
                     }
-                }
+                },
+                viewModel=viewModel
 
             )
         }
-        composable<ScreenA>{
-            HomeView(navController, viewModel = DairyViewModel())
-        }
-        composable<ScreenB> {
-            val args=it.toRoute<ScreenB>()
-            AddUpdateCustomerDetailView(navController, viewModel = AddUpdateCustomerDetailViewModel(),args.id)
-        }
-        composable<ScreenC> {
-            val args=it.toRoute<ScreenB>()
-            CustomerProfileView(args.id,navController, viewModel = HistoryViewModel())
-        }
+
     }
 
 

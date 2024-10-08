@@ -1,5 +1,14 @@
 package com.example.dairyman.uiComponent.homeScreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,12 +41,13 @@ import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
 import com.example.dairyman.uiComponent.customerProfilePage.ScreenC
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 
 @Composable
-fun ShowDataView(item: DairyData, navController: NavController, viewModel: DairyViewModel) {
+fun ShowDataView(item: DairyData, navController: NavController, viewModel: HomeViewModel) {
     Box(modifier = Modifier
-        .fillMaxSize().padding(0.dp,6.dp)
+        .fillMaxSize()
+        .padding(0.dp, 6.dp)
     ){
         Column(modifier = Modifier
 
@@ -74,11 +85,11 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
                     Box(modifier = Modifier
 
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable (enabled =  !item.isSuspended ){
+                        .clickable(enabled = !item.isSuspended) {
                             viewModel.setIdTempAmount(id = item.id)
                             viewModel.readySetTempAmountView()
                         }
-                        .background(color = if(!item.isSuspended) Secondary else Color.Gray)
+                        .background(color = if (!item.isSuspended) Secondary else Color.Gray)
 
 
                     ) {
@@ -107,7 +118,14 @@ fun ShowDataView(item: DairyData, navController: NavController, viewModel: Dairy
 
             )
         }
-        if(viewModel.getIsEEditDeleteButtonEnabled()==item.id){
+        AnimatedVisibility(
+            visible =viewModel.getIsEEditDeleteButtonEnabled()==item.id,
+            enter = fadeIn(animationSpec = tween(durationMillis = 250),initialAlpha = 0.3f)
+            + expandVertically (animationSpec = tween(durationMillis = 250), initialHeight ={fullHeight -> fullHeight/8})
+            + scaleIn(animationSpec = tween(durationMillis = 250), initialScale = 0.2f, transformOrigin = TransformOrigin(pivotFractionX = 0.75f, pivotFractionY =0.2f )),
+            exit = fadeOut(animationSpec = tween(durationMillis = 250), targetAlpha = 0.3f)
+                    + shrinkVertically (animationSpec = tween(durationMillis = 250), targetHeight ={fullHeight -> fullHeight/8})
+                    + scaleOut(animationSpec = tween(durationMillis = 250), targetScale = 0.2f, transformOrigin = TransformOrigin(pivotFractionX = 0.75f, pivotFractionY =0.2f )), ){
             MoreOptionView(
                 navController = navController, item = item,viewModel=viewModel)
         }

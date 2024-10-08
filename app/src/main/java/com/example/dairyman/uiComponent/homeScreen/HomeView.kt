@@ -1,10 +1,12 @@
 package com.example.dairyman.uiComponent.homeScreen
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -43,7 +45,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.dairyman.snackBar.ObserveAsEvent
 import com.example.dairyman.snackBar.SnackBarController
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import com.example.dairyman.uiComponent.AlertDialogBoxView
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -53,7 +55,7 @@ import kotlinx.serialization.Serializable
 @Composable
 fun HomeView(
     navController: NavController,
-    viewModel: DairyViewModel,
+    viewModel: HomeViewModel,
 ){
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -78,9 +80,11 @@ fun HomeView(
         }
     }
     val alpha by animateFloatAsState(
-        targetValue =if (viewModel.getIsEEditDeleteButtonEnabled()!=""||viewModel.isActionButtonExtended.value||viewModel.getIsSetTempAmountViewActive() ||viewModel.getIsAlertDialogBox().value) 0.5f else 0f, label = ""
+        targetValue =if (viewModel.getIsEEditDeleteButtonEnabled()!=""||viewModel.isActionButtonExtended.value||viewModel.getIsSetTempAmountViewActive() ||viewModel.getIsAlertDialogBox().value) 0.5f else 0f, label = "",
+        animationSpec = tween(250)
     )
     Scaffold(
+
 
         modifier = Modifier
 
@@ -103,6 +107,9 @@ fun HomeView(
             )
         },
     ) {
+        BackHandler {
+            viewModel.resetHomeViewState()
+        }
 
         if (viewModel.getIsEEditDeleteButtonEnabled()!="") {
             BlurredBackground(modifier = Modifier
@@ -156,7 +163,7 @@ fun HomeView(
             }
 
     }
-    if(viewModel.getIsSetTempAmountViewActive()){
+    if(viewModel.getIsSetTempAmountViewActive()||viewModel.getIsAlertDialogBox().value){
         BlurredBackground(modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha))
@@ -164,25 +171,27 @@ fun HomeView(
         )
     }
     AnimatedVisibility(visible =viewModel.getIsSetTempAmountViewActive(),
-        enter = slideInVertically(animationSpec = tween(durationMillis = 100), initialOffsetY = { fullHeight -> fullHeight / 6 })
-                + expandVertically(animationSpec = tween(durationMillis = 100),expandFrom = Alignment. Top)
-                + scaleIn(animationSpec = tween(durationMillis = 100),transformOrigin = TransformOrigin(0.5f, 0f))
-                + fadeIn(animationSpec = tween(durationMillis = 100),initialAlpha = 0.3f),
-        exit = slideOutVertically(targetOffsetY = { fullHeight -> fullHeight / 6 }) + shrinkVertically() + fadeOut() + scaleOut(targetScale = 0.2f)
+        enter = scaleIn(animationSpec = tween(durationMillis = 250))
+                + fadeIn(animationSpec = tween(durationMillis = 250),initialAlpha = 0.3f),
+        exit =  scaleOut(animationSpec = tween(durationMillis = 200))
+                + fadeOut(animationSpec = tween(durationMillis = 200), targetAlpha = 0.3f)
 
     ) {
 
         ChangeQuantityScreen(viewModel)
     }
-    if (viewModel.getIsAlertDialogBox().value) {
-        BlurredBackground(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha))
-            .clickable { viewModel.resetHomeViewState() }
-        )
-        AlertDialogBoxView(viewModel,navController)
-    }
 
+    AnimatedVisibility(visible =viewModel.getIsAlertDialogBox().value,
+        enter = slideInVertically(animationSpec = tween(durationMillis = 250),initialOffsetY = { fullHeight -> -fullHeight })
+                +scaleIn(animationSpec = tween(durationMillis = 250))
+      ,
+        exit =  scaleOut(animationSpec = tween(durationMillis = 200))
+                + fadeOut(animationSpec = tween(durationMillis = 200), targetAlpha = 0.3f)
+
+    ) {
+
+    AlertDialogBoxView(viewModel,navController)
+}
 }
 
 @Composable

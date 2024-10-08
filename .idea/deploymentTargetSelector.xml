@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="DairyApp">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-10-07T09:32:45.476205439Z">
+        <DropdownSelection timestamp="2024-10-08T08:35:18.097339716Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=RZ8W40FF5SY" />

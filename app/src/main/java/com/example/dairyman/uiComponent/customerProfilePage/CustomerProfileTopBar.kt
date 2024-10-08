@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +31,7 @@ fun CustomerProfileTopBar(id:String,onBackNavClicked:()->Unit={}){
                 contentDescription = null)
         }
     }
-    val profile= DairyViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
+    val profile= HomeViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
     TopAppBar(
         modifier = Modifier.clip(RoundedCornerShape(0.dp,0.dp,16.dp,16.dp)),
         title = {

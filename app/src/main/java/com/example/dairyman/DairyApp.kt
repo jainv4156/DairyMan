@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.dairyman.data.AppDatabase
 import com.example.dairyman.worker.SyncWorker

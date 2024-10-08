@@ -27,14 +27,14 @@ import com.example.dairyman.data.model.DairyData
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.uiComponent.ScreenB
-import com.example.dairyman.viewmodel.DairyViewModel
+import com.example.dairyman.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun MoreOptionView(
     navController: NavController,
     item: DairyData,
-    viewModel: DairyViewModel
+    viewModel: HomeViewModel
 ){
     val scope= rememberCoroutineScope()
     Column (horizontalAlignment = Alignment.End ,

@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.com.google.firebase.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.datastore.core.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -92,14 +93,18 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation (libs.firebase.auth.ktx)
     ksp(libs.androidx.room.compiler)
 
     // message otp auth
-    implementation (libs.firebase.auth.ktx)
+
     implementation(libs.firebase.firestore)
 
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.lifecycle.runtime.compose)
     implementation (libs.coil.compose)
+
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
 
 }

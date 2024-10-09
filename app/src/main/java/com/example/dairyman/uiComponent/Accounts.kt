@@ -1,6 +1,5 @@
 package com.example.dairyman.uiComponent
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +23,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,13 +31,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.dairyman.data.model.userdataModel.SignInState
 import com.example.dairyman.snackBar.ObserveAsEvent
 import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.ui.theme.Background
@@ -123,7 +119,7 @@ fun SignInScreen(
             Box (modifier = Modifier.padding(24.dp)
             ){
 
-        SignInSignOutButton(onSignOut=onSignOut, onSignInClick = onSignInClick,viewModel)
+        SignInSignOutButton(onSignOut=onSignOut, onSignInClick = onSignInClick)
             }
         }}
         }
@@ -176,7 +172,7 @@ fun UserProfilePhoto() {
 
 }
 @Composable
-fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit,viewModel: SignInViewModel){
+fun SignInSignOutButton(onSignOut: () -> Unit,onSignInClick: () -> Unit){
 
 
     if(FirebaseAuth.getInstance().currentUser?.photoUrl==null){

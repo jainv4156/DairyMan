@@ -1,9 +1,8 @@
-package com.example.dairyman.Presentation.sign_in
+package com.example.dairyman.sign_in
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.util.Log
 import com.example.dairyman.data.model.userdataModel.SignInResult
 import com.example.dairyman.data.model.userdataModel.UserDataModel
 import com.example.dairyman.R
@@ -65,12 +64,6 @@ class GoogleAuthUiClint(
             if( e is CancellationException) throw  e
 
     }}
-    fun getSignInUser():UserDataModel?=auth.currentUser?.run {
-        UserDataModel(
-            userId = uid,
-            userName = displayName,
-        )
-    }
         private fun buildSignInRequest(): BeginSignInRequest {
             return BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(

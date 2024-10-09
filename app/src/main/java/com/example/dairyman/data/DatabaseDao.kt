@@ -34,7 +34,7 @@ interface DatabaseDao {
     @Query("SELECT * FROM historyDataTable")
     suspend fun getAllHistory():List<HistoryData>
 
-    @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date >=:date")
+    @Query("SELECT COUNT(*) FROM historyDataTable WHERE Date >=:date AND balanceChange=0")
     suspend fun getHistoryCount(date:Long):Int
 
     @Insert
@@ -44,8 +44,7 @@ interface DatabaseDao {
     suspend fun updateHistory(historyData: HistoryData)
 
 
-
-    @Query("SELECT id,amount,rate,date,dataId,isSynced FROM historyDataTable  WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
+    @Query("SELECT * FROM historyDataTable  WHERE historyDataTable.dataId=:id ORDER BY historyDataTable.id DESC" )
     fun getHistoryById(id:String):Flow<List<HistoryData>>
 
 }

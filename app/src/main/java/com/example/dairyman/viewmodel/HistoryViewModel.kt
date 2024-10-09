@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dairyman.DairyApp
+import com.example.dairyman.data.model.DairyData
+import com.example.dairyman.data.model.HistoryData
 import com.example.dairyman.snackBar.SnackBarAction
 import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.snackBar.SnackBarEvent
@@ -37,15 +39,34 @@ class HistoryViewModel: ViewModel() {
 
     }
 
-     suspend fun updatePendingAmount(){
+    suspend fun addInPendingAmount(){
+        val dairyData=databaseDao.getDairyDataById(pendingAmountId).first()
+        val currentPendingAmount=dairyData.pendingAmount
+        val newPendingAmount=currentPendingAmount+pendingAmount.value.toInt()
+        val newDairyData=dairyData.copy(pendingAmount = newPendingAmount)
+        updatePendingAmount(newDairyData)
+        databaseDao.insertInHistory(HistoryData(dataId = dairyData.id, balanceChange = +pendingAmount.value.toInt()))
+
+
+    }
+
+     suspend fun subtractFromPendingAmount(){
+         val dairyData=databaseDao.getDairyDataById(pendingAmountId).first()
+         val currentPendingAmount=dairyData.pendingAmount
+         val newPendingAmount=currentPendingAmount-pendingAmount.value.toInt()
+         val newDairyData=dairyData.copy(pendingAmount = newPendingAmount)
+         updatePendingAmount(newDairyData)
+         databaseDao.insertInHistory(HistoryData(dataId = dairyData.id, balanceChange = -pendingAmount.value.toInt()))
+
+    }
+    private suspend fun updatePendingAmount(newDairyData: DairyData) {
         viewModelScope.launch (IO){
             try{
-                val dairyData=databaseDao.getDairyDataById(pendingAmountId).first()
-                databaseDao.upsertDairyData(dairyData.copy(pendingAmount = pendingAmount.value.toInt()))
+                databaseDao.upsertDairyData(newDairyData)
                 setChangeAmountViewStatus(false)
                 SnackBarController.sendEvent(
                     event = SnackBarEvent(
-                        message = "Amount is Updated to ${pendingAmount.value}",
+                        message = "Amount is Updated to ${newDairyData.pendingAmount}",
                         action = SnackBarAction(name = "X")
                     )
                 )

@@ -7,15 +7,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,25 +32,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import com.example.dairyman.DairyApp
 import com.example.dairyman.snackBar.ObserveAsEvent
+import com.example.dairyman.snackBar.SnackBarAction
 import com.example.dairyman.snackBar.SnackBarController
+import com.example.dairyman.snackBar.SnackBarEvent
 import com.example.dairyman.viewmodel.HomeViewModel
 import com.example.dairyman.uiComponent.AlertDialogBoxView
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -76,7 +76,7 @@ fun HomeView(
             val result = snackBarHostState.showSnackbar(
                 message = event.message,
                 actionLabel = event.action?.name,
-                duration = SnackbarDuration.Long
+                duration = SnackbarDuration.Short
             )
 
             if(result == SnackbarResult.ActionPerformed) {
@@ -89,7 +89,6 @@ fun HomeView(
         animationSpec = tween(250)
     )
     Scaffold(
-
 
         modifier = Modifier
 
@@ -125,15 +124,34 @@ fun HomeView(
                 backPressCount = 0
             }
         }
-
-        if (viewModel.getIsEEditDeleteButtonEnabled()!="") {
-            BlurredBackground(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha))
-                .clickable { viewModel.resetHomeViewState() }
-                .zIndex(0f)
-            )
+        val myApplication =activity.applicationContext as DairyApp
+        if(myApplication.isAppRestart && FirebaseAuth.getInstance().currentUser ==null){
+            viewModel.activateSyncRecommendation()
+            myApplication.isAppRestart=false
         }
+        LaunchedEffect(key1 = Unit) {
+            if(myApplication.readLastSyncTime() != 0L){
+                val lastSyncTime=myApplication.readLastSyncTime()
+                val date= SimpleDateFormat("dd/MM", Locale.getDefault()).format(lastSyncTime)
+                val time= SimpleDateFormat("HH:mm", Locale.getDefault()).format(lastSyncTime)
+                myApplication.saveAutoSyncUpdates(true)
+                SnackBarController.sendEvent(
+                    event = SnackBarEvent(
+                        message = "Last synced: $time on $date",
+                        action = SnackBarAction(name = "X")
+                    )
+                )
+            }
+        }
+
+            if (viewModel.getIsEEditDeleteButtonEnabled()!="") {
+                BlurredBackground(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha))
+                    .clickable { viewModel.resetHomeViewState() }
+                    .zIndex(0f)
+                )
+            }
         if(viewModel.getIsCircularProgressBarActive()){
 
             Box(modifier = Modifier

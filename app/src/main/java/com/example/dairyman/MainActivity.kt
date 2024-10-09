@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import com.example.dairyman.Presentation.sign_in.GoogleAuthUiClint
+import com.example.dairyman.sign_in.GoogleAuthUiClint
 import com.example.dairyman.ui.theme.DairyManTheme
 import com.google.android.gms.auth.api.identity.Identity
 
@@ -18,16 +18,21 @@ class MainActivity : ComponentActivity() {
         )
 
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
+
         setContent {
             DairyManTheme {
-
                     Navigation(googleAuthUiClient=googleAuthUiClient)
             }
         }
     }
+
+
 }
 

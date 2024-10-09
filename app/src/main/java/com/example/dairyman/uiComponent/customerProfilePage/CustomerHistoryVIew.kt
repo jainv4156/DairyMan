@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dairyman.data.model.HistoryData
+import com.example.dairyman.ui.theme.CancelRed
 import com.example.dairyman.ui.theme.GoodGreen
 import com.example.dairyman.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
@@ -46,9 +47,20 @@ fun HistoryListView(item:HistoryData){
     Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
         .fillMaxWidth()
         .padding(12.dp,14.dp)){
-        Row {
-            Text(text = "${item.amount}Kg",fontSize = 18.sp)
-            Text(text = "(Rs${item.rate})", color = GoodGreen,fontSize = 18.sp)
+        if(item.balanceChange!=0){
+            if(item.balanceChange<0){
+                Text(text = "Rs${-item.balanceChange} Received" , color = GoodGreen,fontSize = 18.sp)
+            }
+            else{
+                Text(text = "Rs${item.balanceChange} Added " , color = CancelRed,fontSize = 18.sp)
+            }
+        }
+        else{
+
+            Row {
+                Text(text = "${item.amount}Kg",fontSize = 18.sp)
+                Text(text = "(Rs${item.rate})",fontSize = 18.sp)
+            }
         }
         val date= SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(item.date)
         Text(text = date, fontSize = 18.sp)

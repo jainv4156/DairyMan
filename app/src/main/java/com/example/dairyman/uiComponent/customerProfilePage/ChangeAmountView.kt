@@ -52,7 +52,7 @@ fun ChangeAmountView(viewModel: HistoryViewModel){
                 }
             },
             horizontalAlignment = Alignment.CenterHorizontally){
-            OutlinedTextFieldStyle(value = viewModel.getPendingAmount(), onValueChange = {viewModel.setPendingAmount(it)}, title = "Pending Amount")
+            OutlinedTextFieldStyle(value = viewModel.getPendingAmount(), onValueChange = {viewModel.setPendingAmount(it)}, title = "Amount")
             Spacer(modifier = Modifier.height(32.dp))
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround) {
@@ -68,10 +68,17 @@ fun ChangeAmountView(viewModel: HistoryViewModel){
                     .background(color = DarkBackground)
                     .padding(16.dp, 4.dp)
                     .clickable {
-                        viewModel.setChangeAmountViewStatus(false)
+                        if(viewModel.getPendingAmount().isNotEmpty()){
+                            scope.launch {
+                                viewModel.subtractFromPendingAmount()
+                            }
+                        }
+                        else{
+                            Toast.makeText(context,"Please Fill Required The Fields", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 ){
-                    Text(fontWeight = FontWeight.Medium,text = "Cancel")
+                    Text(fontWeight = FontWeight.Medium,text = "Subtract")
                 }
                 Box (modifier = Modifier
 
@@ -87,18 +94,16 @@ fun ChangeAmountView(viewModel: HistoryViewModel){
                     .clickable {
                         if(viewModel.getPendingAmount().isNotEmpty()){
                             scope.launch {
-                                viewModel.updatePendingAmount()
+                                viewModel.addInPendingAmount()
                             }
                         }
                         else{
                             Toast.makeText(context,"Please Fill Required The Fields", Toast.LENGTH_SHORT).show()
                         }
-
                     }
                     .padding(16.dp, 4.dp)
-
                 ){
-                    Text(fontWeight = FontWeight.Medium,text = "Continue")
+                    Text(fontWeight = FontWeight.Medium,text = "Add")
                 }
             }
 }}}

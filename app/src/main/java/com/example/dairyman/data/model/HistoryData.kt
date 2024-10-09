@@ -19,5 +19,7 @@ data class HistoryData(
     @ColumnInfo(name = "dataId")
     val dataId:String="",
     @ColumnInfo(name = "isSynced")
-    val isSynced:Boolean=false
+    val isSynced:Boolean=false,
+    @ColumnInfo(name="balanceChange")
+    val balanceChange:Int=0
 )

@@ -32,7 +32,6 @@ import com.example.dairyman.ui.theme.CancelRed
 import com.example.dairyman.ui.theme.DarkBackground
 import com.example.dairyman.ui.theme.Primary
 import com.example.dairyman.ui.theme.Secondary
-import com.example.dairyman.ui.theme.Warning
 import kotlinx.coroutines.launch
 
 @Composable

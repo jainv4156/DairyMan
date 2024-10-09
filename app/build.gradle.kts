@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-//    alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
 }
@@ -59,10 +58,6 @@ android {
         }
     }
 }
-//composeCompiler {
-//    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-//}
 
 dependencies {
 
@@ -81,25 +76,30 @@ dependencies {
     implementation(libs.com.google.firebase.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.datastore.core.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation (libs.firebase.auth.ktx)
     ksp(libs.androidx.room.compiler)
 
     // message otp auth
-    implementation (libs.firebase.auth.ktx)
+
     implementation(libs.firebase.firestore)
 
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.lifecycle.runtime.compose)
     implementation (libs.coil.compose)
+
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
 
 }

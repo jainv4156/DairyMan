@@ -18,7 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.dairyman.Presentation.sign_in.GoogleAuthUiClint
+import com.example.dairyman.sign_in.GoogleAuthUiClint
 import com.example.dairyman.snackBar.SnackBarAction
 import com.example.dairyman.snackBar.SnackBarController
 import com.example.dairyman.snackBar.SnackBarEvent
@@ -40,16 +40,16 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(
-    googleAuthUiClient:GoogleAuthUiClint,
-navController: NavHostController=rememberNavController()
+    googleAuthUiClient: GoogleAuthUiClint,
+    navController: NavHostController=rememberNavController()
 ){
+
     NavHost(
         navController=navController,
         startDestination = ScreenA,
         enterTransition = {slideInHorizontally(initialOffsetX = { it })},
         exitTransition = {slideOutHorizontally(targetOffsetX = { it }) }
     ){
-
 
         composable<ScreenA>(
             enterTransition ={slideInHorizontally(initialOffsetX = { -it })},

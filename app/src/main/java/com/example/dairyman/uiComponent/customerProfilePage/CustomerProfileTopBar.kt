@@ -17,14 +17,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.dairyman.ui.theme.Background
 import com.example.dairyman.ui.theme.Primary
+import com.example.dairyman.viewmodel.HistoryViewModel
 import com.example.dairyman.viewmodel.HomeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomerProfileTopBar(id:String,onBackNavClicked:()->Unit={}){
+fun CustomerProfileTopBar(id:String,onBackNavClicked:()->Unit={},viewModel:HistoryViewModel){
     val navigationIcon: @Composable () ->Unit = {
-        IconButton(onClick = { onBackNavClicked()}) {
+        IconButton(onClick = {
+            if(!viewModel.getChangeAmountViewStatus()){
+                onBackNavClicked()
+
+            }
+            else{
+                viewModel.setChangeAmountViewStatus(false)
+            }
+        }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 tint = Background,

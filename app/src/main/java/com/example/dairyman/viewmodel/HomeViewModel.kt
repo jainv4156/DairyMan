@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -374,8 +373,6 @@ class HomeViewModel:ViewModel(){
                     )
                 }
             }
-
-
         }
         else{
             setSignInAlertBox(true)
@@ -383,7 +380,7 @@ class HomeViewModel:ViewModel(){
             enableAlertDialogBax()
         }
     }
-     suspend fun syncDataWithCloud() {
+     private suspend fun syncDataWithCloud() {
         withContext(IO){
             syncDairyDataWithCloud()
             syncHistoryDataWithCloud()
@@ -485,7 +482,6 @@ class HomeViewModel:ViewModel(){
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network= connectivityManager.activeNetwork
         val capabilities = connectivityManager.getNetworkCapabilities(network)
-
         return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 
@@ -502,5 +498,11 @@ class HomeViewModel:ViewModel(){
         }catch (e:Exception){
                 somethingWrongSnackBar()
         }
+    }
+
+    fun activateSyncRecommendation() {
+        mAlertDialogTitle="Sign in to back up your data to the cloud and easily restore it if you reinstall the app."
+        setSignInAlertBox(true)
+        enableAlertDialogBax()
     }
 }

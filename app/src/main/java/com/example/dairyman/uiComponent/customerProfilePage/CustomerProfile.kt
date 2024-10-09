@@ -9,7 +9,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +28,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +68,7 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
             val result = snackBarHostState.showSnackbar(
                 message = event.message,
                 actionLabel = event.action?.name,
-                duration = SnackbarDuration.Long
+                duration = SnackbarDuration.Short
             )
             if(result == SnackbarResult.ActionPerformed) {
                 snackBarHostState.currentSnackbarData?.dismiss()
@@ -81,9 +82,11 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
                 hostState = snackBarHostState
             )
         },
-        topBar = { CustomerProfileTopBar(id = id, onBackNavClicked = { navController.navigate(
-        ScreenA
-    ) }) }) {
+        topBar = { CustomerProfileTopBar(
+            id = id,
+            onBackNavClicked = { navController.navigate(ScreenA) },
+            viewModel = viewModel
+        ) }) {
         val profile= HomeViewModel().getProfileDataForHistory(id).collectAsState(initial = null)
         Box(modifier = Modifier
             .fillMaxSize()
@@ -95,19 +98,41 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)) {
-                Row {
+                Row (verticalAlignment = Alignment.CenterVertically){
 
                 Text(
-                    text = "Pending Amount:" ,
+                    text = "Pending Amount: Rs ",
                     fontSize = 20.sp,
 
                 )
-                    Text(
-                        text = " Rs" + profile.value?.pendingAmount.toString(),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
+                    Box(modifier = Modifier
 
+
+                        .shadow(
+                            elevation = 3.dp,
+                            RoundedCornerShape(10.dp),
                         )
+                        .padding(1.dp, 0.dp, 1.dp, 5.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(color = Secondary)
+                        .clickable {
+                            viewModel.setPendingAmountId(id)
+                            viewModel.setChangeAmountViewStatus(true)
+                        }
+
+                    ) {
+                        Text(
+                            text = profile.value?.pendingAmount.toString(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier =  Modifier.padding(8.dp, 4.dp),
+
+                            )
+//                        Text(
+//                            text = "Change Amount"
+//                        )
+                    }
+
                 }
                 Row {
 
@@ -120,38 +145,19 @@ fun CustomerProfileView(id: String,navController: NavController,viewModel:Histor
                     Text(
                         text = " Rs" + profile.value?.rate.toString(),
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(top=12.dp)
-
                     )
                 }
                     val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                     if(profile.value !=null){
                         val dateUpdated = simpleDateFormat.format(profile.value!!.dateUpdated)
                         Text(text = "Last updated: $dateUpdated",
-                            modifier = Modifier.padding(top=12.dp)
+                            modifier = Modifier.padding(top=12.dp),
+                            fontSize = 20.sp,
                         )
-
-
                     }
-
-                Box(modifier = Modifier
-                    .padding(top=12.dp)
-                    .clickable {
-                        viewModel.setPendingAmountId(id)
-                        viewModel.setChangeAmountViewStatus(true)
-                    }
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(color = Secondary)
-                    .border(1.dp, color = Color.Black, shape = RoundedCornerShape(10.dp))
-
-                ) {
-                    Text(
-                        modifier = Modifier.padding(8.dp, 4.dp),
-                        text = "Change Amount"
-                    )
-                }
             }
+                
                 Canvas(modifier = Modifier.fillMaxWidth()){
                     drawLine(
                         color = Color.Black,

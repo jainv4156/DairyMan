@@ -31,7 +31,7 @@
 ## How to Use
 Since the app is currently not available on the Play Store, you can download and install the APK from the following link:
 
-[Google Drive Link](https://drive.google.com/file/d/1ne4MR7jwj3nN5c1brkpNOVyq0L6TVUzP/view?usp=sharing) or [Website Link](your-website-link)
+[Google Drive Link](https://drive.google.com/file/d/1gP8gQ_ubbT9szJ_tgmMkAzc940EsJmxD/view?usp=sharing) or [Website Link](your-website-link)
 
 > **Note:** The backend API included in the source code is invalid. You need to set up your own Firebase project and add your API key in order to sync the app with the cloud.
 

@@ -39,6 +39,7 @@ Since the app is currently not available on the Play Store, you can download and
 ```bash
 git clone https://github.com/yourusername/DairyMan.git
 cd DairyMan
+```
 ### Build the Project
 1. Open the project in **Android Studio**.
 2. Sync the Gradle files to resolve any dependencies.

@@ -8,9 +8,11 @@
 - **Customer Management**: Add, update, and delete customer details with ease.
 - **Daily Transactions**: Record and review daily deliveries for each customer.
 - **Account Balancing**: One-click option to update all customer balances at the end of the day.
-- **Cloud Sync**: Customer data is synchronized with the cloud for easy access from any device.
-- **Offline Support**: Keep working even without an internet connection; data will sync when you're back online.
+- **Temporary Rate Adjustment**: Easily modify the rate of milk for specific days, helping with temporary price changes and easing daily calculations.
+- **Cloud Sync**: Customer data is synchronized with the cloud automatically every 24 hours in the background.
+- **History Management**: Review past transactions and deliveries for better tracking and reporting.
 - **User-Friendly Interface**: Built with Jetpack Compose, ensuring a smooth and intuitive user experience.
+
 
 ## Technology Stack
 - **Kotlin**
@@ -48,3 +50,16 @@ cd DairyMan
    - Add your Firebase API key in the `build.gradle` (Module: app) file.
 4. Connect your Android device or launch an emulator.
 5. Click on the **Run** button to install the app on your device or emulator.
+
+## What I Learned
+Building the **DairyMan** app allowed me to deepen my understanding of several key technologies and concepts:
+
+1. **Jetpack Compose**: Developed a clean and modern UI with Google's declarative UI toolkit, ensuring a user-friendly experience.
+2. **Room Database**: Implemented local data storage with Room to manage customer details and daily transactions efficiently.
+3. **Coroutines & Flow**: Leveraged Kotlin Coroutines and Flow to handle background tasks and real-time data flow seamlessly.
+4. **Firebase Firestore**: Integrated Firestore for cloud data storage, enabling background synchronization every 24 hours.
+5. **State Management & MVVM**: Used the Model-View-ViewModel (MVVM) architecture to ensure separation of concerns and smooth state management across the app.
+6. **Services**: Utilized Android Services for background tasks such as syncing data and processing tasks outside the app's lifecycle.
+7. **WorkManager**: Implemented WorkManager to handle background tasks that need guaranteed execution, like the 24-hour sync.
+8. **Animations**: Added smooth animations to enhance user experience and make interactions more fluid and engaging.
+

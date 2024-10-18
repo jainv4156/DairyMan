@@ -2,14 +2,12 @@
 
 **DairyMan** is an Android application designed to simplify the daily operations of milkmen. The app allows milkmen to log customer transactions, keep a record of daily deliveries, and manage accounts effortlessly with cloud synchronization.
 
-<img src="https://github.com/user-attachments/assets/a73f4abe-9afc-4aba-8cbe-7158ae01f44c" alt="App Screenshot" width="400"/>
+# ScreenShots
 
-![WhatsApp Image 2024-10-18 at 11 11 44 PM](https://github.com/user-attachments/assets/a73f4abe-9afc-4aba-8cbe-7158ae01f44c)
-![WhatsApp Image 2024-10-18 at 11 11 44 PM (2)](https://github.com/user-attachments/assets/7dd0812d-8c82-4a65-85de-be48117731d2),![WhatsApp Image 2024-10-18 at 11 11 44 PM (1)](https://github.com/user-attachments/assets/f7acc09b-c9a8-4ce1-b621-807be64c7d9a)
-![WhatsApp Image 2024-10-18 at 11 11 45 PM](https://github.com/user-attachments/assets/51efa743-3a48-445b-9b3f-9f5528a13cb5),![WhatsApp Image 2024-10-18 at 11 11 43 PM](https://github.com/user-attachments/assets/1fd244fa-67f8-47b4-895e-e643280203d2)
-![WhatsApp Image 2024-10-18 at 11 11 43 PM (1)](https://github.com/user-attachments/assets/f23b31c3-cad2-4d6a-b96c-68fddb86b013)
-
-
+<img src="https://github.com/user-attachments/assets/7dd0812d-8c82-4a65-85de-be48117731d2" alt="App Screenshot" width="400"/>
+<img src="https://github.com/user-attachments/assets/51efa743-3a48-445b-9b3f-9f5528a13cb5" alt="App Screenshot" width="400"/>
+<img src="https://github.com/user-attachments/assets/1fd244fa-67f8-47b4-895e-e643280203d2" alt="App Screenshot" width="400"/>
+<img src="https://github.com/user-attachments/assets/f23b31c3-cad2-4d6a-b96c-68fddb86b013" alt="App Screenshot" width="400"/>
 
 
 
